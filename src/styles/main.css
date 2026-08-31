@@ -765,3 +765,88 @@ button.choice--danger:hover {
 	color: var(--muted);
 	margin-top: 3px;
 }
+
+/* ==============================================
+   CEFR SEVIYE ROZETLERI
+   ============================================== */
+
+/* A1'den C2'ye yesilden mora giden bir skala: seviye farki renkten
+   okunabilsin, sadece harften degil. */
+.cefr {
+	display: inline-flex;
+	align-items: center;
+	font-size: 11px;
+	font-weight: 800;
+	letter-spacing: 0.4px;
+	padding: 3px 8px;
+	border-radius: 999px;
+	border: 1px solid transparent;
+	white-space: nowrap;
+}
+
+.cefr--A1 { color: #b8f5da; background: #10382b; border-color: #1f6b4f; }
+.cefr--A2 { color: #cdf6c4; background: #1c3a1a; border-color: #3a6b2f; }
+.cefr--B1 { color: #c4e4ff; background: #0f2c47; border-color: #1f5482; }
+.cefr--B2 { color: #c9d6ff; background: #17224a; border-color: #2e3f80; }
+.cefr--C1 { color: #ddc9ff; background: #291a45; border-color: #513085; }
+.cefr--C2 { color: #ffc9e4; background: #40182f; border-color: #82305d; }
+.cefr--none { color: var(--muted); background: #1a1f30; border-color: #2a3350; }
+
+/* ==============================================
+   SEVIYE SECICI
+   ============================================== */
+.levelBar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-bottom: 8px;
+}
+
+button.levelBtn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	/* Temel button kurali width:100% veriyor; seviye rozetleri iceriklerine
+	   gore daralsin ki tek satira sigsinlar. */
+	width: auto;
+	flex: 0 0 auto;
+	padding: 6px 10px;
+	font-size: 12px;
+	font-weight: 700;
+	background: #131a2b;
+	border: 1px solid #2a3350;
+	border-radius: 999px;
+	color: var(--muted);
+}
+
+button.levelBtn:hover {
+	border-color: var(--acc);
+	color: var(--text);
+}
+
+button.levelBtn.active {
+	background: #1a2340;
+	border-color: var(--acc);
+	color: var(--text);
+	box-shadow: 0 0 0 2px rgba(92, 200, 255, 0.18);
+}
+
+.levelBtnCount {
+	font-size: 11px;
+	font-weight: 600;
+	opacity: 0.75;
+	font-variant-numeric: tabular-nums;
+}
+
+#levelInfo {
+	margin-bottom: 4px;
+	min-height: 18px;
+}
+
+/* Kutular gorunumunde baslik satiri */
+.tileTop {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	justify-content: space-between;
+}

@@ -12,7 +12,15 @@ import * as store from './data/store.js';
 import { alertDialog, choiceDialog, confirmDialog, toast } from './ui/dialog.js';
 import { $, debounce } from './ui/dom.js';
 import * as review from './ui/review.js';
-import { filterWords, renderList, renderStats, renderTiles } from './ui/wordList.js';
+import {
+	filterWords,
+	levelBreakdown,
+	renderLevelBar,
+	renderLevelInfo,
+	renderList,
+	renderStats,
+	renderTiles
+} from './ui/wordList.js';
 
 /** Uygulamayla birlikte gelen içerik paketi. */
 const PACK_URL = import.meta.env.BASE_URL + 'content/core-v1.json';
@@ -20,15 +28,33 @@ const PACK_URL = import.meta.env.BASE_URL + 'content/core-v1.json';
 /** @type {'cards'|'tiles'} */
 let activeView = 'cards';
 
+/** Seçili CEFR seviyesi: 'all' | 'A1'..'C2' | 'none' (seviyesiz) */
+let activeLevel = 'all';
+
 // ===================== Render =====================
+
+/** Seçili seviyedeki kelimeler — hem liste hem tekrar kuyruğu bunu kullanır. */
+function wordsAtLevel() {
+	return filterWords(store.state.words, { cefr: activeLevel });
+}
+
+function selectLevel(level) {
+	activeLevel = level;
+	render();
+}
 
 function render() {
 	const list = filterWords(store.state.words, {
 		query: $('search').value,
-		mode: $('filterDue').value
+		mode: $('filterDue').value,
+		cefr: activeLevel
 	});
 
-	renderStats(store.getStats(isDue), list.length, store.state.settings.dailyGoal);
+	const breakdown = levelBreakdown(store.state.words, MAX_LEVEL);
+	renderLevelBar(breakdown, activeLevel, selectLevel);
+	renderLevelInfo(breakdown, activeLevel);
+
+	renderStats(store.getStats(isDue, wordsAtLevel()), list.length, store.state.settings.dailyGoal);
 
 	// Sadece görünür olan görünümü çiz — 1600+ kelimede ikisini birden
 	// çizmek her tuş vuruşunda gereksiz DOM işi demek.
@@ -116,13 +142,17 @@ function onEnglishInput() {
 
 async function handleStartReview() {
 	const free = $('freeReview').checked;
-	const queue = buildReviewQueue(store.state.words, { free, isDue });
+	// Seviye seçiliyse yalnızca o seviyeyi çalış.
+	const queue = buildReviewQueue(wordsAtLevel(), { free, isDue });
 
 	if (!queue.length) {
+		const scope = activeLevel === 'all'
+			? ''
+			: ' (' + (activeLevel === 'none' ? 'seviyesiz' : activeLevel) + ' seviyesinde)';
 		await alertDialog(
 			free
-				? 'Tekrar edilecek kelime kalmadı — tüm kelimeler öğrenilmiş görünüyor.'
-				: 'Bugün tekrar zamanı gelen kelime yok.\n\nTüm kelimeleri çalışmak için "Serbest tekrar" seçeneğini işaretleyin.',
+				? 'Tekrar edilecek kelime kalmadı' + scope + ' — tümü öğrenilmiş görünüyor.'
+				: 'Bugün tekrar zamanı gelen kelime yok' + scope + '.\n\nTüm kelimeleri çalışmak için "Serbest tekrar" seçeneğini işaretleyin.',
 			{ title: 'Tekrar' }
 		);
 		return;
@@ -339,6 +369,29 @@ async function boot() {
 		toast(`${r.matched + r.userOwned} kelime yeni depoya taşındı.`);
 	} else if (result.packInstalled) {
 		toast('Temel kelime paketi kuruldu.');
+	}
+
+	if (result.repair && result.repair.changed) {
+		const a = result.repair.analysis;
+		await alertDialog(
+			`"Öğrenilmiş" işaretli ${a.learnedCount} kelimeden ${result.repair.changed} tanesi bu etiketi ` +
+				`hak etmiyordu:
+
+` +
+				`• ${a.weak} kelime yeterince üst üste doğru bilinmemiş
+` +
+				`• ${a.noHistory} kelime hiç çalışılmamış (elle işaretlenmiş)
+` +
+				`• ${a.earned} kelime etiketi gerçekten hak etmiş, dokunulmadı
+
+` +
+				`Sebebi 1.0'daki hesaplama hatasıydı. Bu kelimeler artık tekrar kuyruğuna giriyor; ` +
+				`doğru bildiklerin yeniden "öğrenilmiş" olacak.
+
+` +
+				`Cevap geçmişin olduğu gibi korundu.`,
+			{ title: 'İlerleme onarıldı' }
+		);
 	}
 }
 

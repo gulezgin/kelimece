@@ -15,6 +15,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // Girdi: kullanicinin 1.0 yedegi. public/ disinda tutuluyor - uygulamayla
 // gonderilmesine gerek yok, sadece paket uretiminin kaynagi.
 const INPUT = join(ROOT, 'data/kelime-havuzu-orijinal-2026-01-12.json');
+const CEFR_INPUT = join(ROOT, 'data/cefr-levels.json');
 const OUTPUT = join(ROOT, 'public/content/core-v1.json');
 
 const PACK_ID = 'core';
@@ -27,18 +28,82 @@ const DRY = process.argv.includes('--dry');
  * Buraya yalnızca kesin olan yazım hataları girer; anlam değişikliği
  * gerektiren düzeltmeler insan onayı ister.
  */
+/**
+ * Elle doğrulanmış yazım düzeltmeleri.
+ *
+ * Her biri Türkçe karşılığına bakılarak doğrulandı; belirsiz olanlar
+ * dokunulmadan bırakıldı. Dikkat: bazıları basit harf hatası değil,
+ * bambaşka kelime — 'breake' ("fren") aslında 'brake', 'break' değil.
+ */
 const FIXES = {
 	en: {
+		// Basit yazım hataları
 		'T-shitt': 'T-shirt',
 		'Intelligent': 'intelligent',
 		'icrease, escalate': 'increase, escalate',
 		'hurry hurries': 'hurry',
-		// Türkçe klavyeden gelen 'ı' harfinin 'o' olması gereken iki kayıt
+		'aconomical': 'economical',
+		'altough': 'although',
+		'ambarreassed': 'embarrassed',
+		'coffe': 'coffee',
+		'conteptual': 'conceptual',
+		'correspanding': 'corresponding',
+		'evelutionary': 'evolutionary',
+		'headeache': 'headache',
+		'howewer': 'however',
+		'malnutrion': 'malnutrition',
+		'necessitare': 'necessitate',
+		'periipherals': 'peripherals',
+		'philosphy': 'philosophy',
+		'remmant': 'remnant',
+		'sitaction': 'situation',
+		'smal': 'small',
+		'succes': 'success',
+		'trustworty': 'trustworthy',
+		'intensive care rom': 'intensive care room',
+		'now a days': 'nowadays',
+		// Türkçe klavyeden gelen 'ı' harfinin 'o' olması gereken kayıtlar
 		'enfırcement': 'enforcement',
-		'anınymous': 'anonymous'
+		'anınymous': 'anonymous',
+		// Yanlış kelime yazılmış - Türkçe karşılığından tespit edildi
+		'breake': 'brake',            // "fren" -> break değil brake
+		'stich': 'stick',             // "çubuk"
+		'dept': 'debt',               // "borç"
+		'hed': 'head',                // "baş, kafa"
+		'metter': 'matter',           // "konu, mesele"
+		'mensure': 'measure',         // "ölçme"
+		'reasend': 'resend',          // "yeniden göndermek"
+		'rebout': 'reboot',           // "yeniden başlatma"
+		'plub': 'plug',               // "priz"
+		'bidata': 'big data',         // "büyük veri"
+		'iterna': 'interior',         // "iç"
+		'resistons': 'resistor',      // "dirençler"
+		'cryption': 'encryption',     // "şifreleme"
+		'menace threat': 'menace',
+		'pro-defined': 'pre-defined',
+		'pro-installed': 'pre-installed',
+		'releated to': 'related to',
+		// Sondaki yer tutucu 'x'
+		'around x': 'around',
+		'towards x': 'towards',
+		'vulnerable to': 'vulnerable to',
+		// Yazımı düzeltilince mevcut kayıtla birleşecekler
+		'accupy': 'occupy',
+		'appropricte': 'appropriate',
+		'excahnge': 'exchange',
+		'midigate': 'mitigate',
+		'angles': 'angle',
+		'labor': 'labour'
 	},
 	tr: {
-		'teleaş': 'telaş'
+		'teleaş': 'telaş',
+		'terketmek, vazgeçmek': 'terk etmek, vazgeçmek',
+		'yenidan başlatma': 'yeniden başlatma',
+		'yoğum bakım odası': 'yoğun bakım odası',
+		'çevre bilimi': 'çevre birimleri',
+		'x etrafında': 'etrafında',
+		'x e doğru': 'e doğru',
+		'erişm': 'erişim'
 	}
 };
 
@@ -76,6 +141,20 @@ const report = {
 	duplicates: [],
 	dropped: []
 };
+
+/**
+ * Kelime -> CEFR seviyesi tablosu.
+ * Ayri bir dosyada tutuluyor cunku elle duzenlenecek: seviye atamalari
+ * zamanla iyilesecek ve kod degisikligi gerektirmemeli.
+ */
+const cefrByWord = new Map();
+{
+	const cefrData = JSON.parse(readFileSync(CEFR_INPUT, 'utf8'));
+	for (const [level, words] of Object.entries(cefrData)) {
+		if (level.startsWith('_') || !Array.isArray(words)) continue;
+		for (const w of words) cefrByWord.set(String(w).toLowerCase(), level);
+	}
+}
 
 const raw = JSON.parse(readFileSync(INPUT, 'utf8'));
 const words = Array.isArray(raw.words) ? raw.words : [];
@@ -119,6 +198,22 @@ for (const w of words) {
 		report.synonymsExtracted++;
 	}
 
+	// Düzeltmeleri baş sözcüğe de uygula: yazım hatası olan kayıtların bir
+	// kısmı virgüllü listeydi ("iterna, inner, interior"), bütün metin
+	// üzerinden eşleşmiyorlardı.
+	if (FIXES.en[en]) {
+		report.fixedEn.push(`${en} -> ${FIXES.en[en]} (baş sözcük)`);
+		en = FIXES.en[en];
+	}
+	const deDottedHead = fixDotlessI(en);
+	if (deDottedHead !== en) {
+		report.fixedDotlessI.push(`${en} -> ${deDottedHead} (baş sözcük)`);
+		en = deDottedHead;
+	}
+
+	// Eş anlamlı listesi baş sözcüğü tekrar etmesin
+	synonyms = synonyms.filter((x) => x.toLowerCase() !== en.toLowerCase());
+
 	const key = en.toLowerCase();
 	if (seen.has(key)) {
 		// Aynı kelime iki kez: anlamları birleştir, kaydı çoğaltma.
@@ -144,8 +239,8 @@ for (const w of words) {
 		// artık "prosperity" ama kullanıcının ilerlemesi eski yazımda duruyor.
 		aliases: originalEn.toLowerCase() !== en.toLowerCase() ? [originalEn] : [],
 		tags: Array.isArray(w.tags) ? w.tags.map(collapse).filter(Boolean) : [],
-		// Faz 2'de doldurulacak alanlar - şema şimdiden hazır
-		cefr: null,
+		cefr: cefrByWord.get(en.toLowerCase()) || null,
+		// Sonraki fazlarda doldurulacak alanlar
 		pos: null,
 		ipa: null,
 		topic: null,
@@ -183,6 +278,20 @@ console.log(`  Düzeltilen TR      : ${report.fixedTr.length}`, report.fixedTr);
 console.log(`  Düzeltilen 'ı'->'i': ${report.fixedDotlessI.length}`, report.fixedDotlessI);
 console.log(`  Atılan             : ${report.dropped.length}`, report.dropped.slice(0, 5));
 console.log(`  Takma adlı kayıt   : ${definitions.filter((d) => d.aliases.length).length}`);
+
+const byLevel = {};
+let untagged = 0;
+for (const d of definitions) {
+	if (d.cefr) byLevel[d.cefr] = (byLevel[d.cefr] || 0) + 1;
+	else untagged++;
+}
+console.log('');
+console.log('  CEFR dağılımı      :', ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
+	.map((l) => `${l}:${byLevel[l] || 0}`).join('  '));
+if (untagged) {
+	const list = definitions.filter((d) => !d.cefr).map((d) => d.en);
+	console.log(`  ⚠ Seviyesiz kelime : ${untagged}`, list.slice(0, 15));
+}
 
 if (DRY) {
 	console.log('\n(--dry: dosya yazılmadı)');

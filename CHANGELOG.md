@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2026-08-31
+
+CEFR seviye sistemi ve içerik kalitesi sürümü.
+
+### Eklendi
+- **A1-C2 seviye sistemi.** Paketteki 1652 kelimenin tamamı CEFR seviyesiyle
+  etiketlendi (A1:396, A2:483, B1:404, B2:213, C1:137, C2:19). Eşleme
+  `data/cefr-levels.json` dosyasında; elle düzenlenebilir, kod değişikliği
+  gerektirmez.
+- **Seviye seçici.** Havuzu A1-C2 arasında süzer. Seçim yalnızca listeyi
+  değil **tekrar kuyruğunu da** kapsar: "Tekrar Et" seçili seviyeyi çalıştırır.
+- Kartlarda, kutularda ve tekrar ekranında renk kodlu CEFR rozeti
+  (A1 yeşilden C2 mora giden skala).
+- Seviye başına öğrenilme oranı özeti.
+- **Türkçe aksana duyarsız arama.** "yag" yazınca "don yağı" bulunuyor;
+  Türkçe klavyeye geçmeden arama yapılabiliyor. Eş anlamlılarda da arıyor.
+
+### Değişti
+- **1.0'dan gelen hatalı "öğrenilmiş" işaretleri bir kez otomatik onarılıyor**
+  (doğrulama turu). Cevap geçmişi aynen korunur; kelime yalnızca bir kez daha
+  sorulacak seviyeye alınır, doğru bilinirse etiket geri kazanılır.
+  Kullanıcı Ayarlar > İlerleme denetimi'nden diğer kipleri seçebilir.
+
+### Düzeltildi (içerik)
+- **53 İngilizce yazım hatası.** Bir kısmı basit harf hatasıydı
+  (`coffe`, `philosphy`, `succes`, `howewer`, `sitaction`), bir kısmı
+  ise bambaşka kelimeydi ve Türkçe karşılığına bakılarak tespit edildi:
+  `breake` → **brake** ("fren"), `stich` → **stick** ("çubuk"),
+  `dept` → **debt** ("borç"), `plub` → **plug** ("priz"),
+  `resistons` → **resistor** ("direnç"), `bidata` → **big data**.
+- Virgüllü kayıtların baş sözcüğündeki hatalar da yakalanıyor
+  (`iterna, inner, interior` → `interior`). Önce yalnızca tüm metin
+  karşılaştırılıyordu, bu kayıtlar gözden kaçıyordu.
+- Türkçe tarafta: `erişm` → `erişim`, `terketmek` → `terk etmek`,
+  `yoğum bakım` → `yoğun bakım`, `çevre bilimi` → `çevre birimleri`.
+- Sondaki yer tutucu `x` temizlendi (`around x` → `around`).
+- Toplam: 1682 ham kayıt → **1652 temiz kelime** (30 mükerrer birleştirildi).
+
+---
+
 ## [1.2.0] - 2026-08-31
 
 Veri mimarisi sürümü. A1-C2 müfredatının üzerine kurulacağı temel.

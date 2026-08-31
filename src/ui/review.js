@@ -40,6 +40,7 @@ function buildOverlay(handlers) {
 
 	const progress = el('span', { attrs: { id: 'reviewProgress' }, text: '1/1' });
 	const level = el('span', { class: 'kpill', attrs: { id: 'reviewLevel' }, text: 'Seviye 0' });
+	const cefr = el('span', { class: 'cefr', attrs: { id: 'reviewCefr' } });
 	const enNode = el('div', { class: 'en', attrs: { id: 'reviewEn' } });
 	const trNode = el('div', { class: 'tr', attrs: { id: 'reviewTr' } });
 	const exNode = el('div', { class: 'small', attrs: { id: 'reviewEx' } });
@@ -52,7 +53,7 @@ function buildOverlay(handlers) {
 	const btnExit = el('button', { class: 'ghost', text: 'Kapat (Esc)' });
 
 	const card = el('div', { class: 'reviewCard' }, [
-		el('div', { class: 'reviewMeta' }, [progress, level]),
+		el('div', { class: 'reviewMeta' }, [progress, cefr, level]),
 		enNode,
 		trNode,
 		exNode,
@@ -65,7 +66,7 @@ function buildOverlay(handlers) {
 		attrs: { id: 'reviewOverlay', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Tekrar oturumu' }
 	}, [card]);
 
-	refs = { progress, level, enNode, trNode, exNode, tagsNode, btnShow, btnKnown, btnForgot, btnSkip, btnExit };
+	refs = { progress, cefr, level, enNode, trNode, exNode, tagsNode, btnShow, btnKnown, btnForgot, btnSkip, btnExit };
 
 	btnShow.onclick = reveal;
 	btnKnown.onclick = () => answer(true, handlers);
@@ -137,6 +138,8 @@ function showCurrent(handlers) {
 function paint(w) {
 	refs.progress.textContent = `${session.index + 1}/${session.queue.length}`;
 	refs.level.textContent = w.level >= MAX_LEVEL ? 'Öğrenilmiş' : 'Seviye ' + w.level;
+	refs.cefr.textContent = w.cefr || '';
+	refs.cefr.className = 'cefr' + (w.cefr ? ' cefr--' + w.cefr : ' hidden');
 	refs.enNode.textContent = w.en;
 	refs.trNode.textContent = '— ' + w.tr;
 	const extras = [];

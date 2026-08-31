@@ -11,22 +11,29 @@ import { $, el } from './dom.js';
 /**
  * Arama ve filtreye göre kelimeleri süzer.
  * @param {object[]} words
- * @param {{query?: string, mode?: string}} filter
+ * @param {{query?: string, mode?: string, cefr?: string}} filter
  */
-export function filterWords(words, { query = '', mode = 'all' }) {
+export function filterWords(words, { query = '', mode = 'all', cefr = 'all' }) {
 	let list = words;
+
+	// Seviye süzgeci önce uygulanır: diğer sayaçlar da seçilen seviyeye göre
+	// anlam kazansın diye.
+	if (cefr && cefr !== 'all') {
+		list = cefr === 'none' ? list.filter((w) => !w.cefr) : list.filter((w) => w.cefr === cefr);
+	}
 
 	if (mode === 'due') list = list.filter((w) => w.level < MAX_LEVEL && isDue(w.nextReviewAt));
 	else if (mode === 'new') list = list.filter((w) => w.source === 'user' && isToday(w.addedAt));
 	else if (mode === 'learned') list = list.filter((w) => w.level >= MAX_LEVEL);
 
-	const q = query.trim().toLowerCase();
+	const q = foldTr(query.trim());
 	if (q) {
 		list = list.filter(
 			(w) =>
-				w.en.toLowerCase().includes(q) ||
-				(w.tr || '').toLowerCase().includes(q) ||
-				(w.tags || []).some((t) => t.toLowerCase().includes(q))
+				foldTr(w.en).includes(q) ||
+				foldTr(w.tr).includes(q) ||
+				(w.synonyms || []).some((x) => foldTr(x).includes(q)) ||
+				(w.tags || []).some((t) => foldTr(t).includes(q))
 		);
 	}
 	return list;
@@ -34,6 +41,26 @@ export function filterWords(words, { query = '', mode = 'all' }) {
 
 function isToday(iso) {
 	return new Date(iso).toDateString() === new Date().toDateString();
+}
+
+/**
+ * Arama icin metni sadelestirir: kucuk harfe cevirir ve Turkce aksanlari
+ * duz karsiliklarina indirger.
+ *
+ * Neden: kullanici "yag" yazip "yagi" bulabilmeli, "ogrenmek" yazip
+ * "ogrenmek" bulabilmeli. Turkce klavyeye gecmeden arama yapmak yaygin.
+ * Ozel durum: 'I'.toLowerCase() Turkce yerelde 'i' vermez, bu yuzden
+ * donusum tablosu buyuk harfleri de kapsiyor.
+ */
+const FOLD = {
+	ç: 'c', Ç: 'c', ğ: 'g', Ğ: 'g', ı: 'i', I: 'i', İ: 'i', i: 'i',
+	ö: 'o', Ö: 'o', ş: 's', Ş: 's', ü: 'u', Ü: 'u'
+};
+
+export function foldTr(text) {
+	let out = '';
+	for (const ch of String(text || '')) out += FOLD[ch] || ch.toLowerCase();
+	return out;
 }
 
 /**
@@ -82,6 +109,7 @@ function wordCard(w, { onKnown, onForgot, onLearn, onDelete, onTagClick }) {
 		el('div', { class: 'en', text: w.en }),
 		el('div', { class: 'tr', text: '— ' + w.tr }),
 		el('div', { class: 'spacer' }),
+		w.cefr ? el('span', { class: 'cefr cefr--' + w.cefr, text: w.cefr }) : null,
 		el('span', { class: 'kpill', text: 'Seviye ' + w.level }),
 		el('span', {
 			class: 'badge ' + (learned ? 'ok' : due ? 'warn' : ''),
@@ -137,10 +165,94 @@ export function renderTiles(list) {
 	for (const w of sorted) {
 		frag.appendChild(
 			el('div', { class: 'tile' }, [
-				el('div', { class: 'en', text: w.en }),
+				el('div', { class: 'tileTop' }, [
+					el('div', { class: 'en', text: w.en }),
+					w.cefr ? el('span', { class: 'cefr cefr--' + w.cefr, text: w.cefr }) : null
+				]),
 				el('div', { class: 'tr', text: w.tr })
 			])
 		);
 	}
 	tiles.appendChild(frag);
+}
+
+/** CEFR seviyeleri, öğrenme sırasıyla. */
+export const CEFR_ORDER = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
+/**
+ * Seviye başına toplam ve öğrenilmiş sayısını hesaplar.
+ * @param {object[]} words
+ * @param {number} maxLevel Öğrenilmiş sayılan SRS seviyesi
+ */
+export function levelBreakdown(words, maxLevel) {
+	const stats = {};
+	for (const key of [...CEFR_ORDER, 'none']) stats[key] = { total: 0, learned: 0, due: 0 };
+
+	for (const w of words) {
+		const key = w.cefr || 'none';
+		const bucket = stats[key];
+		if (!bucket) continue;
+		bucket.total++;
+		if (w.level >= maxLevel) bucket.learned++;
+	}
+	return stats;
+}
+
+/**
+ * Seviye seçici düğmelerini çizer.
+ * @param {object} breakdown levelBreakdown() çıktısı
+ * @param {string} active Seçili seviye ('all' | 'A1'... | 'none')
+ * @param {(level: string) => void} onSelect
+ */
+export function renderLevelBar(breakdown, active, onSelect) {
+	const bar = $('levelBar');
+	if (!bar) return;
+	bar.textContent = '';
+
+	const total = CEFR_ORDER.reduce((sum, l) => sum + breakdown[l].total, 0) + breakdown.none.total;
+	const buttons = [{ key: 'all', label: 'Tümü', count: total }];
+	for (const l of CEFR_ORDER) buttons.push({ key: l, label: l, count: breakdown[l].total });
+	if (breakdown.none.total) buttons.push({ key: 'none', label: '—', count: breakdown.none.total });
+
+	const frag = document.createDocumentFragment();
+	for (const b of buttons) {
+		if (!b.count && b.key !== 'all') continue;
+		const btn = el('button', {
+			class: 'levelBtn' + (b.key === active ? ' active' : '') + (b.key !== 'all' ? ' cefr--' + b.key : ''),
+			attrs: { 'aria-pressed': String(b.key === active) }
+		}, [
+			el('span', { class: 'levelBtnLabel', text: b.label }),
+			el('span', { class: 'levelBtnCount', text: String(b.count) })
+		]);
+		btn.onclick = () => onSelect(b.key);
+		frag.appendChild(btn);
+	}
+	bar.appendChild(frag);
+}
+
+/**
+ * Seçili seviyenin ilerleme özeti.
+ * @param {object} breakdown
+ * @param {string} active
+ */
+export function renderLevelInfo(breakdown, active) {
+	const node = $('levelInfo');
+	if (!node) return;
+
+	if (active === 'all') {
+		const parts = CEFR_ORDER
+			.filter((l) => breakdown[l].total)
+			.map((l) => `${l} %${Math.round((breakdown[l].learned / breakdown[l].total) * 100)}`);
+		node.textContent = parts.length ? 'Öğrenilme oranı — ' + parts.join('  ·  ') : '';
+		return;
+	}
+
+	const b = breakdown[active];
+	if (!b || !b.total) {
+		node.textContent = '';
+		return;
+	}
+	const pct = Math.round((b.learned / b.total) * 100);
+	const label = active === 'none' ? 'Seviyesiz' : active;
+	node.textContent = `${label}: ${b.total} kelime, ${b.learned} tanesi öğrenilmiş (%${pct})`;
 }

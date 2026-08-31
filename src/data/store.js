@@ -147,6 +147,7 @@ export async function init({ packUrl } = {}) {
 		if (pack) result.packInstalled = await installPackIfNeeded(pack);
 
 		await loadIntoMemory();
+		result.repair = await runAutoRepairOnce();
 
 		state.settings = { ...DEFAULT_SETTINGS, ...((await getMeta('settings')) || {}) };
 		if (!state.settings.today) state.settings.today = todayISO();
@@ -213,6 +214,40 @@ async function installPackIfNeeded(pack) {
 	await setMeta('packs', packs);
 	state.packs = packs;
 	return true;
+}
+
+/**
+ * 1.0'dan gelen hatali "ogrenilmis" isaretlerini bir kez onarir.
+ *
+ * 1.0'da iki kusur vardi: otomatik "ogrenilmis" isareti gecmisteki TOPLAM
+ * dogruyu sayiyordu (aradaki yanlislari yok sayarak), ve "Ogrenilmise al"
+ * dugmesi gecmise hic bakmadan en ust seviyeye tasiyordu. Sonuc: ogrenilmis
+ * isaretli kelimelerin buyuk cogunlugu bu etiketi hak etmiyor ve ogrenilmis
+ * kelimeler tekrar kuyruguna hic girmedigi icin bir daha sorulmuyor.
+ *
+ * 'verify' kipi kayipsizdir: gecmis aynen korunur, kelime yalnizca bir kez
+ * daha sorulacak seviyeye alinir. Dogru bilinirse etiket geri kazanilir.
+ *
+ * Yalnizca bir kez calisir. Kullanici sonradan Ayarlar > Ilerleme
+ * denetimi'nden diger kipleri secebilir.
+ */
+async function runAutoRepairOnce() {
+	if (await getMeta('autoRepair')) return null;
+
+	const analysis = analyzeProgress(state.words);
+	if (!analysis.suspect) {
+		await setMeta('autoRepair', { mode: 'none', at: new Date().toISOString(), changed: 0 });
+		return null;
+	}
+
+	const { changed } = await applyRepair('verify');
+	await setMeta('autoRepair', { mode: 'verify', at: new Date().toISOString(), changed });
+	return { mode: 'verify', changed, analysis: {
+		learnedCount: analysis.learnedCount,
+		earned: analysis.earned,
+		weak: analysis.weak,
+		noHistory: analysis.noHistory
+	} };
 }
 
 async function loadIntoMemory() {
@@ -467,16 +502,21 @@ export async function applyRepair(mode) {
 // ===================== Türetilmiş sayılar =====================
 
 /**
+ * Üst rozetlerdeki sayılar.
+ *
  * @param {(iso: string) => boolean} isDue
+ * @param {object[]} [scope] Yalnızca bu kelimeleri say (seviye süzgeci için).
+ *   Verilmezse tüm havuz.
  */
-export function getStats(isDue) {
-	const total = state.words.length;
+export function getStats(isDue, scope) {
+	const words = Array.isArray(scope) ? scope : state.words;
+	const total = words.length;
 	let due = 0;
 	let learned = 0;
 	let addedToday = 0;
 	const now = new Date();
 
-	for (const w of state.words) {
+	for (const w of words) {
 		if (w.level >= MAX_LEVEL) learned++;
 		else if (isDue(w.nextReviewAt)) due++;
 		// Sadece kullanıcının kendi eklediklerini say; paket kurulumu
