@@ -16,10 +16,16 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // gonderilmesine gerek yok, sadece paket uretiminin kaynagi.
 const INPUT = join(ROOT, 'data/kelime-havuzu-orijinal-2026-01-12.json');
 const CEFR_INPUT = join(ROOT, 'data/cefr-levels.json');
+const ADDITIONS_INPUT = join(ROOT, 'data/additions-a1-core.json');
+const FREQ_INPUT = join(ROOT, 'data/sources/en_50k.txt');
 const OUTPUT = join(ROOT, 'public/content/core-v1.json');
 
 const PACK_ID = 'core';
-const PACK_VERSION = 1;
+// Surum yukseltilince mevcut kurulumlar guncellemeyi alir: tanimlar
+// tazelenir, ilerleme kararli kimlikler sayesinde yerinde kalir.
+//   1 -> 2 : 202 A1 temel kelimesi eklendi, 94 seviye duzeltmesi,
+//            siklik siralari (freqRank), konu ve sozcuk turu alanlari.
+const PACK_VERSION = 2;
 
 const DRY = process.argv.includes('--dry');
 
@@ -138,6 +144,8 @@ const report = {
 	fixedTr: [],
 	fixedDotlessI: [],
 	synonymsExtracted: 0,
+	additions: 0,
+	additionClashes: 0,
 	duplicates: [],
 	dropped: []
 };
@@ -154,6 +162,29 @@ const cefrByWord = new Map();
 		if (level.startsWith('_') || !Array.isArray(words)) continue;
 		for (const w of words) cefrByWord.set(String(w).toLowerCase(), level);
 	}
+}
+
+/**
+ * Kullanim sikligi siralari.
+ * Kaynak: hermitdave/FrequencyWords (MIT), OpenSubtitles 2018 korpusu.
+ * Sadece tek kelimeler icin anlamli; obek fiillerde bilesenlerin sikligi
+ * obegin zorlugunu yansitmaz, bu yuzden onlarda bos birakiliyor.
+ */
+const freqRank = new Map();
+{
+	let i = 0;
+	for (const line of readFileSync(FREQ_INPUT, 'utf8').split('\n')) {
+		const w = line.split(' ')[0];
+		if (!w) continue;
+		i++;
+		if (!freqRank.has(w)) freqRank.set(w, i);
+	}
+}
+
+function rankFor(en) {
+	const key = en.toLowerCase().trim();
+	if (/[\s-]/.test(key)) return null;
+	return freqRank.get(key) || null;
 }
 
 const raw = JSON.parse(readFileSync(INPUT, 'utf8'));
@@ -240,17 +271,56 @@ for (const w of words) {
 		aliases: originalEn.toLowerCase() !== en.toLowerCase() ? [originalEn] : [],
 		tags: Array.isArray(w.tags) ? w.tags.map(collapse).filter(Boolean) : [],
 		cefr: cefrByWord.get(en.toLowerCase()) || null,
-		// Sonraki fazlarda doldurulacak alanlar
 		pos: null,
 		ipa: null,
 		topic: null,
-		freqRank: null,
+		freqRank: rankFor(en),
 		audio: null,
 		source: PACK_ID
 	};
 
 	seen.set(key, def);
 	definitions.push(def);
+}
+
+// ---------- A1 temel kelime eklemesi ----------
+// Mevcut havuz temali isimlerde iyi ama dilbilgisi omurgasi (sayilar,
+// gunler, aylar, soru kelimeleri, zamirler, baglaclar) eksikti.
+{
+	const additions = JSON.parse(readFileSync(ADDITIONS_INPUT, 'utf8'));
+	let added = 0;
+	let clash = 0;
+	for (const a of additions.words || []) {
+		const en = collapse(a.en);
+		const key = en.toLowerCase();
+		if (!en || !a.tr) continue;
+		if (seen.has(key)) {
+			clash++;
+			continue;
+		}
+		const def = {
+			id: `${PACK_ID}:${slugify(en)}`,
+			en,
+			tr: collapse(a.tr),
+			example: collapse(a.example),
+			exampleTr: collapse(a.exampleTr),
+			synonyms: [],
+			aliases: [],
+			tags: [],
+			cefr: a.cefr || cefrByWord.get(key) || null,
+			pos: a.pos || null,
+			ipa: null,
+			topic: a.topic || null,
+			freqRank: rankFor(en),
+			audio: null,
+			source: PACK_ID
+		};
+		seen.set(key, def);
+		definitions.push(def);
+		added++;
+	}
+	report.additions = added;
+	report.additionClashes = clash;
 }
 
 definitions.sort((a, b) => a.en.localeCompare(b.en, 'en', { sensitivity: 'base' }));
@@ -278,6 +348,11 @@ console.log(`  Düzeltilen TR      : ${report.fixedTr.length}`, report.fixedTr);
 console.log(`  Düzeltilen 'ı'->'i': ${report.fixedDotlessI.length}`, report.fixedDotlessI);
 console.log(`  Atılan             : ${report.dropped.length}`, report.dropped.slice(0, 5));
 console.log(`  Takma adlı kayıt   : ${definitions.filter((d) => d.aliases.length).length}`);
+console.log(`  A1 temel eklemesi  : ${report.additions}` +
+	(report.additionClashes ? `  (${report.additionClashes} zaten vardı)` : ''));
+console.log(`  Sıklık sırası olan : ${definitions.filter((d) => d.freqRank).length}`);
+console.log(`  Konu etiketi olan  : ${definitions.filter((d) => d.topic).length}`);
+console.log(`  Sözcük türü olan   : ${definitions.filter((d) => d.pos).length}`);
 
 const byLevel = {};
 let untagged = 0;

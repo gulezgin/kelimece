@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2026-08-31
+
+İçerik paketi v2. Seviye atamaları dış veriyle doğrulandı, A1 temel
+kelime dağarcığı eklendi.
+
+### Eklendi
+- **202 A1 temel kelimesi.** Mevcut havuzda `abandon` ve `prosperity` vardı
+  ama sayıların, günlerin, ayların, soru kelimelerinin ve zamirlerin
+  neredeyse tamamı yoktu — liste bir müfredat değil, karşılaşılan
+  kelimelerin birikimiydi. Eklenenler: sayılar (1-100, yüz, bin),
+  günler ve aylar, soru kelimeleri, zamirler, bağlaçlar, yer/zaman
+  edatları ve temel isim/sıfat/fiiller. Çeviriler elle yazıldı —
+  üçüncü taraf sözlük verisi kullanılmadı.
+- **Sıklık sırası (`freqRank`)** 1725 kelimede dolu. Kaynak:
+  hermitdave/FrequencyWords (MIT, OpenSubtitles 2018).
+- **Konu (`topic`) ve sözcük türü (`pos`)** alanları yeni kelimelerde dolu;
+  20 konu kategorisi (sayılar, zaman, dilbilgisi, aile, vücut, yiyecek…).
+- İçerik paketi bütünlük testleri (22 test): mükerrer kimlik, boş alan,
+  geçersiz seviye, baş sözcükte virgül, Türkçe harf kalıntısı gibi
+  kusurları yakalar.
+
+### Değişti
+- **CEFR atamaları sıklık verisiyle doğrulandı.** 1652 kelimenin %83'ünde
+  iki kaynak 1 seviye içinde uyuştu. 2+ seviye ayrışan 255 kayıt tek tek
+  incelendi ve **94 düzeltme** uygulandı:
+  - 20 kelime indirildi (`certainly`, `completely`, `trouble`, `debt`…) —
+    gerçekte sanılandan çok daha yaygın.
+  - 74 kelime yükseltildi (`implementation`, `classification`,
+    `corresponding`, `sustainable`…) — konuşma dilinde seyrek, soyut.
+  - ~160 kayıtta sıklık verisi **kasıtlı olarak yok sayıldı**: korpus film
+    altyazısından geldiği için `carrot` (#8557), `giraffe` (#13464) gibi
+    somut sınıf kelimelerini hak ettiğinden zor gösteriyor.
+- İçerik paketi sürümü 2'ye yükseltildi; mevcut kurulumlar güncellemeyi
+  otomatik alır ve **ilerleme yerinde kalır** (kararlı kimlikler sayesinde).
+  Gerçek veriyle doğrulandı: paket güncellendi, 1094 kelimenin geçmişi
+  eksiksiz korundu.
+- Toplam paket: 1652 → **1854 kelime**.
+  A1:551 A2:529 B1:374 B2:223 C1:158 C2:19
+
+### Notlar
+- Tureng gibi tescilli sözlüklerden veri alınmadı; ticari bir üründe
+  telif riski taşır ve zaten CEFR bilgisi içermezler.
+- Kullanılan tek dış veri kaynağı MIT lisanslı sıklık listesi.
+  Ayrıntılar ve bilinen yanlılığı: `data/sources/README.md`.
+
+---
+
 ## [1.3.0] - 2026-08-31
 
 CEFR seviye sistemi ve içerik kalitesi sürümü.

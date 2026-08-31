@@ -46,3 +46,6 @@ npm-debug.log*
 # Vite
 dist/
 .vite/
+
+# Kaynak veriler (paket uretimi icin, yayinlanmaz)
+data/sources/*.txt

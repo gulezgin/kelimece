@@ -1,6 +1,6 @@
 {
   "name": "kelime-havuzum",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "type": "module",
   "description": "Aralıklı tekrar (SRS) ile Türkçe-İngilizce kelime öğrenme uygulaması",
@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "build:content": "node scripts/build-content-pack.mjs"
+    "build:content": "node scripts/build-content-pack.mjs",
+    "cefr:analyze": "node scripts/analyze-cefr.mjs",
+    "cefr:reconcile": "node scripts/reconcile-cefr.mjs"
   },
   "keywords": [
     "vocabulary",
