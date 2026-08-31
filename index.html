@@ -719,6 +719,8 @@
 				const raw = localStorage.getItem(SETTINGS_KEY);
 				if (raw) db.settings = { ...db.settings, ...JSON.parse(raw) };
 			} catch {}
+			// Depodan gelen bozuk/eksik kayitlari da temizle
+			db.words = db.words.map(normalizeWord).filter(Boolean);
 			// Daily counter reset
 			if (new Date(db.settings.today).toDateString() !== new Date().toDateString()) {
 				db.settings.today = todayISO();
@@ -732,6 +734,17 @@
 		}
 
 		// ===================== Core Logic =====================
+		// Gecmisin sonundan geriye dogru kesintisiz dogru cevap sayisi
+		function correctStreak(w) {
+			const h = Array.isArray(w.history) ? w.history : [];
+			let streak = 0;
+			for (let i = h.length - 1; i >= 0; i--) {
+				if (h[i] && h[i].known) streak++;
+				else break;
+			}
+			return streak;
+		}
+
 		function scheduleNext(level) {
 			const safeLevel = Math.min(level, MAX_LEVEL);
 			const days = DEFAULT_INTERVALS[safeLevel] || 1;
@@ -784,10 +797,12 @@
 				w.level = 0;
 			}
 			w.nextReviewAt = scheduleNext(w.level);
+			if (!Array.isArray(w.history)) w.history = [];
 			w.history.push({ date: todayISO(), known });
-			// Auto mark as learned after 5 correct
-			const correctCount = w.history.filter(h => h.known).length;
-			if (correctCount >= 5) {
+			// Ust uste 5 dogru cevaptan sonra 'ogrenilmis' say.
+			// (Onceden gecmisteki TOPLAM dogru sayiliyor, aradaki yanlislar yok
+			//  sayiliyordu; kelimeler zamanindan once ogrenilmis oluyordu.)
+			if (correctStreak(w) >= 5) {
 				w.level = MAX_LEVEL;
 				w.nextReviewAt = scheduleNext(w.level);
 			}
@@ -836,7 +851,8 @@
 					mergeImportedData(data);
 					save();
 					render();
-					alert('İçe aktarıldı.');
+					const r = mergeImportedData.lastResult || { added: 0, skipped: 0 };
+					alert('Ice aktarildi.\n' + r.added + ' kelime eklendi, ' + r.skipped + ' atlandi (zaten var veya gecersiz).');
 				} catch (e) {
 					alert('Hata: ' + e.message);
 				}
@@ -847,16 +863,21 @@
 		// ===================== Review Mode =====================
 		function startReview() {
 			const free = $('freeReview')?.checked;
+			const unlearned = db.words.filter(w => w.level < MAX_LEVEL);
 			let pool = [];
 			if (free) {
-				pool = db.words.filter(w => w.level < MAX_LEVEL);
-				pool = shuffle(pool);
+				// Serbest tekrar: ogrenilmemis tum kelimeler, rastgele sirayla
+				pool = shuffle(unlearned.slice());
 			} else {
-				pool = db.words.filter(w => w.level < MAX_LEVEL);
-				pool = pool.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+				// Normal tekrar: SADECE zamani gelmis kelimeler, en gecikmis olan once
+				pool = unlearned
+					.filter(w => isDue(w.nextReviewAt))
+					.sort((a, b) => new Date(a.nextReviewAt) - new Date(b.nextReviewAt));
 			}
 			if (!pool.length) {
-				alert('Bugün tekrar edecek kelime yok.');
+				alert(free
+					? 'Tekrar edilecek kelime yok - tum kelimeler ogrenilmis gorunuyor.'
+					: 'Bugun tekrar zamani gelen kelime yok.\n\nTum kelimeleri calismak icin "Serbest tekrar" secenegini isaretleyin.');
 				return;
 			}
 			review.queue = pool.map(w => w.id);
@@ -977,7 +998,7 @@
 			$('statAdded').innerHTML = 'Bugün eklendi: ' + db.settings.todayAdded + ' / <span id="dailyGoal">' + db.settings.dailyGoal + '</span>';
 			$('listInfo').textContent = (filteredCount ?? total) + ' sonuç';
 			$('poolCountAll').textContent = total;
-			$('poolCountDue').textContent = unlearned;
+			$('poolCountDue').textContent = dueToday;
 			$('poolCountNew').textContent = todayNew;
 			$('poolCountLearned').textContent = learned;
 		}
@@ -988,7 +1009,7 @@
 
 			let list = db.words.slice();
 
-			if (mode === 'due') list = list.filter(w => w.level < MAX_LEVEL);
+			if (mode === 'due') list = list.filter(w => w.level < MAX_LEVEL && isDue(w.nextReviewAt));
 			if (mode === 'new') list = list.filter(w => new Date(w.createdAt).toDateString() === new Date().toDateString());
 			if (mode === 'learned') list = list.filter(w => w.level >= MAX_LEVEL);
 
@@ -1087,11 +1108,12 @@
 				container.innerHTML = '<div class="small">Hiç sonuç yok. Filtreleri temizlemeyi veya yeni kelime eklemeyi deneyin.</div>';
 			}
 
-			// Tiles View
+			// Kutular gorunumu - ayni filtrelenmis listeyi kullanir
 			const tiles = $('meanTiles');
 			if (tiles) {
 				tiles.innerHTML = '';
-				const sorted = db.words.slice().sort((a, b) => a.en.localeCompare(b.en, 'en', { sensitivity: 'base' }));
+				const tileFrag = document.createDocumentFragment();
+				const sorted = list.slice().sort((a, b) => a.en.localeCompare(b.en, 'en', { sensitivity: 'base' }));
 				for (const w of sorted) {
 					const t = document.createElement('div');
 					t.className = 'tile';
@@ -1103,8 +1125,9 @@
 					tr.textContent = w.tr;
 					t.appendChild(en);
 					t.appendChild(tr);
-					tiles.appendChild(t);
+					tileFrag.appendChild(t);
 				}
+				tiles.appendChild(tileFrag);
 			}
 		}
 
@@ -1203,28 +1226,68 @@
 		});
 
 		// ===================== Import Merge =====================
+		// Disaridan gelen kaydi guvenli hale getirir: eksik alanlari tamamlar,
+		// bozuk degerleri duzeltir. (Onceden eksik tags/history alani render'i ve
+		//  markResult'i TypeError ile cokertiyordu.)
+		function normalizeWord(raw) {
+			if (!raw || typeof raw !== 'object') return null;
+			const en = String(raw.en || '').trim();
+			const tr = String(raw.tr || '').trim();
+			if (!en || !tr) return null;
+			let level = parseInt(raw.level, 10);
+			if (!Number.isFinite(level) || level < 0) level = 0;
+			level = Math.min(level, MAX_LEVEL);
+			const validDate = (v) => (v && !isNaN(new Date(v).getTime())) ? new Date(v).toISOString() : null;
+			return {
+				id: String(raw.id || uid()),
+				en,
+				tr,
+				example: String(raw.example || '').trim(),
+				tags: Array.isArray(raw.tags) ? raw.tags.map(t => String(t).trim()).filter(Boolean) : [],
+				level,
+				nextReviewAt: validDate(raw.nextReviewAt) || scheduleNext(level),
+				createdAt: validDate(raw.createdAt) || todayISO(),
+				history: Array.isArray(raw.history)
+					? raw.history.filter(h => h && typeof h === 'object').map(h => ({
+						date: validDate(h.date) || todayISO(),
+						known: !!h.known
+					}))
+					: []
+			};
+		}
+
 		function mergeImportedData(data) {
 			if (!data || !Array.isArray(data.words)) throw new Error('Geçersiz dosya');
 			const existing = new Map(db.words.map(w => [w.en.toLowerCase(), w]));
-			for (const w of data.words) {
-				const key = (w.en || '').toLowerCase();
-				if (!key || existing.has(key)) continue;
+			let added = 0, skipped = 0;
+			for (const raw of data.words) {
+				const w = normalizeWord(raw);
+				if (!w) { skipped++; continue; }
+				const key = w.en.toLowerCase();
+				if (existing.has(key)) { skipped++; continue; }
+				existing.set(key, w);
 				db.words.push(w);
+				added++;
 			}
+			mergeImportedData.lastResult = { added, skipped };
 			if (data.settings?.dailyGoal) {
 				db.settings.dailyGoal = data.settings.dailyGoal;
 			}
 		}
 
 		// ===================== Auto-Import =====================
+		// Ilk acilista (havuz bosken) baslangic kelime setini yukler.
+		// Havuzda kelime varsa hicbir sey yapmaz - kullanicinin verisine dokunmaz.
+		const SEED_FILE = 'kelime-havuzu-2026-01-12.json';
+
 		async function autoImportIfExists() {
+			if (db.words.length > 0) return;
 			try {
-				const res = await fetch('kelime-havuzu.json', { cache: 'no-store' });
+				const res = await fetch(SEED_FILE, { cache: 'no-store' });
 				if (!res.ok) return;
 				const data = await res.json();
 				mergeImportedData(data);
 				save();
-				$('filterDue').value = 'due';
 			} catch {}
 		}
 
