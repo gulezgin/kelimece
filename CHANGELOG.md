@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-08-31
+
+Bu sürüm görünür yeni özellik getirmez; A1-C2 müfredatının üzerine kurulacağı
+temeli atar ve uygulamanın ana özelliği olan aralıklı tekrarı gerçekten
+çalışır hâle getirir.
+
+### Düzeltildi
+- **Aralıklı tekrar fiilen çalışmıyordu.** `startReview()` tekrar takvimini
+  (`isDue`) hiç kullanmıyordu; "Normal" ve "Serbest" tekrar aynı kelime
+  havuzunu veriyordu. Normal tekrar artık sadece zamanı gelmiş kelimeleri,
+  en çok gecikmiş olan başta olacak şekilde sıraya alıyor.
+- "Bugün tekrar" filtresi tarihe değil öğrenilmişlik durumuna bakıyordu.
+- Havuzdaki "Tekrar" sayacı üstteki rozetten farklı bir sayı gösteriyordu.
+- Otomatik "öğrenilmiş" işaretlemesi geçmişteki **toplam** doğruyu sayıyor,
+  aradaki yanlışları yok sayıyordu. Artık üst üste 5 doğru cevap aranıyor.
+- Başlangıç kelime setini yükleyen kod var olmayan bir dosya adını arıyordu;
+  özellik hiç çalışmamıştı.
+- "Kutular" görünümü arama/filtreyi yok sayıp her zaman tüm kelimeleri
+  basıyordu.
+- Eksik `tags`/`history` alanı olan bir kayıt içe aktarıldığında arayüz
+  TypeError ile çöküyordu. Artık tüm veri `normalizeWord()` sınırından geçiyor.
+- Yeni eklenen kelime yarına planlanıyordu; bugün eklenen kelime "Tekrar Et"
+  kuyruğuna girmiyordu. Artık hemen çalışılabilir.
+
+### Değişti
+- Tek dosyalık `index.html` (1238 satır) ES modüllerine ayrıldı; Vite build
+  sistemi eklendi. `src/core` katmanı DOM'dan bağımsız ve test edilebilir.
+- `alert()` / `confirm()` yerine uygulama içi diyaloglar ve toast bildirimleri.
+  (Tarayıcı diyalogları Capacitor WebView'ünde uygulamayı web sitesi gibi
+  gösteriyordu.)
+- Tekrar ekranı yeniden tasarlandı: opak arka plan, büyük tipografi,
+  klavye kısayolları (Boşluk = göster, 1/← = unuttum, 2/→ = biliyordum,
+  Esc = kapat) ve oturum sonu özeti.
+- Kelime havuzu `public/content/seed-vocabulary.json` altına taşındı;
+  içerik ile kodun ayrılmasının ilk adımı.
+- Form alanlarına etiketler, sekmelere `role`/`aria` nitelikleri eklendi.
+
+### Eklendi
+- Vitest ile 35 birim testi. Yukarıdaki hataların çoğu regresyon testiyle
+  kilitlendi.
+- `ENG-TRapplication.html` silindi (index.html'in eski kopyasıydı).
+
+---
+
 ## [1.0.0] - 2026-01-12
 
 ### Added

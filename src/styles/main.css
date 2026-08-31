@@ -1,0 +1,721 @@
+/* ==============================================
+   THEME VARIABLES
+   ============================================== */
+:root {
+	--bg: #0f1320;
+	--panel: #171c2c;
+	--muted: #9aa4b2;
+	--text: #e6ecf2;
+	--acc: #5cc8ff;
+	--good: #3ddc97;
+	--bad: #ff6b6b;
+	--warn: #ffc857;
+	--transition: 0.2s ease;
+}
+
+/* ==============================================
+   BASE STYLES
+   ============================================== */
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+	background: var(--bg);
+	color: var(--text);
+	line-height: 1.5;
+}
+
+/* ==============================================
+   LAYOUT
+   ============================================== */
+header {
+	padding: 16px 20px;
+	border-bottom: 1px solid #22283a;
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	flex-wrap: wrap;
+	background: linear-gradient(180deg, #0f1320 0%, #0a0d14 100%);
+}
+
+header h1 {
+	margin: 0;
+	font-size: 18px;
+	letter-spacing: 0.3px;
+	font-weight: 700;
+}
+
+header .stat {
+	color: var(--muted);
+	font-size: 13px;
+	margin-left: auto;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+main {
+	padding: 16px;
+	display: grid;
+	grid-template-columns: 360px 1fr;
+	gap: 16px;
+}
+
+footer {
+	padding: 14px 16px;
+	color: var(--muted);
+	text-align: center;
+	font-size: 12px;
+	border-top: 1px solid #22283a;
+}
+
+/* ==============================================
+   RESPONSIVE
+   ============================================== */
+@media (max-width: 980px) {
+	main {
+		grid-template-columns: 1fr;
+	}
+	header .stat {
+		width: 100%;
+		margin-left: 0;
+	}
+}
+
+@media (max-width: 768px) {
+	header {
+		padding: 12px 14px;
+		gap: 8px;
+	}
+	header h1 {
+		font-size: 16px;
+	}
+	main {
+		padding: 12px;
+		grid-template-columns: 1fr;
+		gap: 12px;
+	}
+	.panel {
+		padding: 12px;
+		border-radius: 10px;
+	}
+	.row {
+		flex-direction: column;
+		gap: 8px;
+	}
+	.input,
+	select,
+	textarea {
+		font-size: 16px;
+	}
+	button {
+		font-size: 16px;
+	}
+	.klist {
+		grid-template-columns: 1fr;
+	}
+	.grid2 {
+		grid-template-columns: 1fr;
+	}
+	.toolbar {
+		gap: 6px;
+	}
+	.item {
+		padding: 10px;
+	}
+	.tile {
+		padding: 10px;
+	}
+	.actions button {
+		flex: 1 1 48%;
+		min-width: 0;
+	}
+	.toolbar button {
+		flex: 0 0 auto;
+	}
+	.kpill {
+		font-size: 11px;
+		padding: 4px 8px;
+	}
+	.reviewCard {
+		width: 96vw;
+		padding: 14px;
+	}
+}
+
+@media (max-width: 420px) {
+	.actions button,
+	.reviewActions button {
+		flex: 1 1 100%;
+	}
+	.reviewCard .en {
+		font-size: 20px;
+	}
+}
+
+/* ==============================================
+   PANELS
+   ============================================== */
+.panel {
+	background: var(--panel);
+	border: 1px solid #22283a;
+	border-radius: 12px;
+	padding: 14px;
+}
+
+.panel h2 {
+	margin: 0 0 10px;
+	font-size: 15px;
+	color: #d7dee6;
+	font-weight: 600;
+}
+
+.row {
+	display: flex;
+	gap: 10px;
+}
+
+/* ==============================================
+   FORM ELEMENTS
+   ============================================== */
+.input,
+select,
+button,
+textarea {
+	width: 100%;
+	padding: 10px 12px;
+	border-radius: 10px;
+	border: 1px solid #26304a;
+	background: #111628;
+	color: #eaf1f8;
+	font-size: 14px;
+	outline: none;
+	transition: var(--transition);
+}
+
+.toolbar button,
+.actions button,
+.reviewActions button {
+	width: auto;
+}
+
+.input:focus,
+select:focus,
+textarea:focus {
+	border-color: #355399;
+	box-shadow: 0 0 0 3px #35539922;
+}
+
+button {
+	background: #1a2340;
+	cursor: pointer;
+	border: 1px solid #2a3a69;
+	font-weight: 500;
+}
+
+button:hover {
+	opacity: 0.9;
+	transform: translateY(-1px);
+}
+
+button:active {
+	transform: translateY(0);
+}
+
+button.primary {
+	background: linear-gradient(180deg, #1d7af1, #1256da);
+	border: 0;
+	color: white;
+}
+
+button.good {
+	background: #113327;
+	border-color: #1e5b43;
+	color: #b6ffe1;
+}
+
+button.bad {
+	background: #331818;
+	border-color: #5b2a2a;
+	color: #ffd6d6;
+}
+
+button.ghost {
+	background: transparent;
+	border-color: #2b3247;
+	color: #cbd5e1;
+}
+
+button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* ==============================================
+   TEXT UTILITIES
+   ============================================== */
+.small {
+	font-size: 12px;
+	color: var(--muted);
+}
+
+.small.warn {
+	color: #ffb3b3;
+}
+
+/* ==============================================
+   PILLS & BADGES
+   ============================================== */
+.kpill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: #cfe6ff;
+	background: #0d213a;
+	border: 1px solid #1f3c66;
+	border-radius: 999px;
+	padding: 5px 9px;
+}
+
+.badge {
+	padding: 2px 6px;
+	font-size: 11px;
+	border-radius: 6px;
+	border: 1px solid #3e4763;
+	color: #c8d3e0;
+	display: inline-block;
+}
+
+.badge.warn {
+	border-color: #6a5b2a;
+	color: #ffe9ad;
+}
+
+.badge.ok {
+	border-color: #2d5b43;
+	color: #b5ffd8;
+}
+
+/* ==============================================
+   WORDS LIST - CARDS VIEW
+   ============================================== */
+.klist {
+	display: grid;
+	gap: 10px;
+	grid-template-columns: repeat(3, 1fr);
+}
+
+.item {
+	padding: 10px;
+	border: 1px solid #26304a;
+	border-radius: 12px;
+	background: #0f1529;
+	display: grid;
+	gap: 8px;
+	transition: var(--transition);
+}
+
+.item:hover {
+	border-color: #355399;
+	box-shadow: 0 0 12px rgba(53, 83, 153, 0.15);
+}
+
+.item .top {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.item .en {
+	font-weight: 700;
+	letter-spacing: 0.2px;
+}
+
+.item .tr {
+	color: #b7c3d0;
+}
+
+.tags {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+
+.tag {
+	font-size: 11px;
+	color: #bfe1ff;
+	background: #0c2942;
+	border: 1px solid #1b4366;
+	padding: 3px 7px;
+	border-radius: 999px;
+	cursor: pointer;
+	transition: var(--transition);
+}
+
+.tag:hover {
+	background: #1b4366;
+	color: #dbe7f3;
+}
+
+.actions {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.actions button {
+	flex: 1 1 auto;
+	min-width: 120px;
+}
+
+/* ==============================================
+   TILES VIEW
+   ============================================== */
+.tiles {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+	gap: 8px;
+}
+
+.tile {
+	background: #0f1529;
+	border: 1px solid #26304a;
+	border-radius: 10px;
+	padding: 10px;
+	color: #cdd6e3;
+	font-size: 13px;
+	text-align: center;
+	transition: var(--transition);
+}
+
+.tile:hover {
+	border-color: #355399;
+	transform: translateY(-2px);
+}
+
+.tile .en {
+	font-weight: 700;
+	color: #dbe7f3;
+}
+
+.tile .tr {
+	margin-top: 4px;
+	color: #b7c3d0;
+	font-size: 12px;
+}
+
+/* ==============================================
+   TOOLBAR & HELPERS
+   ============================================== */
+.toolbar {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.toolbar .fill {
+	flex: 1;
+}
+
+.grid2 {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+}
+
+hr.sep {
+	border: 0;
+	border-top: 1px solid #22283a;
+	margin: 10px 0;
+}
+
+.hidden {
+	display: none;
+}
+
+/* ==============================================
+   FORM VALIDATION
+   ============================================== */
+.input.dup {
+	border-color: #5b2a2a;
+	box-shadow: 0 0 0 3px #5b2a2a33;
+}
+
+/* ==============================================
+   REVIEW MODE - MODAL
+   ============================================== */
+.reviewOverlay {
+	position: fixed;
+	inset: 0;
+	/* Koyu ve opak: tekrar ekrani tam odaklanma isteyen tek ekran, arkadaki
+	   liste okunur kalirsa dikkat dagitiyor. */
+	background: rgba(6, 9, 18, 0.88);
+	backdrop-filter: blur(6px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	z-index: 1000;
+}
+
+.reviewCard {
+	width: min(640px, 100%);
+	background: #1b2236;
+	border: 1px solid #2f3a5c;
+	border-radius: 18px;
+	padding: 28px;
+	box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6);
+	animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.reviewCard .en {
+	font-size: 34px;
+	font-weight: 800;
+	letter-spacing: 0.2px;
+	line-height: 1.25;
+	margin-top: 14px;
+	word-break: break-word;
+}
+
+.reviewCard .tr {
+	margin-top: 10px;
+	font-size: 20px;
+	color: var(--acc);
+	font-weight: 600;
+}
+
+.reviewCard .small {
+	margin-top: 8px;
+}
+
+.reviewActions button {
+	flex: 1 1 auto;
+	min-width: 120px;
+}
+
+@media (max-width: 520px) {
+	.reviewCard {
+		padding: 20px;
+	}
+	.reviewCard .en {
+		font-size: 26px;
+	}
+}
+
+.reviewActions {
+	display: flex;
+	gap: 8px;
+	margin-top: 14px;
+	flex-wrap: wrap;
+}
+
+.reviewMeta {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin-top: 10px;
+	color: var(--muted);
+	font-size: 13px;
+}
+
+/* ==============================================
+   ACCESSIBILITY & PRINT
+   ============================================== */
+@media print {
+	header,
+	footer,
+	.toolbar,
+	.actions,
+	button {
+		display: none;
+	}
+	.item {
+		break-inside: avoid;
+		page-break-inside: avoid;
+	}
+}
+
+/* Focus visible for keyboard navigation */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+	outline: 2px solid var(--acc);
+	outline-offset: 2px;
+}
+
+/* ==============================================
+   DIALOG - alert()/confirm() yerine
+   ============================================== */
+.dialogOverlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(6, 9, 18, 0.72);
+	backdrop-filter: blur(3px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	z-index: 2000;
+	animation: fadeIn 0.15s ease;
+}
+
+.dialogBox {
+	background: var(--panel);
+	border: 1px solid #2a3350;
+	border-radius: 14px;
+	padding: 20px;
+	max-width: 420px;
+	width: 100%;
+	box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+	animation: popIn 0.18s ease;
+}
+
+.dialogTitle {
+	font-size: 16px;
+	font-weight: 700;
+	margin-bottom: 10px;
+}
+
+.dialogMessage {
+	color: var(--muted);
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.dialogActions {
+	display: flex;
+	gap: 8px;
+	justify-content: flex-end;
+	margin-top: 18px;
+	flex-wrap: wrap;
+}
+
+.dialogActions button {
+	min-width: 96px;
+}
+
+/* ==============================================
+   TOAST - akisi kesmeyen bildirim
+   ============================================== */
+.toastHost {
+	position: fixed;
+	left: 50%;
+	bottom: 24px;
+	transform: translateX(-50%);
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	align-items: center;
+	z-index: 3000;
+	pointer-events: none;
+	padding: 0 16px;
+	max-width: 100%;
+}
+
+.toast {
+	background: #1b2338;
+	border: 1px solid #2a3350;
+	color: var(--text);
+	padding: 10px 16px;
+	border-radius: 999px;
+	font-size: 13px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+	animation: toastIn 0.22s ease;
+	transition: opacity 0.3s ease, transform 0.3s ease;
+	max-width: 100%;
+	text-align: center;
+}
+
+.toast--ok {
+	border-color: #1f5c46;
+	color: #c9f6e4;
+}
+
+.toast--warn {
+	border-color: #6a5b2a;
+	color: #ffe9ad;
+}
+
+.toast--bad {
+	border-color: #5b2a2a;
+	color: #ffd6d6;
+}
+
+.toast--out {
+	opacity: 0;
+	transform: translateY(8px);
+}
+
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes popIn {
+	from { opacity: 0; transform: scale(0.96) translateY(6px); }
+	to { opacity: 1; transform: none; }
+}
+
+@keyframes toastIn {
+	from { opacity: 0; transform: translateY(10px); }
+	to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.dialogOverlay,
+	.dialogBox,
+	.toast {
+		animation: none;
+	}
+}
+
+/* ==============================================
+   YARDIMCI SINIFLAR
+   ============================================== */
+
+/* Ekran okuyucuya gorunur, goze gorunmez etiket */
+.srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Kart basliginda kalan bosluğu doldurur */
+.item .spacer {
+	flex: 1;
+}
+
+/* Secili gorunum sekmesi */
+button.ghost.active {
+	background: #1a2340;
+	border-color: var(--acc);
+	color: var(--text);
+}
+
+/* Modal aciklen arka plan kaymasin */
+body.modalOpen {
+	overflow: hidden;
+}

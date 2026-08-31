@@ -42,3 +42,7 @@ npm-debug.log*
 # OS specific
 .AppleDouble
 .LSOverride
+
+# Vite
+dist/
+.vite/

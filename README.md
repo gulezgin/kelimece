@@ -44,27 +44,27 @@ https://kelime-havuzum.netlify.app
 *veya local dosyayı açın*
 
 #### Local Kurulum
-1. Deposu klonlayın:
+
+Gereksinim: Node.js 20.19+ (veya 22.12+).
+
 ```bash
-git clone https://github.com/yourusername/kelime-havuzum.git
-cd kelime-havuzum
+git clone https://github.com/gulezgin/WordPool-TR-EN.git
+cd WordPool-TR-EN
+npm install
+npm run dev
 ```
 
-2. `index.html` dosyasını tarayıcıda açın:
-```bash
-# macOS/Linux
-open index.html
+Tarayıcıda `http://localhost:5173` adresini açın.
 
-# Windows
-start index.html
-```
+| Komut | Ne yapar |
+|---|---|
+| `npm run dev` | Geliştirme sunucusu (anlık yenileme) |
+| `npm run build` | `dist/` altına production build üretir |
+| `npm run preview` | Üretilen build'i yerelde sunar |
+| `npm test` | Birim testlerini çalıştırır |
 
-Veya basit bir web sunucusu çalıştırın:
-```bash
-python -m http.server 8000
-# veya
-npx live-server
-```
+> Not: 1.1.0'dan itibaren uygulama ES modüllerine ayrıldı; `index.html`
+> dosyasını doğrudan çift tıklayarak açmak artık çalışmaz.
 
 ### 📖 Kullanım Adımları
 
@@ -113,14 +113,30 @@ Uygulama modern, koyu temalı bir arayüze sahiptir:
 
 - ✅ Chrome, Edge, Firefox, Safari (son 2 sürüm)
 - ✅ Mobil tarayıcılar (iOS Safari, Chrome Mobile)
-- ✅ Progressive Web App olarak yüklenebilir (PWA desteği planlı)
+- ⏳ PWA (çevrimdışı kullanım) — henüz yok, yol haritasında
 
 ### 🔧 Teknik Bilgiler
 
-- **Vanilla JavaScript** - Hiç framework bağımlılığı yok
-- **HTML5 + CSS3** - Modern web standartları
+- **Vanilla JavaScript (ES modülleri)** - Çalışma zamanında framework yok
+- **Vite** - Sadece build aracı olarak
+- **Vitest** - Birim testleri (`npm test`)
 - **LocalStorage API** - Veriler tarayıcıda saklanır
 - **Responsive Grid** - Mobil uyumlu tasarım
+
+#### Proje yapısı
+
+```
+src/
+├── core/     DOM'dan bağımsız, test edilebilir mantık
+│   ├── srs.js    aralıklı tekrar algoritması
+│   ├── word.js   kelime şeması ve doğrulama
+│   └── time.js   tarih yardımcıları
+├── data/     durum ve kalıcı depolama
+├── ui/       ekran bileşenleri
+└── main.js   olay bağlantıları
+public/content/  kelime paketleri (kodun dışında)
+test/            birim testleri
+```
 
 ### 📊 Spaced Repetition Algoritması
 
@@ -182,18 +198,24 @@ https://kelime-havuzum.netlify.app
 ```
 
 #### Local Setup
+
+Requires Node.js 20.19+ (or 22.12+).
+
 ```bash
-git clone https://github.com/yourusername/kelime-havuzum.git
-cd kelime-havuzum
-open index.html  # or start index.html on Windows
+git clone https://github.com/gulezgin/WordPool-TR-EN.git
+cd WordPool-TR-EN
+npm install
+npm run dev
 ```
 
-Or run a local server:
-```bash
-python -m http.server 8000
-# or
-npx live-server
-```
+Then open `http://localhost:5173`.
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Dev server with hot reload |
+| `npm run build` | Production build into `dist/` |
+| `npm run preview` | Serve the production build locally |
+| `npm test` | Run unit tests |
 
 ### 📖 How to Use
 

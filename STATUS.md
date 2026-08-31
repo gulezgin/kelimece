@@ -1,6 +1,6 @@
 # 📊 Project Status
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.1.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Status](https://img.shields.io/badge/status-active-brightgreen)
 ![Maintenance](https://img.shields.io/badge/maintenance-actively%20developed-brightgreen)
@@ -46,18 +46,19 @@
 ## Performance
 
 - **First Load**: < 100ms
-- **App Size**: ~35KB (HTML + CSS + JS combined)
-- **No External Dependencies**: Pure vanilla JavaScript
+- **App Size**: ~26KB (HTML + CSS + JS, gzip ~11KB) + içerik paketi
+- **Runtime Dependencies**: Yok (vanilla JS); Vite yalnızca build aracı
 - **Storage Limit**: Browser localStorage limit (~5-10MB per domain)
 - **Estimated Capacity**: Supports 10,000+ words
 
 ## Accessibility
 
-- ✅ Keyboard navigation
+- ✅ Keyboard navigation (tekrar ekranında kısayollar dahil)
 - ✅ Semantic HTML
 - ✅ Color contrast compliant
 - ✅ Responsive design
-- ⏳ Full ARIA labels (planned)
+- ✅ Form etiketleri ve temel ARIA nitelikleri (1.1.0)
+- ⏳ Tam ekran okuyucu denetimi (planlı)
 
 ## Security
 
@@ -69,4 +70,4 @@
 
 ---
 
-Last Updated: 2026-01-12
+Last Updated: 2026-08-31
