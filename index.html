@@ -1,0 +1,1238 @@
+<!doctype html>
+<html lang="tr">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="description" content="Kelime Havuzum - Turkish-English vocabulary learning with spaced repetition system">
+	<meta name="theme-color" content="#0f1320">
+	<title>Kelime Havuzum - İngilizce Öğren</title>
+	<style>
+		/* ==============================================
+		   THEME VARIABLES
+		   ============================================== */
+		:root {
+			--bg: #0f1320;
+			--panel: #171c2c;
+			--muted: #9aa4b2;
+			--text: #e6ecf2;
+			--acc: #5cc8ff;
+			--good: #3ddc97;
+			--bad: #ff6b6b;
+			--warn: #ffc857;
+			--transition: 0.2s ease;
+		}
+
+		/* ==============================================
+		   BASE STYLES
+		   ============================================== */
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+			background: var(--bg);
+			color: var(--text);
+			line-height: 1.5;
+		}
+
+		/* ==============================================
+		   LAYOUT
+		   ============================================== */
+		header {
+			padding: 16px 20px;
+			border-bottom: 1px solid #22283a;
+			display: flex;
+			gap: 12px;
+			align-items: center;
+			flex-wrap: wrap;
+			background: linear-gradient(180deg, #0f1320 0%, #0a0d14 100%);
+		}
+
+		header h1 {
+			margin: 0;
+			font-size: 18px;
+			letter-spacing: 0.3px;
+			font-weight: 700;
+		}
+
+		header .stat {
+			color: var(--muted);
+			font-size: 13px;
+			margin-left: auto;
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+
+		main {
+			padding: 16px;
+			display: grid;
+			grid-template-columns: 360px 1fr;
+			gap: 16px;
+		}
+
+		footer {
+			padding: 14px 16px;
+			color: var(--muted);
+			text-align: center;
+			font-size: 12px;
+			border-top: 1px solid #22283a;
+		}
+
+		/* ==============================================
+		   RESPONSIVE
+		   ============================================== */
+		@media (max-width: 980px) {
+			main {
+				grid-template-columns: 1fr;
+			}
+			header .stat {
+				width: 100%;
+				margin-left: 0;
+			}
+		}
+
+		@media (max-width: 768px) {
+			header {
+				padding: 12px 14px;
+				gap: 8px;
+			}
+			header h1 {
+				font-size: 16px;
+			}
+			main {
+				padding: 12px;
+				grid-template-columns: 1fr;
+				gap: 12px;
+			}
+			.panel {
+				padding: 12px;
+				border-radius: 10px;
+			}
+			.row {
+				flex-direction: column;
+				gap: 8px;
+			}
+			.input,
+			select,
+			textarea {
+				font-size: 16px;
+			}
+			button {
+				font-size: 16px;
+			}
+			.klist {
+				grid-template-columns: 1fr;
+			}
+			.grid2 {
+				grid-template-columns: 1fr;
+			}
+			.toolbar {
+				gap: 6px;
+			}
+			.item {
+				padding: 10px;
+			}
+			.tile {
+				padding: 10px;
+			}
+			.actions button {
+				flex: 1 1 48%;
+				min-width: 0;
+			}
+			.toolbar button {
+				flex: 0 0 auto;
+			}
+			.kpill {
+				font-size: 11px;
+				padding: 4px 8px;
+			}
+			.reviewCard {
+				width: 96vw;
+				padding: 14px;
+			}
+		}
+
+		@media (max-width: 420px) {
+			.actions button,
+			.reviewActions button {
+				flex: 1 1 100%;
+			}
+			.reviewCard .en {
+				font-size: 20px;
+			}
+		}
+
+		/* ==============================================
+		   PANELS
+		   ============================================== */
+		.panel {
+			background: var(--panel);
+			border: 1px solid #22283a;
+			border-radius: 12px;
+			padding: 14px;
+		}
+
+		.panel h2 {
+			margin: 0 0 10px;
+			font-size: 15px;
+			color: #d7dee6;
+			font-weight: 600;
+		}
+
+		.row {
+			display: flex;
+			gap: 10px;
+		}
+
+		/* ==============================================
+		   FORM ELEMENTS
+		   ============================================== */
+		.input,
+		select,
+		button,
+		textarea {
+			width: 100%;
+			padding: 10px 12px;
+			border-radius: 10px;
+			border: 1px solid #26304a;
+			background: #111628;
+			color: #eaf1f8;
+			font-size: 14px;
+			outline: none;
+			transition: var(--transition);
+		}
+
+		.toolbar button,
+		.actions button,
+		.reviewActions button {
+			width: auto;
+		}
+
+		.input:focus,
+		select:focus,
+		textarea:focus {
+			border-color: #355399;
+			box-shadow: 0 0 0 3px #35539922;
+		}
+
+		button {
+			background: #1a2340;
+			cursor: pointer;
+			border: 1px solid #2a3a69;
+			font-weight: 500;
+		}
+
+		button:hover {
+			opacity: 0.9;
+			transform: translateY(-1px);
+		}
+
+		button:active {
+			transform: translateY(0);
+		}
+
+		button.primary {
+			background: linear-gradient(180deg, #1d7af1, #1256da);
+			border: 0;
+			color: white;
+		}
+
+		button.good {
+			background: #113327;
+			border-color: #1e5b43;
+			color: #b6ffe1;
+		}
+
+		button.bad {
+			background: #331818;
+			border-color: #5b2a2a;
+			color: #ffd6d6;
+		}
+
+		button.ghost {
+			background: transparent;
+			border-color: #2b3247;
+			color: #cbd5e1;
+		}
+
+		button:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+
+		/* ==============================================
+		   TEXT UTILITIES
+		   ============================================== */
+		.small {
+			font-size: 12px;
+			color: var(--muted);
+		}
+
+		.small.warn {
+			color: #ffb3b3;
+		}
+
+		/* ==============================================
+		   PILLS & BADGES
+		   ============================================== */
+		.kpill {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 12px;
+			color: #cfe6ff;
+			background: #0d213a;
+			border: 1px solid #1f3c66;
+			border-radius: 999px;
+			padding: 5px 9px;
+		}
+
+		.badge {
+			padding: 2px 6px;
+			font-size: 11px;
+			border-radius: 6px;
+			border: 1px solid #3e4763;
+			color: #c8d3e0;
+			display: inline-block;
+		}
+
+		.badge.warn {
+			border-color: #6a5b2a;
+			color: #ffe9ad;
+		}
+
+		.badge.ok {
+			border-color: #2d5b43;
+			color: #b5ffd8;
+		}
+
+		/* ==============================================
+		   WORDS LIST - CARDS VIEW
+		   ============================================== */
+		.klist {
+			display: grid;
+			gap: 10px;
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		.item {
+			padding: 10px;
+			border: 1px solid #26304a;
+			border-radius: 12px;
+			background: #0f1529;
+			display: grid;
+			gap: 8px;
+			transition: var(--transition);
+		}
+
+		.item:hover {
+			border-color: #355399;
+			box-shadow: 0 0 12px rgba(53, 83, 153, 0.15);
+		}
+
+		.item .top {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+
+		.item .en {
+			font-weight: 700;
+			letter-spacing: 0.2px;
+		}
+
+		.item .tr {
+			color: #b7c3d0;
+		}
+
+		.tags {
+			display: flex;
+			gap: 6px;
+			flex-wrap: wrap;
+		}
+
+		.tag {
+			font-size: 11px;
+			color: #bfe1ff;
+			background: #0c2942;
+			border: 1px solid #1b4366;
+			padding: 3px 7px;
+			border-radius: 999px;
+			cursor: pointer;
+			transition: var(--transition);
+		}
+
+		.tag:hover {
+			background: #1b4366;
+			color: #dbe7f3;
+		}
+
+		.actions {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+
+		.actions button {
+			flex: 1 1 auto;
+			min-width: 120px;
+		}
+
+		/* ==============================================
+		   TILES VIEW
+		   ============================================== */
+		.tiles {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+			gap: 8px;
+		}
+
+		.tile {
+			background: #0f1529;
+			border: 1px solid #26304a;
+			border-radius: 10px;
+			padding: 10px;
+			color: #cdd6e3;
+			font-size: 13px;
+			text-align: center;
+			transition: var(--transition);
+		}
+
+		.tile:hover {
+			border-color: #355399;
+			transform: translateY(-2px);
+		}
+
+		.tile .en {
+			font-weight: 700;
+			color: #dbe7f3;
+		}
+
+		.tile .tr {
+			margin-top: 4px;
+			color: #b7c3d0;
+			font-size: 12px;
+		}
+
+		/* ==============================================
+		   TOOLBAR & HELPERS
+		   ============================================== */
+		.toolbar {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+
+		.toolbar .fill {
+			flex: 1;
+		}
+
+		.grid2 {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 10px;
+		}
+
+		hr.sep {
+			border: 0;
+			border-top: 1px solid #22283a;
+			margin: 10px 0;
+		}
+
+		.hidden {
+			display: none;
+		}
+
+		/* ==============================================
+		   FORM VALIDATION
+		   ============================================== */
+		.input.dup {
+			border-color: #5b2a2a;
+			box-shadow: 0 0 0 3px #5b2a2a33;
+		}
+
+		/* ==============================================
+		   REVIEW MODE - MODAL
+		   ============================================== */
+		.reviewOverlay {
+			position: fixed;
+			inset: 0;
+			background: #0b112033;
+			backdrop-filter: blur(2px);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 1000;
+		}
+
+		.reviewCard {
+			width: min(640px, 92vw);
+			background: var(--panel);
+			border: 1px solid #22283a;
+			border-radius: 14px;
+			padding: 16px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+			animation: slideUp 0.3s ease;
+		}
+
+		@keyframes slideUp {
+			from {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.reviewCard .en {
+			font-size: 22px;
+			font-weight: 800;
+			letter-spacing: 0.3px;
+		}
+
+		.reviewCard .tr {
+			margin-top: 6px;
+			color: #cdd6e3;
+		}
+
+		.reviewActions {
+			display: flex;
+			gap: 8px;
+			margin-top: 14px;
+			flex-wrap: wrap;
+		}
+
+		.reviewMeta {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			margin-top: 10px;
+			color: var(--muted);
+			font-size: 13px;
+		}
+
+		/* ==============================================
+		   ACCESSIBILITY & PRINT
+		   ============================================== */
+		@media print {
+			header,
+			footer,
+			.toolbar,
+			.actions,
+			button {
+				display: none;
+			}
+			.item {
+				break-inside: avoid;
+				page-break-inside: avoid;
+			}
+		}
+
+		/* Focus visible for keyboard navigation */
+		button:focus-visible,
+		input:focus-visible,
+		select:focus-visible,
+		textarea:focus-visible {
+			outline: 2px solid var(--acc);
+			outline-offset: 2px;
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>📚 Kelime Havuzum</h1>
+		<div class="stat">
+			<span id="statTotal" class="badge">Toplam: 0</span>
+			<span id="statDue" class="badge warn">Bugün tekrar: 0</span>
+			<span id="statAdded" class="badge ok">Bugün eklendi: 0 / <span id="dailyGoal">10</span></span>
+		</div>
+	</header>
+
+	<main>
+		<!-- LEFT PANEL -->
+		<section class="panel">
+			<h2>➕ Kelime Ekle</h2>
+			<div class="row">
+				<input id="en" class="input" placeholder="English (ör. &quot;abandon&quot;)" />
+			</div>
+			<div class="row" style="margin-top: 4px">
+				<div class="small hidden" id="dupHint"></div>
+			</div>
+			<div class="row" style="margin-top: 8px">
+				<input id="tr" class="input" placeholder="Türkçe anlam (ör. &quot;terk etmek&quot;)" />
+			</div>
+			<div class="row" style="margin-top: 8px">
+				<textarea id="example" rows="2" class="input" placeholder="Örnek cümle (isteğe bağlı)"></textarea>
+			</div>
+			<div class="row" style="margin-top: 8px">
+				<input id="tags" class="input" placeholder="Etiketler (virgülle ayır: verb, academic)" />
+			</div>
+			<div class="row" style="margin-top: 10px">
+				<button id="addBtn" class="primary">Ekle</button>
+				<button id="clearFormBtn" class="ghost">Temizle</button>
+			</div>
+
+			<hr class="sep">
+
+			<h2>🔍 Filtre / Ara</h2>
+			<div class="toolbar">
+				<input id="search" class="input fill" placeholder="Ara (EN, TR, etiket)" />
+				<select id="filterDue">
+					<option value="all">Hepsi</option>
+					<option value="due">Bugün tekrar</option>
+					<option value="new">Sadece yeni</option>
+					<option value="learned">Öğrenilmiş</option>
+				</select>
+			</div>
+
+			<div class="toolbar" style="margin-bottom: 8px; margin-top: 8px">
+				<h2 style="margin-right: auto">📊 Havuz</h2>
+				<span class="small" id="listInfo">0 sonuç</span>
+			</div>
+			<div class="toolbar" style="margin-bottom: 8px">
+				<button id="poolAllBtn" class="ghost">Tümü <span class="badge" id="poolCountAll">0</span></button>
+				<button id="poolDueBtn" class="ghost">Tekrar <span class="badge warn" id="poolCountDue">0</span></button>
+				<button id="poolNewBtn" class="ghost">Yeni <span class="badge" id="poolCountNew">0</span></button>
+				<button id="poolLearnedBtn" class="ghost">Öğrenilmiş <span class="badge ok" id="poolCountLearned">0</span></button>
+			</div>
+			<div class="toolbar" style="margin-bottom: 8px">
+				<label class="kpill" style="gap: 6px">
+					<input id="freeReview" type="checkbox" style="width: auto"> Serbest tekrar
+				</label>
+				<button id="startReviewBtn" class="primary" style="margin-left: auto">Tekrar Et</button>
+			</div>
+
+			<hr class="sep">
+
+			<h2>💾 Yedekleme</h2>
+			<div class="row">
+				<button id="exportBtn">JSON Dışa Aktar</button>
+				<input id="importFile" type="file" accept="application/json" />
+			</div>
+
+			<hr class="sep">
+
+			<h2>⚙️ Ayarlar</h2>
+			<div class="row">
+				<label class="kpill">Günlük hedef:
+					<input id="goalInput" type="number" min="1" max="100" value="10" style="width: 90px; margin-left: 8px">
+				</label>
+				<button id="resetTodayBtn" class="ghost">Sıfırla</button>
+				<button id="wipeBtn" class="bad">Sil</button>
+			</div>
+		</section>
+
+		<!-- RIGHT PANEL -->
+		<section class="panel">
+			<div class="toolbar" style="margin-bottom: 8px">
+				<h2 style="margin-right: auto">👁️ Görünümler</h2>
+				<div>
+					<button id="tabCards" class="ghost">📇 Kartlar</button>
+					<button id="tabTiles" class="ghost">📋 Kutuları</button>
+				</div>
+			</div>
+			<div id="listView">
+				<div class="klist" id="list"></div>
+			</div>
+			<div id="tilesView" class="hidden">
+				<div class="tiles" id="meanTiles"></div>
+			</div>
+		</section>
+	</main>
+
+	<footer>
+		💡 Tüm veriler tarayıcıda localStorage'da saklanır. Güvenli ve gizli. 🔒
+	</footer>
+
+	<!-- ============================================================
+	     JAVASCRIPT
+	     ============================================================ -->
+	<script>
+		const STORAGE_KEY = 'word_pool_v1';
+		const SETTINGS_KEY = 'word_pool_settings_v1';
+
+		const DEFAULT_INTERVALS = [1, 2, 4, 7, 15, 30, 60]; // gün
+		const MAX_LEVEL = DEFAULT_INTERVALS.length - 1;
+
+		const $ = (id) => document.getElementById(id);
+
+		// ===================== Time Utilities =====================
+		function todayISO() {
+			const d = new Date();
+			d.setHours(0, 0, 0, 0);
+			return d.toISOString();
+		}
+
+		function addDays(iso, days) {
+			const d = new Date(iso);
+			d.setDate(d.getDate() + days);
+			d.setHours(0, 0, 0, 0);
+			return d.toISOString();
+		}
+
+		function isDue(iso) {
+			if (!iso) return true;
+			const due = new Date(iso).getTime();
+			const now = new Date();
+			now.setHours(0, 0, 0, 0);
+			return due <= now.getTime();
+		}
+
+		// ===================== Utilities =====================
+		function uid() {
+			return Math.random().toString(36).slice(2) + Date.now().toString(36);
+		}
+
+		function debounce(fn, delay) {
+			let timer;
+			return function (...args) {
+				clearTimeout(timer);
+				timer = setTimeout(() => fn.apply(this, args), delay);
+			};
+		}
+
+		// ===================== Data Storage =====================
+		const db = {
+			words: [],
+			settings: { dailyGoal: 10, todayAdded: 0, today: todayISO() }
+		};
+
+		const review = {
+			queue: [],
+			currentIndex: 0,
+			isActive: false
+		};
+
+		function load() {
+			try {
+				const raw = localStorage.getItem(STORAGE_KEY);
+				if (raw) db.words = JSON.parse(raw);
+			} catch {}
+			try {
+				const raw = localStorage.getItem(SETTINGS_KEY);
+				if (raw) db.settings = { ...db.settings, ...JSON.parse(raw) };
+			} catch {}
+			// Daily counter reset
+			if (new Date(db.settings.today).toDateString() !== new Date().toDateString()) {
+				db.settings.today = todayISO();
+				db.settings.todayAdded = 0;
+			}
+		}
+
+		function save() {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(db.words));
+			localStorage.setItem(SETTINGS_KEY, JSON.stringify(db.settings));
+		}
+
+		// ===================== Core Logic =====================
+		function scheduleNext(level) {
+			const safeLevel = Math.min(level, MAX_LEVEL);
+			const days = DEFAULT_INTERVALS[safeLevel] || 1;
+			return addDays(todayISO(), days);
+		}
+
+		function addWord({ en, tr, example, tags }) {
+			const trimmedEn = en.trim();
+			const trimmedTr = tr.trim();
+			if (!trimmedEn || !trimmedTr) return;
+			const exists = db.words.some(w => w.en.toLowerCase() === trimmedEn.toLowerCase());
+			if (exists) {
+				$('en').classList.add('dup');
+				const hint = $('dupHint');
+				if (hint) {
+					hint.textContent = 'Bu kelime zaten ekli. Aşağıdaki listede görünüyor.';
+					hint.classList.remove('hidden');
+					hint.classList.add('warn');
+				}
+				alert('Bu kelime zaten var.');
+				return;
+			}
+			const word = {
+				id: uid(),
+				en: trimmedEn,
+				tr: trimmedTr,
+				example: (example || '').trim(),
+				tags: (tags || '')
+					.split(',')
+					.map(t => t.trim())
+					.filter(Boolean),
+				level: 0,
+				nextReviewAt: scheduleNext(0),
+				createdAt: todayISO(),
+				history: []
+			};
+			db.words.unshift(word);
+			db.settings.todayAdded += 1;
+			save();
+			render();
+			clearForm();
+		}
+
+		function markResult(id, known) {
+			const w = db.words.find(x => x.id === id);
+			if (!w) return;
+			if (known) {
+				w.level = Math.min(w.level + 1, MAX_LEVEL);
+			} else {
+				w.level = 0;
+			}
+			w.nextReviewAt = scheduleNext(w.level);
+			w.history.push({ date: todayISO(), known });
+			// Auto mark as learned after 5 correct
+			const correctCount = w.history.filter(h => h.known).length;
+			if (correctCount >= 5) {
+				w.level = MAX_LEVEL;
+				w.nextReviewAt = scheduleNext(w.level);
+			}
+			save();
+			if (review.isActive) {
+				showNextInReview();
+			} else {
+				render();
+			}
+		}
+
+		function deleteWord(id) {
+			if (!confirm('Silinsin mi?')) return;
+			db.words = db.words.filter(w => w.id !== id);
+			save();
+			render();
+		}
+
+		// ===================== Export/Import =====================
+		function exportJSON() {
+			const data = {
+				words: db.words,
+				settings: db.settings,
+				exportedAt: new Date().toISOString()
+			};
+			const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			const d = new Date();
+			const yyyy = d.getFullYear();
+			const mm = String(d.getMonth() + 1).padStart(2, '0');
+			const dd = String(d.getDate()).padStart(2, '0');
+			a.download = `kelime-havuzu-${yyyy}-${mm}-${dd}.json`;
+			document.body.appendChild(a);
+			a.click();
+			a.remove();
+			URL.revokeObjectURL(url);
+		}
+
+		function importJSON(file) {
+			const reader = new FileReader();
+			reader.onload = () => {
+				try {
+					const data = JSON.parse(reader.result);
+					mergeImportedData(data);
+					save();
+					render();
+					alert('İçe aktarıldı.');
+				} catch (e) {
+					alert('Hata: ' + e.message);
+				}
+			};
+			reader.readAsText(file);
+		}
+
+		// ===================== Review Mode =====================
+		function startReview() {
+			const free = $('freeReview')?.checked;
+			let pool = [];
+			if (free) {
+				pool = db.words.filter(w => w.level < MAX_LEVEL);
+				pool = shuffle(pool);
+			} else {
+				pool = db.words.filter(w => w.level < MAX_LEVEL);
+				pool = pool.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+			}
+			if (!pool.length) {
+				alert('Bugün tekrar edecek kelime yok.');
+				return;
+			}
+			review.queue = pool.map(w => w.id);
+			review.currentIndex = 0;
+			review.isActive = true;
+			openReviewModal();
+			showNextInReview();
+		}
+
+		function shuffle(arr) {
+			for (let i = arr.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[arr[i], arr[j]] = [arr[j], arr[i]];
+			}
+			return arr;
+		}
+
+		function openReviewModal() {
+			let overlay = document.getElementById('reviewOverlay');
+			if (!overlay) {
+				overlay = document.createElement('div');
+				overlay.id = 'reviewOverlay';
+				overlay.className = 'reviewOverlay';
+				overlay.innerHTML = `
+					<div class="reviewCard">
+						<div class="reviewMeta">
+							<span id="reviewProgress">1/1</span>
+							<span class="kpill" id="reviewLevel">Seviye 0</span>
+						</div>
+						<div class="en" id="reviewEn">example</div>
+						<div class="tr" id="reviewTr" style="display:none"></div>
+						<div class="small" id="reviewEx" style="display:none"></div>
+						<div class="tags" id="reviewTags"></div>
+						<div class="reviewActions">
+							<button id="btnShow" class="ghost">Anlamı Göster</button>
+							<button id="btnKnown" class="good" style="display:none">Biliyordum ✓</button>
+							<button id="btnForgot" class="bad" style="display:none">Unuttum ✗</button>
+							<button id="btnSkip" class="ghost" style="margin-left:auto">Geç</button>
+							<button id="btnExit" class="ghost">Kapat</button>
+						</div>
+					</div>
+				`;
+				document.body.appendChild(overlay);
+			}
+			$('btnExit').onclick = endReview;
+			$('btnSkip').onclick = () => { review.currentIndex++; showNextInReview(); };
+			$('btnShow').onclick = () => {
+				$('reviewTr').style.display = '';
+				$('reviewEx').style.display = $('reviewEx').textContent ? '' : 'none';
+				$('btnKnown').style.display = '';
+				$('btnForgot').style.display = '';
+				$('btnShow').style.display = 'none';
+			};
+		}
+
+		function endReview() {
+			review.isActive = false;
+			review.queue = [];
+			review.currentIndex = 0;
+			const overlay = document.getElementById('reviewOverlay');
+			if (overlay) overlay.remove();
+			render();
+		}
+
+		function showNextInReview() {
+			if (!review.isActive) return;
+			while (review.currentIndex < review.queue.length) {
+				const id = review.queue[review.currentIndex];
+				const w = db.words.find(x => x.id === id);
+				if (!w) { review.currentIndex++; continue; }
+				if (w.level >= MAX_LEVEL) { review.currentIndex++; continue; }
+				updateReviewUI(w);
+				return;
+			}
+			alert('Tebrikler! Bugünkü tekrarlar bitti.');
+			endReview();
+		}
+
+		function updateReviewUI(w) {
+			$('reviewProgress').textContent = (review.currentIndex + 1) + '/' + review.queue.length;
+			$('reviewLevel').textContent = 'Seviye ' + w.level;
+			$('reviewEn').textContent = w.en;
+			$('reviewTr').textContent = '— ' + w.tr;
+			$('reviewEx').textContent = w.example ? ('Örnek: ' + w.example) : '';
+			$('reviewTags').innerHTML = '';
+			for (const t of (w.tags || [])) {
+				const s = document.createElement('span');
+				s.className = 'tag';
+				s.textContent = t;
+				$('reviewTags').appendChild(s);
+			}
+			$('reviewTr').style.display = 'none';
+			$('reviewEx').style.display = 'none';
+			$('btnKnown').style.display = 'none';
+			$('btnForgot').style.display = 'none';
+			$('btnShow').style.display = '';
+			$('btnKnown').onclick = () => { review.currentIndex++; markResult(w.id, true); };
+			$('btnForgot').onclick = () => { review.currentIndex++; markResult(w.id, false); };
+		}
+
+		// ===================== UI Rendering =====================
+		function clearForm() {
+			$('en').value = '';
+			$('tr').value = '';
+			$('example').value = '';
+			$('tags').value = '';
+			$('en').focus();
+		}
+
+		function renderStats(filteredCount) {
+			const total = db.words.length;
+			const dueToday = db.words.filter(w => isDue(w.nextReviewAt) && w.level < MAX_LEVEL).length;
+			const unlearned = db.words.filter(w => w.level < MAX_LEVEL).length;
+			const todayNew = db.words.filter(w => new Date(w.createdAt).toDateString() === new Date().toDateString()).length;
+			const learned = db.words.filter(w => w.level >= MAX_LEVEL).length;
+			$('statTotal').textContent = 'Toplam: ' + total;
+			$('statDue').textContent = 'Bugün tekrar: ' + dueToday;
+			$('statAdded').innerHTML = 'Bugün eklendi: ' + db.settings.todayAdded + ' / <span id="dailyGoal">' + db.settings.dailyGoal + '</span>';
+			$('listInfo').textContent = (filteredCount ?? total) + ' sonuç';
+			$('poolCountAll').textContent = total;
+			$('poolCountDue').textContent = unlearned;
+			$('poolCountNew').textContent = todayNew;
+			$('poolCountLearned').textContent = learned;
+		}
+
+		function render() {
+			const q = $('search').value.trim().toLowerCase();
+			const mode = $('filterDue').value;
+
+			let list = db.words.slice();
+
+			if (mode === 'due') list = list.filter(w => w.level < MAX_LEVEL);
+			if (mode === 'new') list = list.filter(w => new Date(w.createdAt).toDateString() === new Date().toDateString());
+			if (mode === 'learned') list = list.filter(w => w.level >= MAX_LEVEL);
+
+			if (q) {
+				list = list.filter(w =>
+					w.en.toLowerCase().includes(q) ||
+					(w.tr || '').toLowerCase().includes(q) ||
+					(w.tags || []).some(t => t.toLowerCase().includes(q))
+				);
+			}
+
+			renderStats(list.length);
+
+			const container = $('list');
+			container.innerHTML = '';
+
+			for (const w of list) {
+				const wrap = document.createElement('div');
+				wrap.className = 'item';
+
+				const top = document.createElement('div');
+				top.className = 'top';
+				const en = document.createElement('div');
+				en.className = 'en';
+				en.textContent = w.en;
+				const tr = document.createElement('div');
+				tr.className = 'tr';
+				tr.textContent = '— ' + w.tr;
+				const pill = document.createElement('span');
+				pill.className = 'kpill';
+				pill.textContent = 'Seviye ' + w.level;
+				const dueBadge = document.createElement('span');
+				dueBadge.className = 'badge ' + (isDue(w.nextReviewAt) ? 'warn' : '');
+				dueBadge.textContent = isDue(w.nextReviewAt) ? 'Tekrar zamanı' : 'Sırada değil';
+
+				top.appendChild(en);
+				top.appendChild(tr);
+				top.appendChild(document.createElement('div')).style.flex = '1';
+				top.appendChild(pill);
+				top.appendChild(dueBadge);
+
+				const tags = document.createElement('div');
+				tags.className = 'tags';
+				for (const t of w.tags) {
+					const span = document.createElement('span');
+					span.className = 'tag';
+					span.textContent = t;
+					span.title = 'Bu etikete göre filtrele';
+					span.addEventListener('click', () => { $('search').value = t; render(); });
+					tags.appendChild(span);
+				}
+
+				const ex = document.createElement('div');
+				ex.className = 'small';
+				ex.textContent = w.example ? ('Örnek: ' + w.example) : '';
+
+				const actions = document.createElement('div');
+				actions.className = 'actions';
+				const knowBtn = document.createElement('button');
+				knowBtn.className = 'good';
+				knowBtn.textContent = 'Biliyordum ✓';
+				knowBtn.onclick = () => markResult(w.id, true);
+				const failBtn = document.createElement('button');
+				failBtn.className = 'bad';
+				failBtn.textContent = 'Unuttum ✗';
+				failBtn.onclick = () => markResult(w.id, false);
+				const delBtn = document.createElement('button');
+				delBtn.className = 'ghost';
+				delBtn.textContent = 'Sil';
+				delBtn.onclick = () => deleteWord(w.id);
+
+				const markLearnedBtn = document.createElement('button');
+				markLearnedBtn.className = 'ghost';
+				markLearnedBtn.textContent = 'Öğrenilmişe al';
+				markLearnedBtn.onclick = () => {
+					w.level = MAX_LEVEL;
+					w.nextReviewAt = scheduleNext(w.level);
+					save();
+					render();
+				};
+
+				actions.appendChild(knowBtn);
+				actions.appendChild(failBtn);
+				actions.appendChild(markLearnedBtn);
+				actions.appendChild(delBtn);
+
+				wrap.appendChild(top);
+				if (w.tags.length) wrap.appendChild(tags);
+				if (w.example) wrap.appendChild(ex);
+				wrap.appendChild(actions);
+
+				container.appendChild(wrap);
+			}
+
+			if (list.length === 0) {
+				container.innerHTML = '<div class="small">Hiç sonuç yok. Filtreleri temizlemeyi veya yeni kelime eklemeyi deneyin.</div>';
+			}
+
+			// Tiles View
+			const tiles = $('meanTiles');
+			if (tiles) {
+				tiles.innerHTML = '';
+				const sorted = db.words.slice().sort((a, b) => a.en.localeCompare(b.en, 'en', { sensitivity: 'base' }));
+				for (const w of sorted) {
+					const t = document.createElement('div');
+					t.className = 'tile';
+					const en = document.createElement('div');
+					en.className = 'en';
+					en.textContent = w.en;
+					const tr = document.createElement('div');
+					tr.className = 'tr';
+					tr.textContent = w.tr;
+					t.appendChild(en);
+					t.appendChild(tr);
+					tiles.appendChild(t);
+				}
+			}
+		}
+
+		// ===================== Form & Search =====================
+		function syncSearchAndDupCheck() {
+			const enVal = $('en').value;
+			$('search').value = enVal;
+			render();
+			const val = enVal.trim().toLowerCase();
+			const exists = !!db.words.find(w => w.en.toLowerCase() === val);
+			const hint = $('dupHint');
+			const enInput = $('en');
+			if (exists && val) {
+				enInput.classList.add('dup');
+				hint.textContent = 'Bu kelime zaten ekli. Aşağıda listede görebilirsin.';
+				hint.classList.remove('hidden');
+				hint.classList.add('warn');
+			} else {
+				enInput.classList.remove('dup');
+				hint.textContent = '';
+				hint.classList.add('hidden');
+				hint.classList.remove('warn');
+			}
+		}
+
+		// ===================== Event Listeners =====================
+		$('addBtn').addEventListener('click', () => {
+			addWord({
+				en: $('en').value,
+				tr: $('tr').value,
+				example: $('example').value,
+				tags: $('tags').value
+			});
+		});
+
+		function handleEnterToAdd(e) {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				$('addBtn').click();
+			}
+		}
+
+		$('en').addEventListener('keydown', handleEnterToAdd);
+		$('tr').addEventListener('keydown', handleEnterToAdd);
+		$('clearFormBtn').addEventListener('click', clearForm);
+		$('exportBtn').addEventListener('click', exportJSON);
+		$('importFile').addEventListener('change', (e) => {
+			const f = e.target.files[0];
+			if (f) importJSON(f);
+			e.target.value = '';
+		});
+		$('search').addEventListener('input', debounce(render, 150));
+		$('filterDue').addEventListener('change', render);
+		$('poolAllBtn').addEventListener('click', () => { $('filterDue').value = 'all'; render(); });
+		$('poolDueBtn').addEventListener('click', () => { $('filterDue').value = 'due'; render(); });
+		$('poolNewBtn').addEventListener('click', () => { $('filterDue').value = 'new'; render(); });
+		$('poolLearnedBtn').addEventListener('click', () => { $('filterDue').value = 'learned'; render(); });
+		$('startReviewBtn').addEventListener('click', startReview);
+		$('en').addEventListener('input', debounce(syncSearchAndDupCheck, 120));
+
+		// Tab switching
+		const tabCards = document.getElementById('tabCards');
+		const tabTiles = document.getElementById('tabTiles');
+		if (tabCards && tabTiles) {
+			tabCards.addEventListener('click', () => {
+				document.getElementById('listView').classList.remove('hidden');
+				document.getElementById('tilesView').classList.add('hidden');
+			});
+			tabTiles.addEventListener('click', () => {
+				document.getElementById('tilesView').classList.remove('hidden');
+				document.getElementById('listView').classList.add('hidden');
+			});
+		}
+
+		$('goalInput').addEventListener('change', (e) => {
+			const v = parseInt(e.target.value || '10', 10);
+			db.settings.dailyGoal = Math.max(1, Math.min(100, v));
+			save();
+			render();
+		});
+
+		$('resetTodayBtn').addEventListener('click', () => {
+			db.settings.today = todayISO();
+			db.settings.todayAdded = 0;
+			save();
+			render();
+		});
+
+		$('wipeBtn').addEventListener('click', () => {
+			if (!confirm('TÜM veriyi silmek istediğine emin misin?')) return;
+			localStorage.removeItem(STORAGE_KEY);
+			localStorage.removeItem(SETTINGS_KEY);
+			db.words = [];
+			db.settings = { dailyGoal: 10, todayAdded: 0, today: todayISO() };
+			render();
+		});
+
+		// ===================== Import Merge =====================
+		function mergeImportedData(data) {
+			if (!data || !Array.isArray(data.words)) throw new Error('Geçersiz dosya');
+			const existing = new Map(db.words.map(w => [w.en.toLowerCase(), w]));
+			for (const w of data.words) {
+				const key = (w.en || '').toLowerCase();
+				if (!key || existing.has(key)) continue;
+				db.words.push(w);
+			}
+			if (data.settings?.dailyGoal) {
+				db.settings.dailyGoal = data.settings.dailyGoal;
+			}
+		}
+
+		// ===================== Auto-Import =====================
+		async function autoImportIfExists() {
+			try {
+				const res = await fetch('kelime-havuzu.json', { cache: 'no-store' });
+				if (!res.ok) return;
+				const data = await res.json();
+				mergeImportedData(data);
+				save();
+				$('filterDue').value = 'due';
+			} catch {}
+		}
+
+		// ===================== Initialization =====================
+		load();
+		$('goalInput').value = db.settings.dailyGoal;
+		autoImportIfExists().finally(() => render());
+	</script>
+</body>
+
+</html>

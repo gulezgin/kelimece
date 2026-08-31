@@ -1,0 +1,31 @@
+{
+  "name": "kelime-havuzum",
+  "version": "1.0.0",
+  "description": "Turkish-English vocabulary learning app with spaced repetition system",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "test": "echo \"No tests configured yet\"",
+    "serve": "npx live-server"
+  },
+  "keywords": [
+    "vocabulary",
+    "turkish",
+    "english",
+    "learning",
+    "spaced-repetition",
+    "SRS",
+    "education",
+    "language-learning"
+  ],
+  "author": "Kelime Havuzum Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gulezgin/WordPool-TR-EN.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gulezgin/WordPool-TR-EN/issues"
+  },
+  "homepage": "https://WordPool-TR-EN.netlify.app"
+}

@@ -1,0 +1,82 @@
+{
+  "words": [
+    {
+      "id": "example1",
+      "en": "abandon",
+      "tr": "terk etmek, vazgeçmek",
+      "example": "They abandoned their house during the war.",
+      "tags": ["verb", "common"],
+      "level": 2,
+      "nextReviewAt": "2026-01-15T00:00:00.000Z",
+      "createdAt": "2026-01-10T00:00:00.000Z",
+      "history": [
+        { "date": "2026-01-10T00:00:00.000Z", "known": true },
+        { "date": "2026-01-11T00:00:00.000Z", "known": true },
+        { "date": "2026-01-12T00:00:00.000Z", "known": true }
+      ]
+    },
+    {
+      "id": "example2",
+      "en": "ability",
+      "tr": "yetenek, beceri, kaabilité",
+      "example": "She has the ability to solve complex problems.",
+      "tags": ["noun", "common"],
+      "level": 1,
+      "nextReviewAt": "2026-01-16T00:00:00.000Z",
+      "createdAt": "2026-01-11T00:00:00.000Z",
+      "history": [
+        { "date": "2026-01-12T00:00:00.000Z", "known": true }
+      ]
+    },
+    {
+      "id": "example3",
+      "en": "abstract",
+      "tr": "soyut, özet",
+      "example": "Abstract art is often difficult to understand.",
+      "tags": ["adjective", "academic"],
+      "level": 0,
+      "nextReviewAt": "2026-01-12T00:00:00.000Z",
+      "createdAt": "2026-01-12T00:00:00.000Z",
+      "history": []
+    },
+    {
+      "id": "example4",
+      "en": "abundant",
+      "tr": "bol, çok, bolca",
+      "example": "The country has abundant natural resources.",
+      "tags": ["adjective"],
+      "level": 3,
+      "nextReviewAt": "2026-01-26T00:00:00.000Z",
+      "createdAt": "2026-01-05T00:00:00.000Z",
+      "history": [
+        { "date": "2026-01-08T00:00:00.000Z", "known": true },
+        { "date": "2026-01-09T00:00:00.000Z", "known": true },
+        { "date": "2026-01-10T00:00:00.000Z", "known": false },
+        { "date": "2026-01-11T00:00:00.000Z", "known": true }
+      ]
+    },
+    {
+      "id": "example5",
+      "en": "accelerate",
+      "tr": "hızlandırmak, ivme vermek",
+      "example": "We need to accelerate our progress.",
+      "tags": ["verb", "academic"],
+      "level": 6,
+      "nextReviewAt": "2026-03-13T00:00:00.000Z",
+      "createdAt": "2025-12-10T00:00:00.000Z",
+      "history": [
+        { "date": "2025-12-11T00:00:00.000Z", "known": true },
+        { "date": "2025-12-13T00:00:00.000Z", "known": true },
+        { "date": "2025-12-17T00:00:00.000Z", "known": true },
+        { "date": "2025-12-24T00:00:00.000Z", "known": true },
+        { "date": "2026-01-07T00:00:00.000Z", "known": true }
+      ]
+    }
+  ],
+  "settings": {
+    "dailyGoal": 10,
+    "todayAdded": 0,
+    "today": "2026-01-12T00:00:00.000Z"
+  },
+  "exportedAt": "2026-01-12T10:30:00.000Z"
+}
