@@ -128,15 +128,44 @@ Uygulama modern, koyu temalı bir arayüze sahiptir:
 ```
 src/
 ├── core/     DOM'dan bağımsız, test edilebilir mantık
-│   ├── srs.js    aralıklı tekrar algoritması
-│   ├── word.js   kelime şeması ve doğrulama
-│   └── time.js   tarih yardımcıları
-├── data/     durum ve kalıcı depolama
+│   ├── srs.js       aralıklı tekrar algoritması
+│   ├── word.js      tanım/ilerleme şeması ve doğrulama
+│   └── time.js      tarih yardımcıları
+├── data/
+│   ├── idb.js       IndexedDB sarmalayıcısı
+│   ├── store.js     uygulama durumu ve veri işlemleri
+│   └── migrate.js   1.0'dan göç + ilerleme onarımı
 ├── ui/       ekran bileşenleri
 └── main.js   olay bağlantıları
-public/content/  kelime paketleri (kodun dışında)
-test/            birim testleri
+public/content/   uygulamayla gelen kelime paketleri
+data/             paket üretiminin kaynak verisi (yayınlanmaz)
+scripts/          içerik paketi üreticisi
+test/             birim testleri
 ```
+
+#### Veri modeli
+
+Kelimenin **tanımı** (İngilizce, Türkçe, örnek, CEFR seviyesi) ile
+kullanıcının o kelimedeki **ilerlemesi** (seviye, tekrar tarihi, geçmiş)
+ayrı depolarda tutulur:
+
+| Depo | İçerik | Sahibi |
+|---|---|---|
+| `words` | tanımlar | içerik paketi (sürümlenir) veya kullanıcı |
+| `progress` | öğrenme durumu | her zaman kullanıcı |
+| `meta` | ayarlar, paket sürümleri, göç kaydı | kullanıcı |
+
+Kimlikler kararlıdır (`core:abandon`). Bu sayede yeni bir kelime paketi
+gönderildiğinde tanımlar güncellenir, ilerleme olduğu gibi kalır.
+
+#### Kelime paketi üretme
+
+```bash
+npm run build:content
+```
+
+`data/` altındaki kaynak veriden `public/content/core-v1.json` üretir;
+yazım düzeltmelerini uygular, mükerrerleri birleştirir ve raporlar.
 
 ### 📊 Spaced Repetition Algoritması
 

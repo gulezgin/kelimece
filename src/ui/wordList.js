@@ -17,7 +17,7 @@ export function filterWords(words, { query = '', mode = 'all' }) {
 	let list = words;
 
 	if (mode === 'due') list = list.filter((w) => w.level < MAX_LEVEL && isDue(w.nextReviewAt));
-	else if (mode === 'new') list = list.filter((w) => isToday(w.createdAt));
+	else if (mode === 'new') list = list.filter((w) => w.source === 'user' && isToday(w.addedAt));
 	else if (mode === 'learned') list = list.filter((w) => w.level >= MAX_LEVEL);
 
 	const q = query.trim().toLowerCase();
@@ -101,6 +101,9 @@ function wordCard(w, { onKnown, onForgot, onLearn, onDelete, onTagClick }) {
 		card.appendChild(tags);
 	}
 
+	if (w.synonyms && w.synonyms.length) {
+		card.appendChild(el('div', { class: 'small', text: 'Eş anlamlı: ' + w.synonyms.join(', ') }));
+	}
 	if (w.example) card.appendChild(el('div', { class: 'small', text: 'Örnek: ' + w.example }));
 
 	const knowBtn = el('button', { class: 'good', text: 'Biliyordum ✓' });

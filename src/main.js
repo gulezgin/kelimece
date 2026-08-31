@@ -8,15 +8,14 @@ import './styles/main.css';
 
 import { buildReviewQueue, MAX_LEVEL } from './core/srs.js';
 import { isDue } from './core/time.js';
-import { createWord } from './core/word.js';
 import * as store from './data/store.js';
-import { alertDialog, confirmDialog, toast } from './ui/dialog.js';
+import { alertDialog, choiceDialog, confirmDialog, toast } from './ui/dialog.js';
 import { $, debounce } from './ui/dom.js';
 import * as review from './ui/review.js';
 import { filterWords, renderList, renderStats, renderTiles } from './ui/wordList.js';
 
-/** İlk açılışta yüklenecek başlangıç kelime seti. */
-const SEED_URL = import.meta.env.BASE_URL + 'content/seed-vocabulary.json';
+/** Uygulamayla birlikte gelen içerik paketi. */
+const PACK_URL = import.meta.env.BASE_URL + 'content/core-v1.json';
 
 /** @type {'cards'|'tiles'} */
 let activeView = 'cards';
@@ -48,7 +47,7 @@ const listHandlers = {
 			danger: true
 		});
 		if (ok) {
-			store.deleteWord(id);
+			await store.deleteWord(id);
 			toast('Kelime silindi.');
 		}
 	},
@@ -60,20 +59,20 @@ const listHandlers = {
 
 // ===================== Kelime ekleme =====================
 
-function handleAdd() {
-	const word = createWord({
+async function handleAdd() {
+	const input = {
 		en: $('en').value,
 		tr: $('tr').value,
 		example: $('example').value,
 		tags: $('tags').value
-	});
+	};
 
-	if (!word) {
+	if (!input.en.trim() || !input.tr.trim()) {
 		toast('İngilizce kelime ve Türkçe anlam zorunlu.', 'warn');
 		return;
 	}
 
-	const result = store.addWord(word);
+	const result = await store.addWord(input);
 	if (!result.ok) {
 		if (result.reason === 'duplicate') {
 			markDuplicate(true);
@@ -82,8 +81,9 @@ function handleAdd() {
 		return;
 	}
 
+	const added = result.word.en;
 	clearForm();
-	toast(`"${word.en}" eklendi.`);
+	toast(`"${added}" eklendi.`);
 }
 
 function clearForm() {
@@ -129,7 +129,7 @@ async function handleStartReview() {
 	}
 
 	review.startSession(queue, {
-		getWord: (id) => store.state.words.find((w) => w.id === id),
+		getWord: (id) => store.getWord(id),
 		onAnswer: (id, known) => store.markResult(id, known),
 		onFinish: async (stats) => {
 			render();
@@ -168,9 +168,11 @@ function handleImport(file) {
 	const reader = new FileReader();
 	reader.onload = async () => {
 		try {
-			const result = store.mergeImported(JSON.parse(String(reader.result)));
+			const r = await store.mergeImported(JSON.parse(String(reader.result)));
 			await alertDialog(
-				`${result.added} kelime eklendi.\n${result.skipped} kayıt atlandı (zaten var veya geçersiz).`,
+				`${r.added} kelime eklendi.\n` +
+					`${r.updated} kelimenin ilerlemesi güncellendi.\n` +
+					`${r.skipped} kayıt atlandı (zaten güncel veya geçersiz).`,
 				{ title: 'İçe aktarma tamamlandı' }
 			);
 		} catch (e) {
@@ -181,22 +183,69 @@ function handleImport(file) {
 	reader.readAsText(file);
 }
 
-// ===================== İlk açılış =====================
+// ===================== İlerleme denetimi =====================
 
 /**
- * Havuz boşsa başlangıç kelime setini yükler.
- * Havuzda kelime varsa hiçbir şey yapmaz — kullanıcının verisine dokunmaz.
+ * "Öğrenilmiş" işaretini hak etmeyen kelimeleri gösterir ve ne yapılacağını
+ * kullanıcıya sorar. Hiçbir onarım kullanıcı seçmeden uygulanmaz.
  */
-async function seedIfEmpty() {
-	if (store.state.words.length > 0) return;
-	try {
-		const res = await fetch(SEED_URL, { cache: 'no-store' });
-		if (!res.ok) return;
-		const result = store.mergeImported(await res.json());
-		if (result.added) toast(`${result.added} kelimelik başlangıç seti yüklendi.`);
-	} catch {
-		// Başlangıç seti bulunamadıysa boş havuzla devam et.
+async function handleProgressAudit() {
+	const a = store.inspectProgress();
+
+	if (!a.suspect) {
+		await alertDialog(
+			`"Öğrenilmiş" işaretli ${a.learnedCount} kelimenin hepsi bu etiketi hak ediyor.\nYapılacak bir şey yok.`,
+			{ title: 'İlerleme denetimi' }
+		);
+		return;
 	}
+
+	const message =
+		`"Öğrenilmiş" işaretli ${a.learnedCount} kelime var. Bunların ${a.suspect} tanesi ` +
+		`bu etiketi hak etmiyor gibi görünüyor:\n\n` +
+		`• ${a.weak} kelime yeterince üst üste doğru bilinmemiş\n` +
+		`• ${a.noHistory} kelime hiç çalışılmamış (elle işaretlenmiş)\n` +
+		`• ${a.earned} kelime etiketi gerçekten hak etmiş\n\n` +
+		`Sebebi: 1.0'daki hesaplama hatası ve "Öğrenilmişe al" düğmesi.\n` +
+		`Öğrenilmiş kelimeler tekrar kuyruğuna hiç girmez — yani bu kelimeler ` +
+		`bir daha karşına çıkmaz.\n\nNe yapmak istersin?`;
+
+	const choice = await choiceDialog(message, {
+		title: 'İlerleme denetimi',
+		options: [
+			{
+				value: 'verify',
+				label: `Doğrulama turu (önerilen) — ${a.suspect} kelime`,
+				description:
+					'Geçmişe dokunulmaz. Her biri bir kez daha sorulur; bildiklerin öğrenilmiş kalır, bilemediklerin tekrar rotasyonuna döner.'
+			},
+			{
+				value: 'replay',
+				label: `Geçmişi baştan hesapla — ${a.suspect} kelime`,
+				description:
+					'Cevap geçmişin düzeltilmiş algoritmayla yeniden işlenir. En doğru sonucu verir, ama bazı kelimeler düşük seviyeye iner.'
+			},
+			{
+				value: 'reset',
+				label: `Sıfırla — ${a.suspect} kelime`,
+				description: 'Şüpheli kelimeler 0. seviyeye döner, baştan çalışılır.',
+				danger: true
+			}
+		]
+	});
+
+	if (!choice) return;
+
+	if (choice === 'reset') {
+		const ok = await confirmDialog(
+			`${a.suspect} kelimenin ilerlemesi sıfırlanacak. Bu işlem geri alınamaz.\n\nÖnce "JSON Dışa Aktar" ile yedek almanı öneririm.`,
+			{ title: 'Emin misin?', confirmText: 'Evet, sıfırla', danger: true }
+		);
+		if (!ok) return;
+	}
+
+	const result = await store.applyRepair(choice);
+	toast(`${result.changed} kelimenin ilerlemesi güncellendi.`);
 }
 
 // ===================== Olay bağlantıları =====================
@@ -240,22 +289,22 @@ function wireEvents() {
 	$('tabTiles').addEventListener('click', () => switchView('tiles'));
 
 	$('goalInput').addEventListener('change', (e) => store.setDailyGoal(e.target.value));
+	$('auditBtn').addEventListener('click', handleProgressAudit);
 
-	$('resetTodayBtn').addEventListener('click', () => {
-		store.resetTodayCounter();
+	$('resetTodayBtn').addEventListener('click', async () => {
+		await store.resetTodayCounter();
 		toast('Günlük sayaç sıfırlandı.');
 	});
 
 	$('wipeBtn').addEventListener('click', async () => {
 		const ok = await confirmDialog(
-			`${store.state.words.length} kelimenin tamamı ve tüm ilerlemen silinecek. Bu işlem geri alınamaz.\n\n` +
+			`Eklediğin kelimeler ve tüm ilerlemen silinecek. Bu işlem geri alınamaz.\n\n` +
 				'Devam etmeden önce "JSON Dışa Aktar" ile yedek almanı öneririz.',
 			{ title: 'Tüm veriyi sil', confirmText: 'Evet, hepsini sil', danger: true }
 		);
-		if (ok) {
-			store.wipeAll();
-			toast('Tüm veri silindi.', 'warn');
-		}
+		if (!ok) return;
+		await store.wipeAll();
+		toast('Tüm veri silindi. Sayfayı yenileyince temel paket yeniden kurulur.', 'warn');
 	});
 }
 
@@ -265,20 +314,35 @@ function switchView(view) {
 	$('tilesView').classList.toggle('hidden', view !== 'tiles');
 	$('tabCards').classList.toggle('active', view === 'cards');
 	$('tabTiles').classList.toggle('active', view === 'tiles');
+	$('tabCards').setAttribute('aria-selected', String(view === 'cards'));
+	$('tabTiles').setAttribute('aria-selected', String(view === 'tiles'));
 	render();
 }
 
 // ===================== Başlat =====================
 
-store.setStorageErrorHandler((message) => alertDialog(message, { title: 'Kayıt hatası' }));
-store.subscribe(render);
+async function boot() {
+	store.setStorageErrorHandler((message) => alertDialog(message, { title: 'Kayıt hatası' }));
+	store.subscribe(render);
 
-wireEvents();
-store.init();
-$('goalInput').value = store.state.settings.dailyGoal;
-switchView('cards');
+	wireEvents();
+	switchView('cards');
+	$('list').textContent = 'Yükleniyor…';
 
-seedIfEmpty().finally(render);
+	const result = await store.init({ packUrl: PACK_URL });
+
+	$('goalInput').value = store.state.settings.dailyGoal;
+	render();
+
+	if (result.migrated && result.migrationReport) {
+		const r = result.migrationReport;
+		toast(`${r.matched + r.userOwned} kelime yeni depoya taşındı.`);
+	} else if (result.packInstalled) {
+		toast('Temel kelime paketi kuruldu.');
+	}
+}
+
+boot();
 
 // Geliştirme sırasında konsoldan incelemek için
 if (import.meta.env.DEV) {

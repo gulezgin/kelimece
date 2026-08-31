@@ -139,7 +139,10 @@ function paint(w) {
 	refs.level.textContent = w.level >= MAX_LEVEL ? 'Öğrenilmiş' : 'Seviye ' + w.level;
 	refs.enNode.textContent = w.en;
 	refs.trNode.textContent = '— ' + w.tr;
-	refs.exNode.textContent = w.example ? 'Örnek: ' + w.example : '';
+	const extras = [];
+	if (w.synonyms && w.synonyms.length) extras.push('Eş anlamlı: ' + w.synonyms.join(', '));
+	if (w.example) extras.push('Örnek: ' + w.example);
+	refs.exNode.textContent = extras.join('  ·  ');
 
 	refs.tagsNode.textContent = '';
 	for (const t of w.tags || []) refs.tagsNode.appendChild(el('span', { class: 'tag', text: t }));

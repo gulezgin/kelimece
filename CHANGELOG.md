@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-08-31
+
+Veri mimarisi sürümü. A1-C2 müfredatının üzerine kurulacağı temel.
+
+### Değişti
+- **İçerik ile ilerleme ayrıldı.** 1.0'da bir kelimenin sözlük tanımı ile
+  kullanıcının o kelimedeki ilerlemesi tek nesnedeydi; bu yüzden yeni bir
+  kelime paketi göndermek ilerlemeyi ezmeden mümkün değildi. Artık `words`
+  (tanım, sürümlenen içerik) ve `progress` (kullanıcıya özel) ayrı depolarda.
+  Arayüz bu ayrımı görmez.
+- **localStorage yerine IndexedDB.** localStorage'ın ~5MB sınırı A1-C2
+  müfredatını kaldırmaz; ayrıca her yazmada tüm veri JSON'a çevriliyordu
+  (1682 kelimede her cevapta ~600KB). Bağımlılık eklenmedi, ~200 satırlık
+  ince bir sarmalayıcı yazıldı.
+- Kelime kimlikleri kararlı hâle geldi (`core:abandon`). Paket güncellendiğinde
+  ilerleme doğru kelimeye bağlı kalır.
+- Kelime şeması genişletildi: `cefr`, `pos`, `ipa`, `topic`, `freqRank`,
+  `audio`, `synonyms`, `exampleTr`, `aliases`. (Faz 2'de doldurulacak.)
+
+### Eklendi
+- **Göç (migration).** 1.0 verisi otomatik taşınır. İki güvence: eski veri
+  localStorage'da SİLİNMEZ (tek geri dönüş noktası), ve göç hiçbir seviyeyi
+  "düzeltmez" — yanlış hesaplanmış olanlar bile olduğu gibi taşınır.
+- **İlerleme denetimi** (Ayarlar > 🩺). "Öğrenilmiş" işaretinin hak edilip
+  edilmediğini inceler ve üç seçenek sunar: doğrulama turu (kayıpsız),
+  geçmişi baştan hesapla, sıfırla. Kullanıcı seçmeden hiçbir onarım uygulanmaz.
+- **İçerik paketi üreticisi** (`scripts/build-content-pack.mjs`). Kullanıcı
+  yedeğinden temiz, sürümlenmiş paket üretir.
+- Çok seçenekli diyalog bileşeni.
+
+### Düzeltildi (içerik)
+- İngilizce alanda Türkçe noktasız `ı` kullanılan **16 kayıt** (`ımprove`,
+  `ımportant`, `ıllness`...). Bu harf sözlük eşleşmesini, aramayı ve ileride
+  sesli okumayı bozuyordu.
+- 6 yazım hatası: `T-shitt`→`T-shirt`, `enfırcement`→`enforcement`,
+  `anınymous`→`anonymous`, `icrease`→`increase`, `hurry hurries`→`hurry`,
+  `Intelligent`→`intelligent`. TR tarafında `teleaş`→`telaş`.
+- Tek alanda birden fazla baş sözcük taşıyan **89 kayıt** ayrıştırıldı
+  (`prosperity, welfare, wealth` → baş sözcük + eş anlamlılar).
+- **24 mükerrer kayıt** birleştirildi; anlamları korunarak tek kelimede toplandı.
+- İçe aktarmada aynı kelimenin daha ileri ilerlemesi varsa artık alınıyor
+  (önce sessizce atlanıyordu).
+
+---
+
 ## [1.1.0] - 2026-08-31
 
 Bu sürüm görünür yeni özellik getirmez; A1-C2 müfredatının üzerine kurulacağı

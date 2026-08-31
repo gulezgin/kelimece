@@ -719,3 +719,49 @@ button.ghost.active {
 body.modalOpen {
 	overflow: hidden;
 }
+
+/* ==============================================
+   CHOICE DIALOG - cok secenekli diyalog
+   ============================================== */
+.dialogBox:has(.choiceList) {
+	max-width: 520px;
+}
+
+.choiceList {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 16px;
+}
+
+button.choice {
+	display: block;
+	width: 100%;
+	text-align: left;
+	padding: 12px 14px;
+	background: #131a2b;
+	border: 1px solid #2a3350;
+	border-radius: 10px;
+	line-height: 1.45;
+}
+
+button.choice:hover {
+	border-color: var(--acc);
+	background: #16203a;
+}
+
+button.choice--danger:hover {
+	border-color: var(--bad);
+}
+
+.choiceLabel {
+	font-weight: 700;
+	font-size: 14px;
+	color: var(--text);
+}
+
+.choiceDesc {
+	font-size: 12.5px;
+	color: var(--muted);
+	margin-top: 3px;
+}

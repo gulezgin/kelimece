@@ -1,9 +1,17 @@
 /**
- * Kelime kaydının şeması, oluşturulması ve doğrulanması.
+ * Kelime modeli: TANIM ile İLERLEME'nin ayrıldığı yer.
  *
- * normalizeWord() bu uygulamadaki tek "güven sınırı": localStorage'dan,
- * içe aktarılan dosyadan veya içerik paketinden gelen HER kayıt buradan
- * geçer. Bu sayede eksik/bozuk alanlar arayüzü çökertemez.
+ * Neden ayrı:
+ *   Tanım (en, tr, örnek, CEFR seviyesi...) uygulamayla birlikte gelen,
+ *   sürümlenen, herkeste aynı olan içeriktir. İlerleme (seviye, tekrar
+ *   tarihi, geçmiş) kullanıcıya özeldir.
+ *
+ *   1.0'da ikisi tek nesnedeydi. Bu yüzden yeni bir kelime paketi
+ *   göndermek, kullanıcının ilerlemesini ezmeden mümkün değildi —
+ *   A1-C2 müfredatı için önce bu ayrımın yapılması gerekiyordu.
+ *
+ * Arayüz bu ayrımı görmez: merge() ikisini tek düz nesnede birleştirir,
+ * split() kaydederken tekrar ayırır.
  */
 import { MAX_LEVEL, scheduleNext } from './srs.js';
 import { todayISO, toValidISO } from './time.js';
@@ -14,50 +22,36 @@ export function uid() {
 }
 
 /**
- * @typedef {object} Word
- * @property {string} id
- * @property {string} en           İngilizce kelime
- * @property {string} tr           Türkçe karşılık
- * @property {string} example      Örnek cümle (boş olabilir)
- * @property {string[]} tags
- * @property {number} level        SRS seviyesi, 0..MAX_LEVEL
- * @property {string} nextReviewAt ISO tarih
- * @property {string} createdAt    ISO tarih
- * @property {Array<{date: string, known: boolean}>} history
+ * Kimlikte kullanılabilir hâle getirir: "look down on" -> "look-down-on"
+ * Kimlikler kararlı olmalı; paket güncellendiğinde ilerlemenin doğru
+ * kelimeye bağlı kalması buna dayanıyor.
  */
+export function slugify(text) {
+	return String(text || '')
+		.trim()
+		.toLowerCase()
+		.replace(/['']/g, '')
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '');
+}
 
 /**
- * Formdan yeni kelime oluşturur.
- * @returns {Word|null} Zorunlu alanlar eksikse null
+ * Kararlı kelime kimliği üretir.
+ * Paket kelimeleri: "core:look-down-on" — sürümler arası aynı kalır.
+ * Kullanıcı kelimeleri: "user:<rastgele>" — çakışma riski yok.
  */
-export function createWord({ en, tr, example = '', tags = '' }) {
-	const trimmedEn = String(en || '').trim();
-	const trimmedTr = String(tr || '').trim();
-	if (!trimmedEn || !trimmedTr) return null;
-
-	return {
-		id: uid(),
-		en: trimmedEn,
-		tr: trimmedTr,
-		example: String(example || '').trim(),
-		tags: parseTags(tags),
-		level: 0,
-		// Yeni kelime BUGUN calisilabilir olmali. (Onceden scheduleNext(0)
-		// kullaniliyordu; bu, bugun eklenen kelimeyi yarina erteliyor ve
-		// "Tekrar Et"e basan kullaniciya "bugun tekrar yok" dedirtiyordu.)
-		nextReviewAt: todayISO(),
-		createdAt: todayISO(),
-		history: []
-	};
+export function makeId(source, en) {
+	if (source === 'user') return 'user:' + uid();
+	const slug = slugify(en);
+	return slug ? `${source}:${slug}` : `${source}:${uid()}`;
 }
 
 /**
  * "verb, academic" -> ["verb", "academic"]
- * @param {string|string[]} input
- * @returns {string[]}
+ * @param {string|string[]|unknown} input
  */
 export function parseTags(input) {
-	const raw = Array.isArray(input) ? input : String(input || '').split(',');
+	const raw = Array.isArray(input) ? input : String(input == null ? '' : input).split(',');
 	const seen = new Set();
 	const out = [];
 	for (const t of raw) {
@@ -71,14 +65,42 @@ export function parseTags(input) {
 	return out;
 }
 
+// ===================== TANIM =====================
+
 /**
- * Dışarıdan gelen kaydı güvenli hâle getirir: eksik alanları tamamlar,
- * bozuk değerleri düzeltir, kurtarılamayacak kayıt için null döner.
- *
- * @param {unknown} raw
- * @returns {Word|null}
+ * @typedef {object} Definition
+ * @property {string} id
+ * @property {string} en
+ * @property {string} tr
+ * @property {string} example
+ * @property {string} exampleTr
+ * @property {string[]} synonyms   Eş anlamlılar (kart ön yüzünü kalabalıklaştırmaz)
+ * @property {string[]} aliases    Bu kaydın eski yazımları (göç/eşleştirme için)
+ * @property {string[]} tags
+ * @property {string|null} cefr    "A1".."C2" — Faz 2'de dolacak
+ * @property {string|null} pos     "noun"|"verb"|"adjective"|...
+ * @property {string|null} ipa     Telaffuz
+ * @property {string|null} topic   Konu başlığı
+ * @property {number|null} freqRank Sıklık sırası (düşük = daha yaygın)
+ * @property {string|null} audio   Ses dosyası yolu
+ * @property {string} source       Paket kimliği veya "user"
  */
-export function normalizeWord(raw) {
+
+const CEFR_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
+/** Geçerli bir CEFR seviyesi mi? Değilse null. */
+export function normalizeCefr(value) {
+	const v = String(value || '').trim().toUpperCase();
+	return CEFR_LEVELS.includes(v) ? v : null;
+}
+
+/**
+ * Ham veriden tanım üretir. Kurtarılamayan kayıtta null döner.
+ * @param {unknown} raw
+ * @param {{source?: string}} [options]
+ * @returns {Definition|null}
+ */
+export function normalizeDefinition(raw, { source } = {}) {
 	if (!raw || typeof raw !== 'object') return null;
 	const r = /** @type {Record<string, any>} */ (raw);
 
@@ -86,31 +108,145 @@ export function normalizeWord(raw) {
 	const tr = String(r.tr || '').trim();
 	if (!en || !tr) return null;
 
+	const src = String(source || r.source || 'user');
+	const str = (v) => {
+		const s = String(v == null ? '' : v).trim();
+		return s || null;
+	};
+
+	return {
+		id: String(r.id || makeId(src, en)),
+		en,
+		tr,
+		example: String(r.example || '').trim(),
+		exampleTr: String(r.exampleTr || '').trim(),
+		synonyms: parseTags(r.synonyms),
+		// Kaydın önceki yazımları — eski yedekleri doğru kelimeye bağlar
+		aliases: parseTags(r.aliases),
+		tags: parseTags(r.tags),
+		cefr: normalizeCefr(r.cefr),
+		pos: str(r.pos),
+		ipa: str(r.ipa),
+		topic: str(r.topic),
+		freqRank: Number.isFinite(Number(r.freqRank)) && r.freqRank !== null ? Number(r.freqRank) : null,
+		audio: str(r.audio),
+		source: src
+	};
+}
+
+/** Formdan yeni kullanıcı kelimesi oluşturur. */
+export function createDefinition({ en, tr, example = '', tags = '' }) {
+	const trimmedEn = String(en || '').trim();
+	const trimmedTr = String(tr || '').trim();
+	if (!trimmedEn || !trimmedTr) return null;
+	return normalizeDefinition(
+		{ en: trimmedEn, tr: trimmedTr, example, tags, id: makeId('user', trimmedEn) },
+		{ source: 'user' }
+	);
+}
+
+// ===================== İLERLEME =====================
+
+/**
+ * @typedef {object} Progress
+ * @property {string} wordId
+ * @property {number} level
+ * @property {string} nextReviewAt
+ * @property {string} addedAt        Kullanıcının havuzuna girdiği an
+ * @property {Array<{date: string, known: boolean}>} history
+ * @property {boolean} learnedManually "Öğrenilmişe al" ile mi işaretlendi
+ */
+
+/**
+ * Yeni kelime için sıfır ilerleme.
+ * nextReviewAt = bugün: yeni kelime hemen çalışılabilir olmalı.
+ */
+export function createProgress(wordId, { now = todayISO() } = {}) {
+	return {
+		wordId,
+		level: 0,
+		nextReviewAt: now,
+		addedAt: now,
+		history: [],
+		learnedManually: false
+	};
+}
+
+/**
+ * Ham veriden ilerleme üretir. Bozuk alanları düzeltir.
+ * @param {unknown} raw
+ * @param {string} [wordId] Kayıtta yoksa kullanılacak kimlik
+ * @returns {Progress|null}
+ */
+export function normalizeProgress(raw, wordId) {
+	const r = raw && typeof raw === 'object' ? /** @type {Record<string, any>} */ (raw) : {};
+	const id = String(r.wordId || wordId || '');
+	if (!id) return null;
+
 	let level = Number.parseInt(r.level, 10);
 	if (!Number.isFinite(level) || level < 0) level = 0;
 	level = Math.min(level, MAX_LEVEL);
 
-	const createdAt = toValidISO(r.createdAt) || todayISO();
+	const addedAt = toValidISO(r.addedAt) || toValidISO(r.createdAt) || todayISO();
 
 	return {
-		id: String(r.id || uid()),
-		en,
-		tr,
-		example: String(r.example || '').trim(),
-		tags: parseTags(r.tags),
+		wordId: id,
 		level,
-		nextReviewAt: toValidISO(r.nextReviewAt) || scheduleNext(level, createdAt),
-		createdAt,
+		nextReviewAt: toValidISO(r.nextReviewAt) || scheduleNext(level, addedAt),
+		addedAt,
 		history: Array.isArray(r.history)
 			? r.history
 					.filter((h) => h && typeof h === 'object')
 					.map((h) => ({ date: toValidISO(h.date) || todayISO(), known: !!h.known }))
-			: []
+			: [],
+		learnedManually: !!r.learnedManually
 	};
 }
 
-/** Bir kelime dizisini normalize eder, kurtarılamayanları atar. */
-export function normalizeWords(list) {
+// ===================== BİRLEŞTİR / AYIR =====================
+
+/**
+ * Tanım + ilerleme -> arayüzün gördüğü düz kayıt.
+ * @param {Definition} definition
+ * @param {Progress} [progress]
+ */
+export function merge(definition, progress) {
+	const p = progress || createProgress(definition.id, { now: todayISO() });
+	return {
+		...definition,
+		level: p.level,
+		nextReviewAt: p.nextReviewAt,
+		addedAt: p.addedAt,
+		history: p.history,
+		learnedManually: p.learnedManually
+	};
+}
+
+/**
+ * Düz kayıt -> { definition, progress }
+ * @param {object} flat
+ */
+export function split(flat) {
+	const definition = normalizeDefinition(flat, { source: flat.source });
+	if (!definition) return null;
+	definition.id = flat.id || definition.id;
+	return { definition, progress: normalizeProgress(flat, definition.id) };
+}
+
+/**
+ * Dışarıdan gelen tek kaydı (yedek dosyası, eski sürüm) düz kayda çevirir.
+ * İçe aktarma yolunun güven sınırı.
+ * @returns {object|null}
+ */
+export function normalizeWord(raw, options = {}) {
+	const definition = normalizeDefinition(raw, options);
+	if (!definition) return null;
+	const progress = normalizeProgress(raw, definition.id);
+	return merge(definition, progress);
+}
+
+/** Dizi hâlinde normalize eder, kurtarılamayanları atar. */
+export function normalizeWords(list, options = {}) {
 	if (!Array.isArray(list)) return [];
-	return list.map(normalizeWord).filter(Boolean);
+	return list.map((r) => normalizeWord(r, options)).filter(Boolean);
 }

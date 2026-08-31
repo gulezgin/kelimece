@@ -121,6 +121,41 @@ export function confirmDialog(message, {
 }
 
 /**
+ * İkiden fazla seçenekli diyalog. Her seçenek bir açıklama satırı taşır.
+ *
+ * @param {string} message
+ * @param {{title?: string, options: Array<{value: string, label: string, description?: string, danger?: boolean}>, cancelText?: string}} config
+ * @returns {Promise<string|null>} Seçilen değer, vazgeçilirse null
+ */
+export function choiceDialog(message, { title = '', options = [], cancelText = 'Vazgeç' } = {}) {
+	return new Promise((resolve) => {
+		const overlay = buildOverlay({ title, message, buttons: [] });
+		const box = overlay.querySelector('.dialogBox');
+		const actions = overlay.querySelector('.dialogActions');
+
+		// Seçenekler dikey liste hâlinde; her biri kendi açıklamasıyla
+		const list = el('div', { class: 'choiceList' });
+		const choices = [];
+		for (const opt of options) {
+			const btn = el('button', { class: 'choice' + (opt.danger ? ' choice--danger' : '') }, [
+				el('div', { class: 'choiceLabel', text: opt.label }),
+				opt.description ? el('div', { class: 'choiceDesc', text: opt.description }) : null
+			]);
+			list.appendChild(btn);
+			choices.push({ btn, value: opt.value });
+		}
+		box.insertBefore(list, actions);
+
+		const cancelBtn = el('button', { class: 'ghost', text: cancelText });
+		actions.appendChild(cancelBtn);
+
+		const close = present(overlay, resolve, null);
+		for (const c of choices) c.btn.onclick = () => close(c.value);
+		cancelBtn.onclick = () => close(null);
+	});
+}
+
+/**
  * Akışı kesmeyen kısa bildirim. Başarılı işlemler için.
  * @param {string} message
  * @param {'ok'|'warn'|'bad'} [type]
