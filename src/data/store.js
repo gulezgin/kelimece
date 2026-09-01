@@ -55,7 +55,9 @@ export const DEFAULT_PROFILE = {
 	/** Son çalışılan günün ISO tarihi. */
 	lastStudyDate: null,
 	/** Bugün verilen cevap sayısı. */
-	studiedToday: 0
+	studiedToday: 0,
+	/** Günlük hatırlatma. Varsayılan kapalı — izin istemeden açılmaz. */
+	reminder: { enabled: false, hour: 20, minute: 0 }
 };
 
 /** @type {{words: object[], settings: object, profile: object, ready: boolean, packs: object}} */
@@ -588,6 +590,14 @@ export async function savePlacement(result) {
 	state.profile.placedAt = new Date().toISOString();
 	emit();
 	await persistProfile();
+}
+
+/** Günlük hatırlatma ayarını kaydeder. */
+export async function setReminder(reminder) {
+	state.profile.reminder = { ...state.profile.reminder, ...reminder };
+	emit();
+	await persistProfile();
+	return state.profile.reminder;
 }
 
 /** Hedef seviyeyi elle ayarlar. */

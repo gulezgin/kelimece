@@ -10,6 +10,7 @@ import { levelsUpTo } from './core/placement.js';
 import { buildReviewQueue, MAX_LEVEL } from './core/srs.js';
 import { isDue } from './core/time.js';
 import * as store from './data/store.js';
+import * as notifications from './platform/notifications.js';
 import { setupNative } from './platform/native.js';
 import { renderDashboard } from './ui/dashboard.js';
 import { alertDialog, choiceDialog, confirmDialog, toast } from './ui/dialog.js';
@@ -393,6 +394,30 @@ function wireEvents() {
 	$('tabTiles').addEventListener('click', () => switchView('tiles'));
 
 	$('goalInput').addEventListener('change', (e) => store.setDailyGoal(e.target.value));
+
+	$('reminderToggle').addEventListener('change', async (e) => {
+		if (e.target.checked) {
+			const granted = await notifications.requestPermission();
+			if (!granted) {
+				e.target.checked = false;
+				await alertDialog(
+					'Bildirim izni verilmedi.\n\nCihaz ayarlarından uygulamaya bildirim izni verirsen ' +
+						'günlük hatırlatma kurulabilir.',
+					{ title: 'İzin gerekli' }
+				);
+				return;
+			}
+		}
+		await store.setReminder({ enabled: e.target.checked });
+		await syncReminder();
+	});
+
+	$('reminderTime').addEventListener('change', async (e) => {
+		const parsed = notifications.parseTime(e.target.value);
+		if (!parsed) return;
+		await store.setReminder(parsed);
+		await syncReminder();
+	});
 	$('auditBtn').addEventListener('click', handleProgressAudit);
 
 	$('resetTodayBtn').addEventListener('click', async () => {
@@ -436,6 +461,46 @@ function switchView(view) {
 	render();
 }
 
+/**
+ * Hatırlatmayı güncel duruma göre kurar ya da iptal eder.
+ * Her açılışta çalışır: bekleyen kelime sayısı değişmiş olabilir.
+ */
+async function syncReminder() {
+	const r = store.state.profile.reminder || {};
+	const info = $('reminderInfo');
+
+	if (!r.enabled) {
+		await notifications.cancelAll();
+		if (info) info.textContent = '';
+		return;
+	}
+
+	const stats = store.getStats(isDue);
+	const ok = await notifications.scheduleDaily({
+		hour: r.hour,
+		minute: r.minute,
+		due: stats.due,
+		streak: store.state.profile.streak
+	});
+
+	if (info) {
+		info.textContent = ok
+			? `Her gün ${notifications.formatTime(r.hour, r.minute)} saatinde hatırlatılacak.`
+			: 'Hatırlatma kurulamadı — bildirim izni gerekiyor.';
+	}
+}
+
+/** Hatırlatma arayüzünü yalnızca desteklenen ortamda göster. */
+async function setupReminderUi() {
+	if (!(await notifications.isSupported())) return;
+	$('reminderRow').classList.remove('hidden');
+
+	const r = store.state.profile.reminder || {};
+	$('reminderToggle').checked = !!r.enabled;
+	$('reminderTime').value = notifications.formatTime(r.hour ?? 20, r.minute ?? 0);
+	await syncReminder();
+}
+
 // ===================== Başlat =====================
 
 async function boot() {
@@ -451,6 +516,7 @@ async function boot() {
 
 	$('goalInput').value = store.state.settings.dailyGoal;
 	showSection('home');
+	setupReminderUi();
 
 	if (result.migrated && result.migrationReport) {
 		const r = result.migrationReport;
