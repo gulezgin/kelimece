@@ -4,6 +4,8 @@
  * Oturum kendi kuyruğunu tutar; her cevaptan sonra store'a yazar ve
  * bir sonraki kelimeye geçer. Oturum sonunda kısa bir özet gösterir.
  */
+import { formatInterval, previewIntervals } from '../core/scheduler.js';
+import { hasEnglishVoice, speak, stop as stopSpeech } from '../core/speech.js';
 import { MAX_LEVEL } from '../core/srs.js';
 import { el } from './dom.js';
 
@@ -16,7 +18,7 @@ let refs = null;
  * @param {object[]} queue Kelime nesneleri
  * @param {{
  *   getWord: (id: string) => object|undefined,
- *   onAnswer: (id: string, known: boolean) => void,
+ *   onRate: (id: string, rating: 'again'|'hard'|'good'|'easy') => void,
  *   onFinish: (stats: {known: number, forgot: number, skipped: number, total: number}) => void
  * }} handlers
  */
@@ -25,7 +27,7 @@ export function startSession(queue, handlers) {
 		queue: queue.map((w) => w.id),
 		index: 0,
 		active: true,
-		stats: { known: 0, forgot: 0, skipped: 0, total: queue.length }
+		stats: { known: 0, forgot: 0, skipped: 0, total: queue.length, ratings: {} }
 	};
 	buildOverlay(handlers);
 	showCurrent(handlers);
@@ -42,23 +44,52 @@ function buildOverlay(handlers) {
 	const level = el('span', { class: 'kpill', attrs: { id: 'reviewLevel' }, text: 'Seviye 0' });
 	const cefr = el('span', { class: 'cefr', attrs: { id: 'reviewCefr' } });
 	const enNode = el('div', { class: 'en', attrs: { id: 'reviewEn' } });
+	const speakBtn = el('button', {
+		class: 'speakBtn',
+		text: '🔊',
+		title: 'Telaffuzu dinle (S)',
+		attrs: { 'aria-label': 'Telaffuzu dinle' }
+	});
+	const enRow = el('div', { class: 'reviewEnRow' }, [enNode, hasEnglishVoice() ? speakBtn : null]);
 	const trNode = el('div', { class: 'tr', attrs: { id: 'reviewTr' } });
 	const exNode = el('div', { class: 'small', attrs: { id: 'reviewEx' } });
 	const tagsNode = el('div', { class: 'tags', attrs: { id: 'reviewTags' } });
 
 	const btnShow = el('button', { class: 'ghost', text: 'Anlamı Göster (Boşluk)' });
-	const btnKnown = el('button', { class: 'good', text: 'Biliyordum ✓' });
-	const btnForgot = el('button', { class: 'bad', text: 'Unuttum ✗' });
+
+	// Dört seçenekli değerlendirme: her düğme bir sonraki tekrarın
+	// ne zaman olacağını da gösterir, karar somutlaşsın diye.
+	const rateButtons = {};
+	const rateRow = el('div', { class: 'rateRow hidden' });
+	const RATING_META = [
+		{ key: 'again', label: 'Hiç', cls: 'rate--again', hint: '1' },
+		{ key: 'hard', label: 'Zor', cls: 'rate--hard', hint: '2' },
+		{ key: 'good', label: 'İyi', cls: 'rate--good', hint: '3' },
+		{ key: 'easy', label: 'Kolay', cls: 'rate--easy', hint: '4' }
+	];
+	for (const meta of RATING_META) {
+		const when = el('span', { class: 'rateWhen' });
+		const btn = el('button', { class: 'rateBtn ' + meta.cls }, [
+			el('span', { class: 'rateLabel', text: meta.label }),
+			when,
+			el('span', { class: 'rateKey', text: meta.hint })
+		]);
+		btn.dataset.rating = meta.key;
+		rateButtons[meta.key] = { btn, when };
+		rateRow.appendChild(btn);
+	}
+
 	const btnSkip = el('button', { class: 'ghost', text: 'Geç' });
 	const btnExit = el('button', { class: 'ghost', text: 'Kapat (Esc)' });
 
 	const card = el('div', { class: 'reviewCard' }, [
 		el('div', { class: 'reviewMeta' }, [progress, cefr, level]),
-		enNode,
+		enRow,
 		trNode,
 		exNode,
 		tagsNode,
-		el('div', { class: 'reviewActions' }, [btnShow, btnKnown, btnForgot, btnSkip, btnExit])
+		rateRow,
+		el('div', { class: 'reviewActions' }, [btnShow, btnSkip, btnExit])
 	]);
 
 	overlayNode = el('div', {
@@ -66,11 +97,17 @@ function buildOverlay(handlers) {
 		attrs: { id: 'reviewOverlay', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Tekrar oturumu' }
 	}, [card]);
 
-	refs = { progress, cefr, level, enNode, trNode, exNode, tagsNode, btnShow, btnKnown, btnForgot, btnSkip, btnExit };
+	refs = { progress, cefr, level, enNode, trNode, exNode, tagsNode, btnShow, rateRow, rateButtons, btnSkip, btnExit };
+
+	speakBtn.onclick = (e) => {
+		e.stopPropagation();
+		speak(refs.enNode.textContent);
+	};
 
 	btnShow.onclick = reveal;
-	btnKnown.onclick = () => answer(true, handlers);
-	btnForgot.onclick = () => answer(false, handlers);
+	for (const meta of RATING_META) {
+		rateButtons[meta.key].btn.onclick = () => answer(meta.key, handlers);
+	}
 	btnSkip.onclick = () => {
 		session.stats.skipped++;
 		session.index++;
@@ -83,7 +120,13 @@ function buildOverlay(handlers) {
 	document.body.classList.add('modalOpen');
 }
 
-/** Klavye kısayolları: Boşluk = göster, 1/← = unuttum, 2/→ = biliyordum. */
+/**
+ * Klavye kısayolları:
+ *   Boşluk/Enter — anlamı göster, sonra "İyi"
+ *   1-4          — Hiç / Zor / İyi / Kolay
+ *   S            — telaffuzu dinle
+ *   Esc          — kapat
+ */
 function onKey(e) {
 	if (!isActive()) return;
 	const hidden = refs.btnShow.style.display !== 'none';
@@ -91,32 +134,41 @@ function onKey(e) {
 	if (e.key === 'Escape') {
 		e.preventDefault();
 		refs.btnExit.click();
-	} else if (e.key === ' ' || e.key === 'Enter') {
+		return;
+	}
+	if (e.key === 's' || e.key === 'S') {
+		e.preventDefault();
+		speak(refs.enNode.textContent);
+		return;
+	}
+	if (e.key === ' ' || e.key === 'Enter') {
 		e.preventDefault();
 		if (hidden) refs.btnShow.click();
-		else refs.btnKnown.click();
-	} else if (!hidden && (e.key === '1' || e.key === 'ArrowLeft')) {
+		else refs.rateButtons.good.btn.click();
+		return;
+	}
+	if (hidden) return;
+
+	const byKey = { 1: 'again', 2: 'hard', 3: 'good', 4: 'easy' };
+	if (byKey[e.key]) {
 		e.preventDefault();
-		refs.btnForgot.click();
-	} else if (!hidden && (e.key === '2' || e.key === 'ArrowRight')) {
-		e.preventDefault();
-		refs.btnKnown.click();
+		refs.rateButtons[byKey[e.key]].btn.click();
 	}
 }
 
 function reveal() {
 	refs.trNode.style.display = '';
 	refs.exNode.style.display = refs.exNode.textContent ? '' : 'none';
-	refs.btnKnown.style.display = '';
-	refs.btnForgot.style.display = '';
+	refs.rateRow.classList.remove('hidden');
 	refs.btnShow.style.display = 'none';
 }
 
-function answer(known, handlers) {
+function answer(rating, handlers) {
 	const id = session.queue[session.index];
-	session.stats[known ? 'known' : 'forgot']++;
+	session.stats[rating === 'again' ? 'forgot' : 'known']++;
+	session.stats.ratings[rating] = (session.stats.ratings[rating] || 0) + 1;
 	session.index++;
-	handlers.onAnswer(id, known);
+	handlers.onRate(id, rating);
 	showCurrent(handlers);
 }
 
@@ -150,10 +202,15 @@ function paint(w) {
 	refs.tagsNode.textContent = '';
 	for (const t of w.tags || []) refs.tagsNode.appendChild(el('span', { class: 'tag', text: t }));
 
+	// Her seçeneğin bir sonraki tekrarı ne kadar öteleyeceğini göster
+	const preview = previewIntervals(w);
+	for (const [key, { when }] of Object.entries(refs.rateButtons)) {
+		when.textContent = formatInterval(preview[key]);
+	}
+
 	refs.trNode.style.display = 'none';
 	refs.exNode.style.display = 'none';
-	refs.btnKnown.style.display = 'none';
-	refs.btnForgot.style.display = 'none';
+	refs.rateRow.classList.add('hidden');
 	refs.btnShow.style.display = '';
 	refs.btnShow.focus();
 }
@@ -163,6 +220,7 @@ function endSession(handlers) {
 	const answered = stats.known + stats.forgot;
 
 	session = null;
+	stopSpeech();
 	document.removeEventListener('keydown', onKey, true);
 	document.body.classList.remove('modalOpen');
 	if (overlayNode) overlayNode.remove();

@@ -13,6 +13,7 @@
  * Arayüz bu ayrımı görmez: merge() ikisini tek düz nesnede birleştirir,
  * split() kaydederken tekrar ayırır.
  */
+import { EASE_DEFAULT, readSchedule } from './scheduler.js';
 import { MAX_LEVEL, scheduleNext } from './srs.js';
 import { todayISO, toValidISO } from './time.js';
 
@@ -153,8 +154,12 @@ export function createDefinition({ en, tr, example = '', tags = '' }) {
  * @property {number} level
  * @property {string} nextReviewAt
  * @property {string} addedAt        Kullanıcının havuzuna girdiği an
- * @property {Array<{date: string, known: boolean}>} history
+ * @property {Array<{date: string, known: boolean, rating?: string}>} history
  * @property {boolean} learnedManually "Öğrenilmişe al" ile mi işaretlendi
+ * @property {number} ease     Kolaylık katsayısı (SM-2)
+ * @property {number} interval Sonraki tekrara kaç gün
+ * @property {number} reps     Üst üste doğru cevap sayısı
+ * @property {number} lapses   Kaç kez unutuldu
  */
 
 /**
@@ -168,7 +173,11 @@ export function createProgress(wordId, { now = todayISO() } = {}) {
 		nextReviewAt: now,
 		addedAt: now,
 		history: [],
-		learnedManually: false
+		learnedManually: false,
+		ease: EASE_DEFAULT,
+		interval: 0,
+		reps: 0,
+		lapses: 0
 	};
 }
 
@@ -197,9 +206,19 @@ export function normalizeProgress(raw, wordId) {
 		history: Array.isArray(r.history)
 			? r.history
 					.filter((h) => h && typeof h === 'object')
-					.map((h) => ({ date: toValidISO(h.date) || todayISO(), known: !!h.known }))
+					.map((h) => {
+						const entry = { date: toValidISO(h.date) || todayISO(), known: !!h.known };
+						if (h.rating) entry.rating = String(h.rating);
+						return entry;
+					})
 			: [],
-		learnedManually: !!r.learnedManually
+		learnedManually: !!r.learnedManually,
+		// Zamanlama alanları yoksa eski `level` alanından türetilir,
+		// böylece 1.0/1.2 verisi kayıpsız geçer.
+		...(() => {
+			const sch = readSchedule(r);
+			return { ease: sch.ease, interval: sch.interval, reps: sch.reps, lapses: sch.lapses };
+		})()
 	};
 }
 
@@ -218,7 +237,11 @@ export function merge(definition, progress) {
 		nextReviewAt: p.nextReviewAt,
 		addedAt: p.addedAt,
 		history: p.history,
-		learnedManually: p.learnedManually
+		learnedManually: p.learnedManually,
+		ease: p.ease,
+		interval: p.interval,
+		reps: p.reps,
+		lapses: p.lapses
 	};
 }
 

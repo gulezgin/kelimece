@@ -5,6 +5,7 @@
  * burada cevaplar ilerlemeye YAZILMAZ, sadece seviye ölçülür.
  */
 import { createSession } from '../core/placement.js';
+import { hasEnglishVoice, speak, stop as stopSpeech } from '../core/speech.js';
 import { el } from './dom.js';
 
 let overlayNode = null;
@@ -26,6 +27,9 @@ export function startPlacement(words, { onFinish }) {
 	const progressLabel = el('span', { class: 'small' });
 	const bar = el('div', { class: 'placeBarFill' });
 	const prompt = el('div', { class: 'placePrompt' });
+	const speakBtn = el('button', { class: 'speakBtn', text: '🔊', title: 'Telaffuzu dinle' });
+	const promptRow = el('div', { class: 'placePromptRow' }, [prompt, hasEnglishVoice() ? speakBtn : null]);
+	speakBtn.onclick = () => speak(prompt.textContent);
 	const optionsBox = el('div', { class: 'placeOptions' });
 	const hint = el('div', { class: 'small placeHint', text: 'Doğru Türkçe karşılığı seç' });
 
@@ -37,7 +41,7 @@ export function startPlacement(words, { onFinish }) {
 			progressLabel
 		]),
 		el('div', { class: 'placeBar' }, [bar]),
-		prompt,
+		promptRow,
 		hint,
 		optionsBox,
 		el('div', { class: 'placeActions' }, [exitBtn])
@@ -52,6 +56,7 @@ export function startPlacement(words, { onFinish }) {
 	let locked = false;
 
 	function close(result) {
+		stopSpeech();
 		document.removeEventListener('keydown', onKey, true);
 		document.body.classList.remove('modalOpen');
 		if (overlayNode) overlayNode.remove();

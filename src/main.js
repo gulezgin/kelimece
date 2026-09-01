@@ -228,7 +228,7 @@ async function startReviewSession({ free = false, levels = null } = {}) {
 
 	review.startSession(queue, {
 		getWord: (id) => store.getWord(id),
-		onAnswer: (id, known) => store.markResult(id, known),
+		onRate: (id, rating) => store.rateWord(id, rating),
 		onFinish: async (stats) => {
 			render();
 			if (stats.answered > 0) {

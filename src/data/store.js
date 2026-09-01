@@ -9,6 +9,7 @@
  * Filtreleme ve sıralama bellekte yapılır — 10 bin kelimede bile birkaç MB,
  * bu yüzden IndexedDB'de indeksli sorguya gerek yok.
  */
+import { applyRating } from '../core/scheduler.js';
 import { applyResult, MAX_LEVEL, scheduleNext } from '../core/srs.js';
 import { isSameDay, todayISO } from '../core/time.js';
 import {
@@ -107,13 +108,21 @@ function toProgress(w) {
 		nextReviewAt: w.nextReviewAt,
 		addedAt: w.addedAt,
 		history: w.history,
-		learnedManually: !!w.learnedManually
+		learnedManually: !!w.learnedManually,
+		ease: w.ease,
+		interval: w.interval,
+		reps: w.reps,
+		lapses: w.lapses
 	};
 }
 
 /** Düz kayıttan tanım parçasını ayırır. */
 function toDefinition(w) {
-	const { level, nextReviewAt, addedAt, history, learnedManually, ...definition } = w;
+	const {
+		level, nextReviewAt, addedAt, history, learnedManually,
+		ease, interval, reps, lapses,
+		...definition
+	} = w;
 	return definition;
 }
 
@@ -329,10 +338,24 @@ export async function addWord(input) {
 
 /** Bir cevabı kaydeder ve tekrar takvimini günceller. */
 export async function markResult(id, known) {
+	// Eski iki düğmeli arayüz için: bildim -> good, unuttum -> again
+	return rateWord(id, known ? 'good' : 'again');
+}
+
+/**
+ * Dört seçenekli değerlendirmeyi uygular (again / hard / good / easy).
+ *
+ * markResult'ın yerini alır; o da geriye dönük uyumluluk için duruyor
+ * ve buraya yönleniyor.
+ *
+ * @param {string} id
+ * @param {'again'|'hard'|'good'|'easy'} rating
+ */
+export async function rateWord(id, rating) {
 	const current = byId.get(id);
 	if (!current) return null;
 
-	const updated = { ...current, ...pickProgress(applyResult(current, known)) };
+	const updated = applyRating(current, rating);
 	replaceInMemory(updated);
 	emit();
 	await persistProgress(updated);

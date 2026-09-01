@@ -4,6 +4,7 @@
  * Bu modül durumu değiştirmez; olayları dışarıdan verilen geri çağrılara
  * (callbacks) iletir. Böylece render mantığı veri mantığından ayrı kalır.
  */
+import { hasEnglishVoice, speak } from '../core/speech.js';
 import { isDue } from '../core/time.js';
 import { MAX_LEVEL } from '../core/srs.js';
 import { $, el } from './dom.js';
@@ -105,8 +106,19 @@ function wordCard(w, { onKnown, onForgot, onLearn, onDelete, onTagClick }) {
 	const learned = w.level >= MAX_LEVEL;
 	const due = isDue(w.nextReviewAt);
 
+	const speakBtn = hasEnglishVoice()
+		? el('button', { class: 'speakBtn speakBtn--sm', text: '🔊', title: 'Telaffuzu dinle' })
+		: null;
+	if (speakBtn) {
+		speakBtn.onclick = (e) => {
+			e.stopPropagation();
+			speak(w.en);
+		};
+	}
+
 	const top = el('div', { class: 'top' }, [
 		el('div', { class: 'en', text: w.en }),
+		speakBtn,
 		el('div', { class: 'tr', text: '— ' + w.tr }),
 		el('div', { class: 'spacer' }),
 		w.cefr ? el('span', { class: 'cefr cefr--' + w.cefr, text: w.cefr }) : null,

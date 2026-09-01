@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.0] - 2026-09-01
+
+Öğrenme motoru ve telaffuz.
+
+### Değişti
+- **SM-2 tabanlı zamanlayıcı.** 1.0'daki sistem sabit bir merdivendi:
+  her doğru bir basamak yukarı, her yanlış en başa. İki sorunu vardı —
+  zor kelime ile kolay kelime aynı hızda ilerliyordu ve tek bir yanlış,
+  aylarca süren ilerlemeyi siliyordu.
+
+  Yeni sistem her kelimeye bir **kolaylık katsayısı** tutar: kolay
+  bulduğun kelimenin aralığı hızla açılır, zorlandığınınki dar kalır.
+  "Hiç hatırlamadım" aralığı kısaltır ama katsayıyı ve geçmişi silmez.
+
+- **Dört seçenekli değerlendirme:** Hiç / Zor / İyi / Kolay.
+  Her düğme bir sonraki tekrarın ne zaman olacağını gösterir
+  ("İyi — 12 gün"), böylece karar somutlaşır. Klavye: 1-4.
+
+- Eski `level` alanı gösterim ve süzgeçler için korunuyor, aralıktan
+  türetiliyor. **1.0/1.2 verisi kayıpsız geçiyor**: `ease`/`interval`
+  yoksa eski basamaktan hesaplanıyor (level 5 → 30 gün).
+
+### Eklendi
+- **Telaffuz.** Her kelimenin yanında 🔊 düğmesi; tekrar ekranında,
+  kelime kartlarında ve seviye testinde. Tarayıcının konuşma sentezini
+  kullanıyor: ücretsiz, çevrimdışı ve Android WebView'de çalışıyor.
+  Klavye kısayolu: S. İngilizce ses yoksa düğme hiç görünmez.
+
+### Not
+- 2500 kelime için ses dosyası paketlemek yüzlerce MB olurdu; Web Speech
+  API cihazdaki sesleri kullandığı için paket boyutunu hiç artırmıyor.
+  Bedeli: ses kalitesi cihaza göre değişiyor.
+
+---
+
 ## [1.6.0] - 2026-09-01
 
 Uygulama artık kurulabilir (PWA) ve Android'e taşınmaya hazır.
