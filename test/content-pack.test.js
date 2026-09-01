@@ -192,6 +192,63 @@ describe('sıklık ve sınıflandırma alanları', () => {
 	});
 });
 
+describe('sözcük türü ve konu', () => {
+	const VALID_POS = new Set([
+		'noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition',
+		'conjunction', 'determiner', 'number', 'ordinal', 'phrasal verb', 'phrase'
+	]);
+
+	it('kelimelerin yarısından fazlasında sözcük türü var', () => {
+		const withPos = pack.words.filter((w) => w.pos);
+		expect(withPos.length / pack.words.length).toBeGreaterThan(0.5);
+	});
+
+	it('yalnızca bilinen sözcük türleri kullanılıyor', () => {
+		const bad = pack.words.filter((w) => w.pos && !VALID_POS.has(w.pos)).map((w) => w.en + ':' + w.pos);
+		expect(bad).toEqual([]);
+	});
+
+	it('Türkçe mastar ile biten kayıtlar fiil işaretli', () => {
+		// "-mek/-mak" en güvenilir tür ipucu; kaçırılmamalı.
+		//
+		// İki istisna:
+		//  - Noktalı virgül ayrı anlamları gösterir ("aşçı; pişirmek"),
+		//    orada isim de fiil de doğru olabilir.
+		//  - "parmak", "ekmek" gibi Türkçe isimler mastar gibi biter.
+		const TR_NOUNS = new Set(['parmak', 'ekmek', 'yemek', 'çocuk', 'ayak',
+			'yatak', 'bardak', 'bıçak', 'kaynak', 'dudak', 'yanak', 'sıcak',
+			'oyuncak', 'tabak']);
+
+		const missed = pack.words.filter((w) => {
+			if (/[\s-]/.test(w.en)) return false;
+			if (w.tr.includes(';')) return false;
+			// "Her anlamı mastar" olmalı: "report" = "bildirmek, rapor"
+			// hem isim hem fiil, ikisi de doğru. Ama tüm anlamları
+			// mastarsa kelime kesin fiildir.
+			const senses = w.tr.toLowerCase().split(',').map((p) => p.trim()).filter(Boolean);
+			const allVerbs = senses.length > 0 && senses.every(
+				(p) => /(mek|mak)$/.test(p) && !(!/\s/.test(p) && TR_NOUNS.has(p))
+			);
+			return allVerbs && w.pos !== 'verb';
+		}).map((w) => w.en);
+		expect(missed).toEqual([]);
+	});
+
+	it('sözcük türü yalnızca kaynak dosyalardan ya da çıkarımdan gelir', () => {
+		// Regresyon: infer-pos.mjs üretilmiş paketi okuyup kendi eski
+		// çıktısını "elle yazılmış" sanıyordu. Hatalı bir çıkarım sonsuza
+		// kadar korunuyor, düzeltme hiç uygulanmıyordu.
+		// "bread" (ekmek) yanlışlıkla fiil işaretlenmişti.
+		const bread = pack.words.find((w) => w.en === 'bread');
+		expect(bread.pos).not.toBe('verb');
+	});
+
+	it('konusu olan kayıtlarda konu boş metin değil', () => {
+		const bad = pack.words.filter((w) => w.topic !== null && !String(w.topic).trim());
+		expect(bad).toEqual([]);
+	});
+});
+
 describe('şema uyumu', () => {
 	it('her kayıt normalizeDefinition sınırından değişmeden geçer', () => {
 		// Paket, uygulamanın doğrulama katmanıyla birebir uyumlu olmalı;

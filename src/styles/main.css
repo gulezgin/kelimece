@@ -1671,3 +1671,14 @@ svg.chart {
 	border-radius: 999px;
 	white-space: nowrap;
 }
+
+/* Sozcuk turu rozeti */
+.posTag {
+	font-size: 11px;
+	color: #c9d6ff;
+	background: #171f3a;
+	border: 1px solid #2a3660;
+	padding: 3px 8px;
+	border-radius: 999px;
+	white-space: nowrap;
+}

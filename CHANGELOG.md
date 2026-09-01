@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.11.0] - 2026-09-01
+
+### Eklendi
+- **Sözcük türü** 841 → **1581** kayıtta dolu (%63).
+  En güçlü ipucu Türkçe karşılık: Türkçede mastar "-mek/-mak" ile biter,
+  yani "terk etmek" karşılığı olan İngilizce kelime fiildir. Bu tek kural
+  416 fiili yakaladı. İngilizce son ekleri (-ly, -tion, -ous…) ikinci sırada.
+  Emin olunamayan kayıtlar **boş bırakıldı** — yanlış etiket etiketsizden
+  daha zararlı.
+- **Konu** 841 → **1258** kayıtta dolu (%50). 20 anlamsal grup.
+  Genel/soyut kelimeler konusuz kalıyor; her kelimenin konusu olmak
+  zorunda değil.
+- Kart listesinde sözcük türü rozeti (isim, fiil, sıfat…).
+
+### Değişti
+- **Yanıltıcı şıklar artık aynı sözcük türünden seçiliyor.** "run"
+  sorusuna "table" şıkkını elemek kolay; "walk" gerçek bir ayırt etme
+  gerektirir.
+
+### Düzeltildi
+- **Geri besleme döngüsü:** `infer-pos.mjs` üretilmiş paketi okuyup
+  kendi eski çıktısını "elle yazılmış" sanıyordu. Hatalı bir çıkarım
+  sonsuza kadar korunuyor, düzeltme hiç uygulanamıyordu. Artık elle
+  yazılan değerler yalnızca kaynak dosyalardan okunuyor.
+- `bread` (ekmek) fiil işaretlenmişti: "parmak", "ekmek", "çocuk" gibi
+  Türkçe **isimler** de mastar gibi bitiyor. İstisna listesi eklendi.
+- **`be` = "almak"** — 1.0 verisinde anlamı tamamen değiştiren bir yazım
+  hatası, doğrusu "olmak". Düz metin eşlemesi yetmedi çünkü `take` için
+  "almak" doğru; kelimeye özel düzeltme mekanizması eklendi.
+- Eklenen kelime zaten varsa artık anlamlar birleştiriliyor:
+  `report` = "bildirmek" + "rapor" → "bildirmek, rapor".
+
+---
+
 ## [1.10.0] - 2026-09-01
 
 ### Eklendi

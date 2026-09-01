@@ -122,6 +122,7 @@ function wordCard(w, { onKnown, onForgot, onLearn, onDelete, onTagClick }) {
 		el('div', { class: 'tr', text: '— ' + w.tr }),
 		el('div', { class: 'spacer' }),
 		w.cefr ? el('span', { class: 'cefr cefr--' + w.cefr, text: w.cefr }) : null,
+		w.pos ? el('span', { class: 'posTag', text: POS_LABELS[w.pos] || w.pos }) : null,
 		el('span', { class: 'kpill', text: 'Seviye ' + w.level }),
 		el('span', {
 			class: 'badge ' + (learned ? 'ok' : due ? 'warn' : ''),
@@ -193,6 +194,22 @@ export function renderTiles(list) {
 	}
 	tiles.appendChild(frag);
 }
+
+/** Sözcük türlerinin Türkçe karşılıkları. */
+export const POS_LABELS = {
+	noun: 'isim',
+	verb: 'fiil',
+	adjective: 'sıfat',
+	adverb: 'zarf',
+	pronoun: 'zamir',
+	preposition: 'edat',
+	conjunction: 'bağlaç',
+	determiner: 'belirteç',
+	number: 'sayı',
+	ordinal: 'sıra sayı',
+	'phrasal verb': 'öbek fiil',
+	phrase: 'kalıp'
+};
 
 /** CEFR seviyeleri, öğrenme sırasıyla. */
 export const CEFR_ORDER = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];

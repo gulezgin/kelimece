@@ -115,8 +115,20 @@ export function findSurfaceForm(word, sentence) {
  */
 function pickDistractors(word, pool, count, field, random) {
 	const seen = new Set([normalize(word[field])]);
+
+	// Iyi bir yaniltici hedefe benzer olmali: ayni seviye VE ayni sozcuk
+	// turu. "run" sorusuna "table" siki elemek kolay; "walk" ise gercek
+	// bir ayirt etme gerektirir.
 	const sameLevel = pool.filter((w) => w.cefr === word.cefr && w.id !== word.id);
-	const source = sameLevel.length >= count * 3 ? sameLevel : pool;
+	const samePos = word.pos
+		? sameLevel.filter((w) => w.pos === word.pos)
+		: [];
+
+	const source = samePos.length >= count * 3
+		? samePos
+		: sameLevel.length >= count * 3
+			? sameLevel
+			: pool;
 
 	const out = [];
 	for (const candidate of shuffle(source, random)) {

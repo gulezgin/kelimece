@@ -24,6 +24,7 @@ const ADDITION_FILES = [
 ];
 const FREQ_INPUT = join(ROOT, 'data/sources/en_50k.txt');
 const EXAMPLES_INPUT = join(ROOT, 'data/examples.json');
+const POS_INPUT = join(ROOT, 'data/pos-map.json');
 const OUTPUT = join(ROOT, 'public/content/core-v1.json');
 
 const PACK_ID = 'core';
@@ -35,7 +36,8 @@ const PACK_ID = 'core';
 //            sirasindan secilen, havuzda olmayan gercek sozcukler).
 //   3 -> 4 : 2441 ornek cumle eklendi (Tatoeba, CC BY 2.0 FR) -
 //            Turkce cevirileriyle birlikte.
-const PACK_VERSION = 4;
+//   4 -> 5 : sozcuk turu 841 -> 1560, konu 841 -> 1247 kayitta dolu.
+const PACK_VERSION = 5;
 
 const DRY = process.argv.includes('--dry');
 
@@ -110,6 +112,15 @@ const FIXES = {
 		'midigate': 'mitigate',
 		'angles': 'angle',
 		'labor': 'labour'
+	},
+	/**
+	 * Kelimeye OZEL Turkce duzeltmeler.
+	 * Duz tr esemesi yetmiyor: "be" karsiligi yanlislikla "almak"
+	 * yazilmis ama "take" icin "almak" DOGRU. Bu yuzden anahtar
+	 * Ingilizce bas sozcuk.
+	 */
+	trByWord: {
+		be: 'olmak'
 	},
 	tr: {
 		'teleaş': 'telaş',
@@ -240,6 +251,21 @@ try {
 	console.log('  (data/examples.json bulunamadi - ornek cumle eklenmeyecek)');
 }
 
+/**
+ * Sozcuk turu ve konu esemesi. scripts/infer-pos.mjs uretir.
+ * Emin olunamayan kayitlar bos birakilir - yanlis etiket etiketsizden
+ * daha zararli.
+ */
+let posByWord = {};
+let topicByWord = {};
+try {
+	const data = JSON.parse(readFileSync(POS_INPUT, 'utf8'));
+	posByWord = data.pos || {};
+	topicByWord = data.topic || {};
+} catch {
+	console.log('  (data/pos-map.json bulunamadi - sozcuk turu/konu eklenmeyecek)');
+}
+
 const raw = JSON.parse(readFileSync(INPUT, 'utf8'));
 const words = Array.isArray(raw.words) ? raw.words : [];
 report.input = words.length;
@@ -261,7 +287,10 @@ for (const w of words) {
 		report.fixedDotlessI.push(`${en} -> ${deDotted}`);
 		en = deDotted;
 	}
-	if (FIXES.tr[tr]) {
+	if (FIXES.trByWord[en]) {
+		report.fixedTr.push(`${en}: ${tr} -> ${FIXES.trByWord[en]}`);
+		tr = FIXES.trByWord[en];
+	} else if (FIXES.tr[tr]) {
 		report.fixedTr.push(`${tr} -> ${FIXES.tr[tr]}`);
 		tr = FIXES.tr[tr];
 	}
@@ -329,9 +358,9 @@ for (const w of words) {
 		aliases: originalEn.toLowerCase() !== en.toLowerCase() ? [originalEn] : [],
 		tags: Array.isArray(w.tags) ? w.tags.map(collapse).filter(Boolean) : [],
 		cefr: cefrByWord.get(en.toLowerCase()) || null,
-		pos: null,
+		pos: posByWord[en] || null,
 		ipa: null,
-		topic: null,
+		topic: topicByWord[en] || null,
 		freqRank: rankFor(en),
 		audio: null,
 		source: PACK_ID
@@ -353,6 +382,16 @@ for (const file of ADDITION_FILES) {
 		const key = en.toLowerCase();
 		if (!en || !a.tr) continue;
 		if (seen.has(key)) {
+			// Kelime zaten var ama eklemede FARKLI bir anlam olabilir:
+			// "report" pakette "bildirmek" (fiil), eklemede "rapor" (isim).
+			// Ikisi de dogru; anlamlari birlestir, kaydi cogaltma.
+			const existing = seen.get(key);
+			const merged = new Set([
+				...existing.tr.split(/[,;]/).map(collapse),
+				...collapse(a.tr).split(/[,;]/).map(collapse)
+			]);
+			existing.tr = [...merged].filter(Boolean).join(', ');
+			if (!existing.topic && a.topic) existing.topic = a.topic;
 			clash++;
 			continue;
 		}
@@ -367,9 +406,9 @@ for (const file of ADDITION_FILES) {
 			aliases: [],
 			tags: [],
 			cefr: a.cefr || cefrByWord.get(key) || null,
-			pos: a.pos || null,
+			pos: a.pos || posByWord[en] || null,
 			ipa: null,
-			topic: a.topic || null,
+			topic: a.topic || topicByWord[en] || null,
 			freqRank: rankFor(en),
 			audio: null,
 			source: PACK_ID

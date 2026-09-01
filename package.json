@@ -1,6 +1,6 @@
 {
   "name": "kelime-havuzum",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "private": true,
   "type": "module",
   "description": "Aralıklı tekrar (SRS) ile Türkçe-İngilizce kelime öğrenme uygulaması",
@@ -19,7 +19,8 @@
     "android:open": "npx cap open android",
     "android:build": "npm run android:sync && cd android && gradlew bundleRelease",
     "build:capacitor": "node scripts/build-capacitor.mjs",
-    "build:examples": "python scripts/build-examples.py"
+    "build:examples": "python scripts/build-examples.py",
+    "infer:pos": "node scripts/infer-pos.mjs"
   },
   "keywords": [
     "vocabulary",
