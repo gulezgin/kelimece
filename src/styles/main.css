@@ -1506,3 +1506,168 @@ button.typeSubmit {
 	.typeRow { flex-direction: column; }
 	button.typeSubmit { width: 100%; }
 }
+
+/* ==============================================
+   ISTATISTIK EKRANI
+   ============================================== */
+.chartWrap {
+	margin-top: 14px;
+	background: #0e1424;
+	border: 1px solid #212a44;
+	border-radius: 10px;
+	padding: 12px;
+}
+
+svg.chart {
+	width: 100%;
+	height: 120px;
+	display: block;
+}
+
+.chartBar {
+	fill: var(--acc);
+	opacity: 0.85;
+}
+
+.chartBar--empty {
+	fill: #2a3350;
+	opacity: 0.6;
+}
+
+/* --- Ogrenme asamalari --- */
+.stageBar {
+	display: flex;
+	height: 14px;
+	border-radius: 999px;
+	overflow: hidden;
+	margin-top: 14px;
+	background: #0e1424;
+}
+
+.stageSeg {
+	flex-basis: 0;
+	min-width: 3px;
+}
+
+.stage--learned { background: #3ddc97; }
+.stage--maturing { background: #5cc8ff; }
+.stage--young { background: #4a7fd4; }
+.stage--learning { background: #6a5b9a; }
+.stage--untouched { background: #2a3350; }
+
+.stageLegend {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+	gap: 8px;
+	margin-top: 14px;
+}
+
+.stageItem {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+}
+
+.stageDot {
+	width: 10px;
+	height: 10px;
+	border-radius: 3px;
+	flex: 0 0 auto;
+}
+
+.stageName {
+	color: var(--muted);
+}
+
+.stageCount {
+	margin-left: auto;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+
+/* --- Onumuzdeki yuk --- */
+.loadRows {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	margin-top: 14px;
+}
+
+.loadRow {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 12.5px;
+}
+
+.loadLabel {
+	flex: 0 0 70px;
+	color: var(--muted);
+}
+
+.loadTrack {
+	flex: 1;
+	height: 12px;
+	background: #0e1424;
+	border-radius: 999px;
+	overflow: hidden;
+}
+
+.loadFill {
+	height: 100%;
+	background: linear-gradient(90deg, var(--acc), var(--good));
+	border-radius: 999px;
+	min-width: 2px;
+}
+
+.loadFill--overdue {
+	background: linear-gradient(90deg, var(--warn), var(--bad));
+}
+
+.loadCount {
+	flex: 0 0 42px;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	font-weight: 600;
+}
+
+/* --- En zor kelimeler --- */
+.hardList {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-top: 14px;
+}
+
+.hardItem {
+	display: flex;
+	align-items: baseline;
+	gap: 10px;
+	padding: 9px 12px;
+	background: #0e1424;
+	border: 1px solid #212a44;
+	border-radius: 8px;
+	flex-wrap: wrap;
+}
+
+.hardEn {
+	font-weight: 700;
+}
+
+.hardTr {
+	color: var(--muted);
+	font-size: 13px;
+	flex: 1;
+	min-width: 90px;
+}
+
+.hardLapses {
+	font-size: 12px;
+	color: #ffd6d6;
+	background: #2a1414;
+	border: 1px solid #5b2a2a;
+	padding: 2px 8px;
+	border-radius: 999px;
+	white-space: nowrap;
+}

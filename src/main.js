@@ -16,6 +16,7 @@ import { renderDashboard } from './ui/dashboard.js';
 import { alertDialog, choiceDialog, confirmDialog, toast } from './ui/dialog.js';
 import { $, debounce } from './ui/dom.js';
 import { startPlacement } from './ui/placement.js';
+import { renderStatsView } from './ui/statsView.js';
 import * as review from './ui/review.js';
 import {
 	filterWords,
@@ -37,7 +38,7 @@ let activeView = 'cards';
 let activeLevel = 'all';
 
 /** Görünen ana bölüm. */
-/** @type {'home'|'pool'} */
+/** @type {'home'|'stats'|'pool'} */
 let activeSection = 'home';
 
 // ===================== Render =====================
@@ -54,6 +55,16 @@ function selectLevel(level) {
 
 function render() {
 	const breakdown = levelBreakdown(store.state.words, MAX_LEVEL);
+
+	if (activeSection === 'stats') {
+		// İstatistik profil seviyesi kapsamında; seviye yoksa tüm havuz.
+		const scope = store.state.profile.level
+			? filterWords(store.state.words, {}).filter((w) => levelsUpTo(store.state.profile.level).includes(w.cefr))
+			: store.state.words;
+		renderStatsView(scope, store.state.profile);
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
 
 	if (activeSection === 'home') {
 		// Profil seviyesi varsa özet o seviyeye ve altına odaklanır.
@@ -388,6 +399,7 @@ function wireEvents() {
 	});
 
 	$('navHome').addEventListener('click', () => showSection('home'));
+	$('navStats').addEventListener('click', () => showSection('stats'));
 	$('navPool').addEventListener('click', () => showSection('pool'));
 
 	$('tabCards').addEventListener('click', () => switchView('cards'));
@@ -440,12 +452,15 @@ function wireEvents() {
 /** Ana bölümler arasında geçiş. */
 function showSection(section) {
 	activeSection = section;
-	$('homeView').classList.toggle('hidden', section !== 'home');
-	$('poolView').classList.toggle('hidden', section !== 'pool');
-	$('navHome').classList.toggle('active', section === 'home');
-	$('navPool').classList.toggle('active', section === 'pool');
-	$('navHome').setAttribute('aria-selected', String(section === 'home'));
-	$('navPool').setAttribute('aria-selected', String(section === 'pool'));
+	for (const [name, viewId, navId] of [
+		['home', 'homeView', 'navHome'],
+		['stats', 'statsView', 'navStats'],
+		['pool', 'poolView', 'navPool']
+	]) {
+		$(viewId).classList.toggle('hidden', section !== name);
+		$(navId).classList.toggle('active', section === name);
+		$(navId).setAttribute('aria-selected', String(section === name));
+	}
 	window.scrollTo(0, 0);
 	render();
 }
@@ -575,8 +590,8 @@ function handleBackButton() {
 		document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
 		return true;
 	}
-	// Havuzdaysa ana ekrana don
-	if (activeSection === 'pool') {
+	// Ana ekran disinda bir bolumdeyse ana ekrana don
+	if (activeSection !== 'home') {
 		showSection('home');
 		return true;
 	}

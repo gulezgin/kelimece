@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.0] - 2026-09-01
+
+### Eklendi
+- **Günlük hatırlatma bildirimleri.** Android'de uygulama kapalıyken de
+  çalışır, tarayıcıda sekme açıkken. İzin zorunlu olarak isteniyor,
+  reddedilirse sessizce devre dışı kalıyor. Varsayılan kapalı.
+  Mesaj dili kasıtlı olarak baskısız: *"serini kaybettin"* değil
+  *"seni bekliyor"*. Bir test suçlayıcı kelimelerin girmesini engelliyor.
+- **İstatistik ekranı** (yeni üçüncü bölüm):
+  - Hatırlama oranı — genel ve son 30 gün
+  - Son 30 günün günlük cevap grafiği (saf SVG, kütüphane yok)
+  - Öğrenme aşamaları — başlanmamış / öğreniliyor / genç / pekişiyor / öğrenilmiş
+  - Önündeki 14 günün tekrar yükü, gecikmişler ayrı
+  - En çok zorlanılan kelimeler (unutma sayısı + kolaylık katsayısına göre)
+  - Tahmini kelime hazinesi — kaba tahmin olduğu belirtilerek
+
+### Düzeltildi
+- Geçmişteki bozuk kayıt (elle düzenlenmiş yedek, eski sürüm)
+  istatistik hesabını çökertiyordu. Üç fonksiyonda koruma eklendi.
+- Android geri tuşu artık istatistik ekranından da ana ekrana dönüyor.
+
+---
+
 ## [1.9.0] - 2026-09-01
 
 Öz-değerlendirme yerine gerçek test; tanıma yanına üretim eklendi.
