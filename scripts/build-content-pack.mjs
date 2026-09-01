@@ -25,6 +25,7 @@ const ADDITION_FILES = [
 const FREQ_INPUT = join(ROOT, 'data/sources/en_50k.txt');
 const EXAMPLES_INPUT = join(ROOT, 'data/examples.json');
 const POS_INPUT = join(ROOT, 'data/pos-map.json');
+const OXFORD_INPUT = join(ROOT, 'data/oxford-lists.json');
 const OUTPUT = join(ROOT, 'public/content/core-v1.json');
 
 const PACK_ID = 'core';
@@ -37,7 +38,9 @@ const PACK_ID = 'core';
 //   3 -> 4 : 2441 ornek cumle eklendi (Tatoeba, CC BY 2.0 FR) -
 //            Turkce cevirileriyle birlikte.
 //   4 -> 5 : sozcuk turu 841 -> 1560, konu 841 -> 1247 kayitta dolu.
-const PACK_VERSION = 5;
+//   5 -> 6 : Oxford CEFR listeleri islendi - seviyeler dogrulandi,
+//            sozcuk turu tamamlandi, 2819 yeni kelime eklendi.
+const PACK_VERSION = 6;
 
 const DRY = process.argv.includes('--dry');
 
@@ -120,7 +123,12 @@ const FIXES = {
 	 * Ingilizce bas sozcuk.
 	 */
 	trByWord: {
-		be: 'olmak'
+		be: 'olmak',
+		// 1.0 verisinde fiil ikiye bolunmus: "paket lemek"
+		package: 'paketlemek, paket',
+		// Ceviri degil, kullanicinin kendi hatirlatma notu
+		'in order to': '-mek için, amacıyla',
+		'stay': 'kalmak, konaklamak'
 	},
 	tr: {
 		'teleaş': 'telaş',
@@ -196,6 +204,8 @@ const report = {
 	additions: 0,
 	additionClashes: 0,
 	rejectedExamples: [],
+	oxfordEnriched: 0,
+	oxfordAdded: 0,
 	duplicates: [],
 	dropped: []
 };
@@ -264,6 +274,91 @@ try {
 	topicByWord = data.topic || {};
 } catch {
 	console.log('  (data/pos-map.json bulunamadi - sozcuk turu/konu eklenmeyecek)');
+}
+
+/**
+ * Oxford CEFR listeleri: seviye + Turkce anlamlar + sozcuk turu.
+ *
+ * Bu liste yayimlanmis bir derecelendirme; elle yaptigim seviye
+ * atamalarindan daha yetkili. Cakismada Oxford kazanir.
+ * Listede olmayan kelimeler (teknik terimler, kullanici eklemeleri)
+ * kendi seviyelerini korur.
+ */
+const oxfordByWord = new Map();
+try {
+	const data = JSON.parse(readFileSync(OXFORD_INPUT, 'utf8'));
+	for (const w of data.words || []) {
+		oxfordByWord.set(w.en.toLowerCase(), w);
+	}
+	console.log(`  Oxford listesi: ${oxfordByWord.size} kelime yuklendi`);
+} catch {
+	console.log('  (data/oxford-lists.json bulunamadi - Oxford verisi kullanilmayacak)');
+}
+
+/** Oxford anlamlarini tek bir Turkce karsilik metnine cevirir. */
+function oxfordMeaning(entry, limit = 3) {
+	const seen = new Set();
+	const out = [];
+	for (const sense of entry.senses || []) {
+		const tr = collapse(sense.tr);
+		const key = tr.toLowerCase();
+		if (!tr || seen.has(key)) continue;
+		seen.add(key);
+		out.push(tr);
+		if (out.length >= limit) break;
+	}
+	return out.join(', ');
+}
+
+/**
+ * Mevcut karsiliga Oxford anlamlarini ekler.
+ *
+ * Yalnizca ZAYIF kayitlar zenginlestiriliyor. Zaten iki-uc anlami olan
+ * bir kayda Oxford'un nadir anlamlarini eklemek karti gurultulendiriyor:
+ * "career" = "kariyer" iken "hiz yapmak, son hizda gitmek" eklenince
+ * ogrenci hangisini ezberleyecegini bilemiyor.
+ */
+/**
+ * "-mak/-mek" ile biten ama fiil OLMAYAN Turkce isimler.
+ * Bu liste olmadan "bread" (ekmek) fiil isaretleniyor.
+ * scripts/infer-pos.mjs icindeki listeyle ayni tutulmali.
+ */
+const TR_NOUN_EXCEPTIONS = new Set([
+	'parmak', 'ekmek', 'yemek', 'kaymak', 'çakmak', 'ilmek', 'tokmak',
+	'bıçak', 'kaynak', 'durak', 'yatak', 'kapak', 'sıcak', 'tarak',
+	'oyuncak', 'bardak', 'ayak', 'damak', 'yanak', 'dudak', 'çocuk',
+	'başak', 'sokak', 'yaprak', 'toprak', 'kucak', 'bacak', 'dirsek',
+	'köpek', 'elek', 'çiçek', 'böcek', 'gömlek', 'etek', 'erkek',
+	'inek', 'kelebek', 'bebek', 'direk', 'yürek', 'kürek', 'melek',
+	'tabak', 'konak', 'ocak', 'yanak', 'kucak', 'sacak', 'balık'
+]);
+
+function posAgreeingWithMeaning(tr, pos) {
+	const senses = String(tr || '').split(/[,;]/).map((p) => collapse(p)).filter(Boolean);
+	if (!senses.length) return pos;
+	// Gosterilen TUM anlamlar mastar ise tur fiildir.
+	const allInfinitive = senses.every((p) => {
+		const lower = p.toLowerCase();
+		if (!/\s/.test(lower) && TR_NOUN_EXCEPTIONS.has(lower)) return false;
+		return /(mek|mak)$/.test(lower) && lower.length > 4;
+	});
+	return allInfinitive ? 'verb' : pos;
+}
+
+function enrichMeaning(existing, entry) {
+	const senses = existing.split(/[,;]/).map((p) => collapse(p)).filter(Boolean);
+	if (senses.length >= 2) return existing;
+
+	const seen = new Set(senses.map((p) => p.toLowerCase()));
+	for (const sense of entry.senses || []) {
+		const tr = collapse(sense.tr);
+		const key = tr.toLowerCase();
+		if (!tr || seen.has(key)) continue;
+		// Cok uzun aciklamalar karti sisiriyor
+		if (tr.length > 30) continue;
+		return existing + ', ' + tr;
+	}
+	return existing;
 }
 
 const raw = JSON.parse(readFileSync(INPUT, 'utf8'));
@@ -340,6 +435,11 @@ for (const w of words) {
 		continue;
 	}
 
+	const oxford = oxfordByWord.get(en.toLowerCase());
+	if (oxford) {
+		tr = enrichMeaning(tr, oxford);
+		report.oxfordEnriched++;
+	}
 	const picked = examplesByWord.get(en.toLowerCase());
 	// Kullanicinin kendi ornegi duzgun bir cumleyse onceliklidir;
 	// degilse Tatoeba'dan secilen cumle kullanilir.
@@ -357,8 +457,14 @@ for (const w of words) {
 		// artık "prosperity" ama kullanıcının ilerlemesi eski yazımda duruyor.
 		aliases: originalEn.toLowerCase() !== en.toLowerCase() ? [originalEn] : [],
 		tags: Array.isArray(w.tags) ? w.tags.map(collapse).filter(Boolean) : [],
-		cefr: cefrByWord.get(en.toLowerCase()) || null,
-		pos: posByWord[en] || null,
+		// Oxford seviyesi elle atanandan yetkili
+		cefr: (oxford && oxford.cefr) || cefrByWord.get(en.toLowerCase()) || null,
+		// Oxford'un cogunluk oyuyla belirlenmis turu; kaynaktaki tekil
+		// tur hatalarina karsi ilk anlamin turunden daha guvenilir.
+		// Tur, gosterilen Turkce karsilikla tutarli olmali: "stay" hem
+		// isim hem fiil ama pakette yalnizca "kalmak" gosteriliyorsa
+		// karta "isim" yazmak celiskili olur.
+		pos: posAgreeingWithMeaning(tr, (oxford && oxford.pos) || posByWord[en] || null),
 		ipa: null,
 		topic: topicByWord[en] || null,
 		freqRank: rankFor(en),
@@ -421,6 +527,42 @@ for (const file of ADDITION_FILES) {
 	report.additionClashes += clash;
 }
 
+// ---------- Oxford listesinden eksik kelimeleri ekle ----------
+{
+	let added = 0;
+	for (const entry of oxfordByWord.values()) {
+		const key = entry.en.toLowerCase();
+		if (seen.has(key)) continue;
+
+		const en = collapse(entry.en);
+		const tr = oxfordMeaning(entry);
+		if (!en || !tr) continue;
+
+		const picked = examplesByWord.get(key);
+		const def = {
+			id: `${PACK_ID}:${slugify(en)}`,
+			en,
+			tr,
+			example: picked ? picked.en : '',
+			exampleTr: picked ? picked.tr : '',
+			synonyms: [],
+			aliases: [],
+			tags: [],
+			cefr: entry.cefr,
+			pos: posAgreeingWithMeaning(tr, entry.pos || (entry.senses[0] && entry.senses[0].pos) || null),
+			ipa: null,
+			topic: topicByWord[en] || null,
+			freqRank: rankFor(en),
+			audio: null,
+			source: PACK_ID
+		};
+		seen.set(key, def);
+		definitions.push(def);
+		added++;
+	}
+	report.oxfordAdded = added;
+}
+
 definitions.sort((a, b) => a.en.localeCompare(b.en, 'en', { sensitivity: 'base' }));
 report.output = definitions.length;
 
@@ -460,6 +602,8 @@ if (report.rejectedExamples.length) {
 	console.log(`  Elenen kullanıcı örneği: ${report.rejectedExamples.length}`, report.rejectedExamples);
 }
 console.log(`  Sözcük türü olan   : ${definitions.filter((d) => d.pos).length}`);
+console.log(`  Oxford zenginleştirdi: ${report.oxfordEnriched}`);
+console.log(`  Oxford'dan eklenen : ${report.oxfordAdded}`);
 
 const byLevel = {};
 let untagged = 0;

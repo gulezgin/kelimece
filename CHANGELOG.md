@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2026-09-01
+
+Oxford CEFR listeleri işlendi. İçerik iki katına çıktı ve seviyeler
+artık yayımlanmış bir derecelendirmeye dayanıyor.
+
+### Eklendi
+- **2819 yeni kelime.** Paket 2493 → **5310**.
+  A1:856 A2:859 B1:864 B2:1362 C1:1350 C2:19
+- Yeni kelimelerin tamamında CEFR seviyesi, Türkçe karşılık ve
+  sözcük türü; %97'sinde örnek cümle (Tatoeba'dan yeniden üretildi).
+- `scripts/extract-oxford.py` — PDF listelerini ayrıştırır.
+
+### Değişti
+- **Seviyeler artık Oxford'un derecelendirmesine dayanıyor.**
+  Örtüşen 2102 kelimenin %62'sinde kendi atamamla aynıydı; farklı
+  olanlarda Oxford esas alındı. En büyük düzeltmeler: `career` B1→A1,
+  `compare` B1→A1, `culture` B1→A1, `colleague` B2→A2, `appetite` B1→C1.
+- **Sözcük türü 1581 → 5159** (%97). Artık neredeyse tüm kelimelerde var.
+- Zayıf Türkçe karşılıklar zenginleştirildi (1327 kayıt). Zaten iki-üç
+  anlamı olanlara dokunulmadı — Oxford'un nadir anlamlarını eklemek
+  kartı gürültülendiriyordu (`career` = "kariyer" + "hız yapmak").
+
+### Düzeltildi
+- **Türkçe/İngilizce eşsesli tuzağı:** `ten on [i.] onluk [i.]` satırında
+  "on" hem İngilizce edat hem Türkçe "10". Baş sözcük "ten on" çıkıyordu.
+  8 çok sözcüklü adaydan 4'ü sahteymiş.
+- **Kaynak PDF'teki ~142 sözcük türü hatası** çoğunluk oyuyla düzeltildi
+  (`regain` isim işaretliydi, fiil).
+- **Sözcük türü artık gösterilen Türkçe karşılıkla tutarlı.** `stay`
+  "isim" yazıp "kalmak" göstermek çelişkiliydi.
+- 1.0 verisinden iki bozuk çeviri: `package` = "paket lemek" (fiil ikiye
+  bölünmüş), `in order to` = "mek mak bir sonraki cümle için" (çeviri
+  değil, kullanıcının notu).
+
+### Doğrulandı
+Paket v1'den v6'ya yeniden kuruldu; ilerlemesi olan 40 kelimenin
+geçmişi ve tekrar aralıkları eksiksiz korundu.
+
+### Lisans notu
+Oxford 3000/5000 listeleri Oxford University Press derlemesidir.
+Tek tek kelimeler ve seviyeleri olgudur; derlemenin kendisi bazı
+ülkelerde veritabanı hakkı doğurabilir. Ticari yayından önce
+değerlendirilmeli — ayrıntı `data/sources/README.md`.
+
+---
+
 ## [1.11.0] - 2026-09-01
 
 ### Eklendi

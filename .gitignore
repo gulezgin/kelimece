@@ -65,3 +65,6 @@ android/keystore.properties
 assets/generated/
 data/sources/*.bz2
 data/sources/*.tsv
+
+# Oxford liste PDF leri (buyuk ikili dosyalar; cikti data/oxford-lists.json)
+Oxford_Lists_*.pdf

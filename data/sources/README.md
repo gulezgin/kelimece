@@ -55,3 +55,37 @@ CC BY, kaynağın belirtilmesini şart koşar. Atıf üç yerde veriliyor:
   ama eşit puanda geçmeyen cümle tercih ediliyor
 
 Kapsama: **2441 / 2493 kelime (%97,9)**
+
+## Oxford CEFR listeleri
+
+`Oxford_Lists_A1.pdf` … `Oxford_Lists_C1.pdf` (proje kökünde, git'e girmez)
+→ `data/oxford-lists.json` (ayrıştırılmış çıktı, git'e girer)
+
+- **Kaynak:** kullanıcı tarafından sağlandı
+- **İçerik:** 4921 kelime — CEFR seviyesi + 1-3 Türkçe karşılık +
+  sözcük türü (`[i.]` isim, `[f.]` fiil, `[s.]` sıfat, `[zf.]` zarf,
+  `[zm.]` zamir, `[bağ.]` bağlaç, `[ed.]` edat, `[ünl.]` ünlem)
+- **Kullanım:** seviye doğrulama, sözcük türü, Türkçe karşılık
+  zenginleştirme ve yeni kelime ekleme
+
+### Ayrıştırmada çözülen iki sorun
+
+**1. Türkçe/İngilizce eşsesli tuzağı.** PDF metninde sütun ayracı yok:
+`ten on [i.] onluk [i.]` tek satır. "on" hem İngilizce edat hem
+Türkçe "10" olduğu için baş sözcük yanlışlıkla "ten on" çıkıyordu.
+Çözüm: iki sözcüklü baş sözcük yalnızca ilk parça gerçek bir ifade
+kurucu ise (`according`, `have`, `used`, `look`…) ve kalan kısım `[`
+ile başlamıyorsa kabul ediliyor. Sonuç: 8 aday → 4 gerçek
+(`according to`, `have to`, `next to`, `used to`).
+
+**2. Kaynaktaki sözcük türü hataları.** Örnek:
+`regain geri kazanmak [i.] tekrar ele geçirmek [f.] tekrar kavuşmak [f.]`
+— ilk anlam yanlışlıkla isim işaretli, oysa üçü de fiil. İlk anlamın
+türünü almak yerine **çoğunluk oyu** kullanılıyor; bu ~142 kaydı düzeltti.
+
+### Lisans notu
+
+Oxford 3000/5000 listeleri Oxford University Press'in derlemesidir.
+Tek tek kelimeler ve seviyeleri olgudur, ancak **derlemenin kendisi**
+bazı ülkelerde veritabanı/derleme hakkı doğurabilir. Ticari dağıtımdan
+önce bu konuya bakılması önerilir — ayrıntı README ve proje notlarında.

@@ -25,7 +25,7 @@ describe('paket üst verisi', () => {
 
 describe('kelime kayıtları', () => {
 	it('boş değil', () => {
-		expect(pack.words.length).toBeGreaterThan(1500);
+		expect(pack.words.length).toBeGreaterThan(4000);
 	});
 
 	it('her kaydın benzersiz kimliği var', () => {
@@ -195,7 +195,8 @@ describe('sıklık ve sınıflandırma alanları', () => {
 describe('sözcük türü ve konu', () => {
 	const VALID_POS = new Set([
 		'noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition',
-		'conjunction', 'determiner', 'number', 'ordinal', 'phrasal verb', 'phrase'
+		'conjunction', 'determiner', 'number', 'ordinal', 'phrasal verb', 'phrase',
+		'interjection'
 	]);
 
 	it('kelimelerin yarısından fazlasında sözcük türü var', () => {
