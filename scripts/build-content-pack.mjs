@@ -16,7 +16,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // gonderilmesine gerek yok, sadece paket uretiminin kaynagi.
 const INPUT = join(ROOT, 'data/kelime-havuzu-orijinal-2026-01-12.json');
 const CEFR_INPUT = join(ROOT, 'data/cefr-levels.json');
-const ADDITIONS_INPUT = join(ROOT, 'data/additions-a1-core.json');
+// Ek kelime dosyalari. Sirayla islenir; onceki dosyada olan kelime
+// tekrar eklenmez.
+const ADDITION_FILES = [
+	'data/additions-a1-core.json',
+	'data/additions-core-b.json'
+];
 const FREQ_INPUT = join(ROOT, 'data/sources/en_50k.txt');
 const OUTPUT = join(ROOT, 'public/content/core-v1.json');
 
@@ -25,7 +30,9 @@ const PACK_ID = 'core';
 // tazelenir, ilerleme kararli kimlikler sayesinde yerinde kalir.
 //   1 -> 2 : 202 A1 temel kelimesi eklendi, 94 seviye duzeltmesi,
 //            siklik siralari (freqRank), konu ve sozcuk turu alanlari.
-const PACK_VERSION = 2;
+//   2 -> 3 : 639 orta seviye kelime eklendi (siklik listesinin ilk 4000
+//            sirasindan secilen, havuzda olmayan gercek sozcukler).
+const PACK_VERSION = 3;
 
 const DRY = process.argv.includes('--dry');
 
@@ -286,8 +293,8 @@ for (const w of words) {
 // ---------- A1 temel kelime eklemesi ----------
 // Mevcut havuz temali isimlerde iyi ama dilbilgisi omurgasi (sayilar,
 // gunler, aylar, soru kelimeleri, zamirler, baglaclar) eksikti.
-{
-	const additions = JSON.parse(readFileSync(ADDITIONS_INPUT, 'utf8'));
+for (const file of ADDITION_FILES) {
+	const additions = JSON.parse(readFileSync(join(ROOT, file), 'utf8'));
 	let added = 0;
 	let clash = 0;
 	for (const a of additions.words || []) {
@@ -319,8 +326,8 @@ for (const w of words) {
 		definitions.push(def);
 		added++;
 	}
-	report.additions = added;
-	report.additionClashes = clash;
+	report.additions += added;
+	report.additionClashes += clash;
 }
 
 definitions.sort((a, b) => a.en.localeCompare(b.en, 'en', { sensitivity: 'base' }));
