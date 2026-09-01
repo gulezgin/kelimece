@@ -63,3 +63,5 @@ android/keystore.properties
 
 # Uretilen ikonlar (kaynak assets/icon.svg'den yeniden uretilir)
 assets/generated/
+data/sources/*.bz2
+data/sources/*.tsv

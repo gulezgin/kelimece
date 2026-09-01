@@ -144,7 +144,13 @@ function wordCard(w, { onKnown, onForgot, onLearn, onDelete, onTagClick }) {
 	if (w.synonyms && w.synonyms.length) {
 		card.appendChild(el('div', { class: 'small', text: 'Eş anlamlı: ' + w.synonyms.join(', ') }));
 	}
-	if (w.example) card.appendChild(el('div', { class: 'small', text: 'Örnek: ' + w.example }));
+	if (w.example) {
+		const box = el('div', { class: 'exampleBox exampleBox--card' }, [
+			el('div', { class: 'exampleEn', text: w.example }),
+			w.exampleTr ? el('div', { class: 'exampleTr', text: w.exampleTr }) : null
+		]);
+		card.appendChild(box);
+	}
 
 	const knowBtn = el('button', { class: 'good', text: 'Biliyordum ✓' });
 	knowBtn.onclick = () => onKnown(w.id);

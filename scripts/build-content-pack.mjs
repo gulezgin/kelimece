@@ -23,6 +23,7 @@ const ADDITION_FILES = [
 	'data/additions-core-b.json'
 ];
 const FREQ_INPUT = join(ROOT, 'data/sources/en_50k.txt');
+const EXAMPLES_INPUT = join(ROOT, 'data/examples.json');
 const OUTPUT = join(ROOT, 'public/content/core-v1.json');
 
 const PACK_ID = 'core';
@@ -32,7 +33,9 @@ const PACK_ID = 'core';
 //            siklik siralari (freqRank), konu ve sozcuk turu alanlari.
 //   2 -> 3 : 639 orta seviye kelime eklendi (siklik listesinin ilk 4000
 //            sirasindan secilen, havuzda olmayan gercek sozcukler).
-const PACK_VERSION = 3;
+//   3 -> 4 : 2441 ornek cumle eklendi (Tatoeba, CC BY 2.0 FR) -
+//            Turkce cevirileriyle birlikte.
+const PACK_VERSION = 4;
 
 const DRY = process.argv.includes('--dry');
 
@@ -140,6 +143,34 @@ function slugify(text) {
 		.replace(/^-+|-+$/g, '');
 }
 
+/**
+ * Kullanicinin kendi ornegi duzgun bir cumle mi?
+ *
+ * Kullanici ornegi normalde Tatoeba'nin onune gecer - kendi verisi,
+ * saygi gosterilir. Ama 1.0 verisindeki 4 ornekten 2'si cumle degildi:
+ * biri cok satirli bir kullanim notu ("until 2005 / till yesterday /
+ * by tomorrow"), biri dilbilgisi hatali. Bu kapi onlari eleyip
+ * Tatoeba'ya dusuyor; kullanicinin metni data/ altindaki orijinal
+ * yedekte duruyor, kaybolmuyor.
+ */
+const KNOWN_BAD_EXAMPLES = new Set([
+	// Dilbilgisi hatali: "to don't hit"
+	"the cyclist braked hard to don't hit the child."
+]);
+
+function isWellFormedSentence(text) {
+	const t = String(text || '').trim();
+	if (!t) return false;
+	// Cok satirli metin bir kullanim notudur, cumle degil.
+	if (t.split(String.fromCharCode(10)).length > 1) return false;
+	if (KNOWN_BAD_EXAMPLES.has(t.toLowerCase())) return false;
+	const words = t.split(/\s+/).length;
+	if (words < 3 || words > 16) return false;
+	if (!/^[A-Z]/.test(t)) return false;
+	if (!/[.!?]$/.test(t)) return false;
+	return true;
+}
+
 function collapse(text) {
 	return String(text || '').replace(/\s+/g, ' ').trim();
 }
@@ -153,6 +184,7 @@ const report = {
 	synonymsExtracted: 0,
 	additions: 0,
 	additionClashes: 0,
+	rejectedExamples: [],
 	duplicates: [],
 	dropped: []
 };
@@ -192,6 +224,20 @@ function rankFor(en) {
 	const key = en.toLowerCase().trim();
 	if (/[\s-]/.test(key)) return null;
 	return freqRank.get(key) || null;
+}
+
+/**
+ * Ornek cumleler. Kaynak: Tatoeba (CC BY 2.0 FR), scripts/build-examples.py
+ * ile secildi. Dosya yoksa paket ornek cumlesiz uretilir.
+ */
+const examplesByWord = new Map();
+try {
+	const data = JSON.parse(readFileSync(EXAMPLES_INPUT, 'utf8'));
+	for (const [word, ex] of Object.entries(data.examples || {})) {
+		examplesByWord.set(word.toLowerCase(), ex);
+	}
+} catch {
+	console.log('  (data/examples.json bulunamadi - ornek cumle eklenmeyecek)');
 }
 
 const raw = JSON.parse(readFileSync(INPUT, 'utf8'));
@@ -265,12 +311,17 @@ for (const w of words) {
 		continue;
 	}
 
+	const picked = examplesByWord.get(en.toLowerCase());
+	// Kullanicinin kendi ornegi duzgun bir cumleyse onceliklidir;
+	// degilse Tatoeba'dan secilen cumle kullanilir.
+	const ownExample = isWellFormedSentence(w.example) ? collapse(w.example) : '';
+	if (w.example && !ownExample) report.rejectedExamples.push(en);
 	const def = {
 		id: `${PACK_ID}:${slugify(en)}`,
 		en,
 		tr,
-		example: collapse(w.example),
-		exampleTr: '',
+		example: ownExample || (picked ? picked.en : ''),
+		exampleTr: ownExample ? '' : (picked ? picked.tr : ''),
 		synonyms,
 		// Kaydın bu paketten önceki hâli. Eski yedekleri ve 1.0 verisini
 		// doğru kelimeye bağlamak için gerekli: "prosperity, welfare, wealth"
@@ -305,12 +356,13 @@ for (const file of ADDITION_FILES) {
 			clash++;
 			continue;
 		}
+		const picked = examplesByWord.get(key);
 		const def = {
 			id: `${PACK_ID}:${slugify(en)}`,
 			en,
 			tr: collapse(a.tr),
-			example: collapse(a.example),
-			exampleTr: collapse(a.exampleTr),
+			example: collapse(a.example) || (picked ? picked.en : ''),
+			exampleTr: collapse(a.exampleTr) || (picked ? picked.tr : ''),
 			synonyms: [],
 			aliases: [],
 			tags: [],
@@ -339,6 +391,10 @@ const pack = {
 		version: PACK_VERSION,
 		name: 'Temel Kelime Paketi',
 		language: 'en-tr',
+		// CC BY 2.0 FR atif zorunlulugu: uygulama icinde de gosteriliyor
+		attribution: [
+			{ name: 'Tatoeba', url: 'https://tatoeba.org', license: 'CC BY 2.0 FR', use: 'örnek cümleler' }
+		],
 		wordCount: definitions.length,
 		builtAt: new Date().toISOString()
 	},
@@ -359,6 +415,11 @@ console.log(`  A1 temel eklemesi  : ${report.additions}` +
 	(report.additionClashes ? `  (${report.additionClashes} zaten vardı)` : ''));
 console.log(`  Sıklık sırası olan : ${definitions.filter((d) => d.freqRank).length}`);
 console.log(`  Konu etiketi olan  : ${definitions.filter((d) => d.topic).length}`);
+console.log(`  Örnek cümlesi olan : ${definitions.filter((d) => d.example).length}`);
+console.log(`  TR çevirisi olan   : ${definitions.filter((d) => d.exampleTr).length}`);
+if (report.rejectedExamples.length) {
+	console.log(`  Elenen kullanıcı örneği: ${report.rejectedExamples.length}`, report.rejectedExamples);
+}
 console.log(`  Sözcük türü olan   : ${definitions.filter((d) => d.pos).length}`);
 
 const byLevel = {};

@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.8.0] - 2026-09-01
+
+En büyük içerik açığı kapandı: kelimeler artık bağlamıyla geliyor.
+
+### Eklendi
+- **2441 örnek cümle, Türkçe çevirileriyle** (önceki: 4).
+  Kapsama: 2493 kelimenin %97,9'u.
+  Kaynak: [Tatoeba](https://tatoeba.org), CC BY 2.0 FR — ticari kullanıma
+  açık, atıf zorunlu.
+- Örnek cümle kartta ve tekrar ekranında, İngilizcesi öne çıkan
+  Türkçesi altında soluk duran bir blokta gösteriliyor.
+- **Kaynak atfı** üç yerde: uygulama içinde Ayarlar → Kaynaklar,
+  gizlilik politikası ve içerik paketinin üst verisinde. Bir test bu
+  atfın pakette kalmasını kilitliyor — kaldırılması lisans ihlali olur.
+
+### Seçim yöntemi
+675.000 Türkçe çevirisi olan İngilizce cümle tarandı. Her kelime için:
+
+- 4-12 sözcük (bağlam yeterli, okuması kolay)
+- Büyük harfle başlayıp noktalama ile bitmeli
+- **Cümledeki diğer kelimeler hedef kelimenin seviyesinde ya da altında** —
+  A1 kelimesi C1 cümlesiyle öğretilmez
+- Tatoeba'nın yer tutucu adları (Tom, Mary…) hafif cezalı
+
+### Düzeltildi
+- Kullanıcının kendi örneği artık bir kalite kapısından geçiyor.
+  1.0 verisindeki 4 örnekten 2'si cümle değildi — biri çok satırlı bir
+  kullanım notu, biri dilbilgisi hatalı. Bunlar Tatoeba örneğine
+  düşüyor; kullanıcının metni `data/` altındaki orijinal yedekte duruyor.
+
+---
+
 ## [1.7.0] - 2026-09-01
 
 Öğrenme motoru ve telaffuz.

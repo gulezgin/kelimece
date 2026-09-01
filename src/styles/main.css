@@ -1291,3 +1291,63 @@ button.rate--easy .rateLabel { color: #c4e4ff; }
 	.rateLabel { font-size: 13px; }
 	.rateWhen { font-size: 10.5px; }
 }
+
+/* ==============================================
+   ORNEK CUMLE
+   ============================================== */
+.exampleBox {
+	margin-top: 14px;
+	padding: 12px 14px;
+	background: #0e1424;
+	border: 1px solid #212a44;
+	border-left: 3px solid var(--acc);
+	border-radius: 4px 10px 10px 4px;
+}
+
+.exampleBox--card {
+	margin-top: 10px;
+	padding: 9px 11px;
+}
+
+.exampleEn {
+	font-size: 15px;
+	line-height: 1.5;
+	color: var(--text);
+}
+
+.exampleBox--card .exampleEn {
+	font-size: 13px;
+}
+
+.exampleTr {
+	font-size: 13px;
+	line-height: 1.5;
+	color: var(--muted);
+	margin-top: 4px;
+}
+
+.exampleBox--card .exampleTr {
+	font-size: 12px;
+}
+
+.exampleBox .small {
+	margin-top: 6px;
+}
+
+/* ==============================================
+   KAYNAK ATFI
+   ============================================== */
+.credits {
+	font-size: 12px;
+	color: var(--muted);
+	line-height: 1.7;
+}
+
+.credits a {
+	color: var(--acc);
+	text-decoration: none;
+}
+
+.credits a:hover {
+	text-decoration: underline;
+}

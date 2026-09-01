@@ -52,7 +52,13 @@ function buildOverlay(handlers) {
 	});
 	const enRow = el('div', { class: 'reviewEnRow' }, [enNode, hasEnglishVoice() ? speakBtn : null]);
 	const trNode = el('div', { class: 'tr', attrs: { id: 'reviewTr' } });
-	const exNode = el('div', { class: 'small', attrs: { id: 'reviewEx' } });
+	const exNode = el('div', { class: 'exampleBox', attrs: { id: 'reviewEx' } });
+	const exEn = el('div', { class: 'exampleEn' });
+	const exTr = el('div', { class: 'exampleTr' });
+	const exExtra = el('div', { class: 'small' });
+	exNode.appendChild(exEn);
+	exNode.appendChild(exTr);
+	exNode.appendChild(exExtra);
 	const tagsNode = el('div', { class: 'tags', attrs: { id: 'reviewTags' } });
 
 	const btnShow = el('button', { class: 'ghost', text: 'Anlamı Göster (Boşluk)' });
@@ -97,7 +103,10 @@ function buildOverlay(handlers) {
 		attrs: { id: 'reviewOverlay', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Tekrar oturumu' }
 	}, [card]);
 
-	refs = { progress, cefr, level, enNode, trNode, exNode, tagsNode, btnShow, rateRow, rateButtons, btnSkip, btnExit };
+	refs = {
+		progress, cefr, level, enNode, trNode, exNode, exEn, exTr, exExtra,
+		tagsNode, btnShow, rateRow, rateButtons, btnSkip, btnExit
+	};
 
 	speakBtn.onclick = (e) => {
 		e.stopPropagation();
@@ -158,7 +167,7 @@ function onKey(e) {
 
 function reveal() {
 	refs.trNode.style.display = '';
-	refs.exNode.style.display = refs.exNode.textContent ? '' : 'none';
+	refs.exNode.style.display = '';
 	refs.rateRow.classList.remove('hidden');
 	refs.btnShow.style.display = 'none';
 }
@@ -194,10 +203,19 @@ function paint(w) {
 	refs.cefr.className = 'cefr' + (w.cefr ? ' cefr--' + w.cefr : ' hidden');
 	refs.enNode.textContent = w.en;
 	refs.trNode.textContent = '— ' + w.tr;
+	// Örnek cümle: İngilizcesi öne çıkar, Türkçesi altında soluk durur.
+	// Cümleyi bağlamıyla görmek, kelimeyi tek başına ezberlemekten
+	// çok daha iyi transfer sağlıyor.
+	refs.exEn.textContent = w.example || '';
+	refs.exTr.textContent = w.exampleTr || '';
+	refs.exEn.classList.toggle('hidden', !w.example);
+	refs.exTr.classList.toggle('hidden', !w.exampleTr);
+
 	const extras = [];
 	if (w.synonyms && w.synonyms.length) extras.push('Eş anlamlı: ' + w.synonyms.join(', '));
-	if (w.example) extras.push('Örnek: ' + w.example);
-	refs.exNode.textContent = extras.join('  ·  ');
+	refs.exExtra.textContent = extras.join('  ·  ');
+	refs.exExtra.classList.toggle('hidden', !extras.length);
+	refs.exNode.classList.toggle('hidden', !w.example && !extras.length);
 
 	refs.tagsNode.textContent = '';
 	for (const t of w.tags || []) refs.tagsNode.appendChild(el('span', { class: 'tag', text: t }));

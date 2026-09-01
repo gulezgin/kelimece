@@ -122,6 +122,57 @@ describe('A1 temel kelime dağarcığı', () => {
 	});
 });
 
+describe('örnek cümleler', () => {
+	const withExample = pack.words.filter((w) => w.example);
+
+	it('kelimelerin büyük çoğunluğunda örnek cümle var', () => {
+		expect(withExample.length / pack.words.length).toBeGreaterThan(0.9);
+	});
+
+	it('örneklerin neredeyse tamamında Türkçe çeviri var', () => {
+		const withTr = withExample.filter((w) => w.exampleTr);
+		expect(withTr.length / withExample.length).toBeGreaterThan(0.98);
+	});
+
+	it('örnek cümle hedef kelimeyi içerir', () => {
+		// Çekim toleransı: "bury" cümlede "buries" olarak geçebilir,
+		// bu yüzden y->i dönüşümü de kök sayılıyor.
+		const failures = [];
+		for (const w of withExample.slice(0, 400)) {
+			if (/[\s-]/.test(w.en)) continue; // öbekler ayrı ele alınır
+			const lower = w.en.toLowerCase();
+			const stems = [lower, lower.replace(/e$/, ''), lower.replace(/y$/, 'i')];
+			const text = w.example.toLowerCase();
+			if (!stems.some((s) => text.includes(s))) failures.push(w.en);
+		}
+		expect(failures).toEqual([]);
+	});
+
+	it('örnek cümleler makul uzunlukta', () => {
+		const bad = withExample.filter((w) => {
+			const n = w.example.split(/\s+/).length;
+			return n < 3 || n > 16;
+		});
+		expect(bad.map((w) => w.en)).toEqual([]);
+	});
+
+	it('örnek cümleler noktalama ile biter', () => {
+		const bad = withExample.filter((w) => !/[.!?]$/.test(w.example.trim()));
+		expect(bad.map((w) => w.en)).toEqual([]);
+	});
+});
+
+describe('kaynak atfı', () => {
+	it('paket Tatoeba atfını taşır', () => {
+		// CC BY 2.0 FR atfı zorunlu kılıyor; kaldırılırsa lisans ihlali.
+		const attribution = pack.pack.attribution || [];
+		expect(attribution.some((a) => a.name === 'Tatoeba')).toBe(true);
+		const tatoeba = attribution.find((a) => a.name === 'Tatoeba');
+		expect(tatoeba.license).toContain('CC BY');
+		expect(tatoeba.url).toBeTruthy();
+	});
+});
+
 describe('sıklık ve sınıflandırma alanları', () => {
 	it('tek kelimelerin çoğunda sıklık sırası var', () => {
 		const single = pack.words.filter((w) => !/[\s-]/.test(w.en));

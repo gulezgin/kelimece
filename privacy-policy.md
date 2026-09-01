@@ -52,10 +52,15 @@ veri toplamaz.
 Uygulama hiçbir üçüncü taraf analitik, reklam veya izleme hizmeti
 kullanmaz.
 
-Kelime paketi hazırlanırken açık lisanslı bir kullanım sıklığı veri
-kümesinden yararlanılmıştır (hermitdave/FrequencyWords, MIT lisansı).
-Bu yalnızca içerik hazırlığında kullanılmıştır; uygulama çalışırken
-hiçbir dış hizmete bağlanmaz.
+Kelime paketi hazırlanırken açık lisanslı iki veri kümesinden
+yararlanılmıştır:
+
+- **Tatoeba** (https://tatoeba.org) — örnek cümleler, CC BY 2.0 FR
+- **hermitdave/FrequencyWords** — kullanım sıklığı, MIT
+
+Her ikisi de yalnızca içerik hazırlığında kullanılmıştır; uygulama
+çalışırken hiçbir dış hizmete bağlanmaz. Atıflar uygulama içinde
+Ayarlar > Kaynaklar bölümünde gösterilir.
 
 ## Değişiklikler
 
