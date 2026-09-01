@@ -49,3 +49,17 @@ dist/
 
 # Kaynak veriler (paket uretimi icin, yayinlanmaz)
 data/sources/*.txt
+
+# Android / Capacitor
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/keystore.properties
+*.keystore
+*.jks
+*.aab
+*.apk
+
+# Uretilen ikonlar (kaynak assets/icon.svg'den yeniden uretilir)
+assets/generated/

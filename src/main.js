@@ -10,6 +10,7 @@ import { levelsUpTo } from './core/placement.js';
 import { buildReviewQueue, MAX_LEVEL } from './core/srs.js';
 import { isDue } from './core/time.js';
 import * as store from './data/store.js';
+import { setupNative } from './platform/native.js';
 import { renderDashboard } from './ui/dashboard.js';
 import { alertDialog, choiceDialog, confirmDialog, toast } from './ui/dialog.js';
 import { $, debounce } from './ui/dom.js';
@@ -455,6 +456,10 @@ async function boot() {
 		toast('Temel kelime paketi kuruldu.');
 	}
 
+	// Android kabugu: durum cubugu, acilis ekrani ve geri tusu.
+	// Tarayicida hicbir sey yapmaz.
+	setupNative({ onBack: handleBackButton });
+
 	if (result.repair && result.repair.changed) {
 		const a = result.repair.analysis;
 		await alertDialog(
@@ -480,6 +485,34 @@ async function boot() {
 }
 
 boot();
+
+/**
+ * Android geri tusu: acik katmani kapat.
+ * @returns {boolean} Olay yutuldu mu
+ */
+function handleBackButton() {
+	// En ustteki katmandan basla
+	const dialog = document.querySelector('.dialogOverlay');
+	if (dialog) {
+		const cancel = dialog.querySelector('.dialogActions button');
+		if (cancel) cancel.click();
+		return true;
+	}
+	if (document.querySelector('.placeOverlay')) {
+		document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+		return true;
+	}
+	if (review.isActive()) {
+		document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+		return true;
+	}
+	// Havuzdaysa ana ekrana don
+	if (activeSection === 'pool') {
+		showSection('home');
+		return true;
+	}
+	return false;
+}
 
 // Geliştirme sırasında konsoldan incelemek için
 if (import.meta.env.DEV) {

@@ -1,6 +1,6 @@
 {
   "name": "kelime-havuzum",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "type": "module",
   "description": "Aralıklı tekrar (SRS) ile Türkçe-İngilizce kelime öğrenme uygulaması",
@@ -12,7 +12,13 @@
     "test:watch": "vitest",
     "build:content": "node scripts/build-content-pack.mjs",
     "cefr:analyze": "node scripts/analyze-cefr.mjs",
-    "cefr:reconcile": "node scripts/reconcile-cefr.mjs"
+    "cefr:reconcile": "node scripts/reconcile-cefr.mjs",
+    "build:icons": "node scripts/build-icons.mjs",
+    "android:add": "npx cap add android",
+    "android:sync": "npm run build:capacitor && npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:build": "npm run android:sync && cd android && gradlew bundleRelease",
+    "build:capacitor": "node scripts/build-capacitor.mjs"
   },
   "keywords": [
     "vocabulary",
@@ -27,7 +33,11 @@
   "author": "Kelime Havuzum Contributors",
   "license": "MIT",
   "devDependencies": {
+    "@capacitor/android": "^8.5.1",
+    "@capacitor/cli": "^8.5.1",
+    "sharp": "^0.35.4",
     "vite": "^7.3.6",
+    "vite-plugin-pwa": "^1.3.0",
     "vitest": "^3.2.7"
   },
   "repository": {
@@ -37,5 +47,11 @@
   "bugs": {
     "url": "https://github.com/gulezgin/WordPool-TR-EN/issues"
   },
-  "homepage": "https://WordPool-TR-EN.netlify.app"
+  "homepage": "https://WordPool-TR-EN.netlify.app",
+  "dependencies": {
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/core": "^8.5.1",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.3"
+  }
 }

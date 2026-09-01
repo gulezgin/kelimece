@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.0] - 2026-09-01
+
+Uygulama artık kurulabilir (PWA) ve Android'e taşınmaya hazır.
+
+### Eklendi
+- **PWA desteği.** Servis çalışanı, manifest ve ikonlar. Uygulama telefona
+  kurulabiliyor ve tamamen çevrimdışı çalışıyor (23 dosya, 672 KB önbellek).
+- **Uygulama ikonu.** `assets/icon.svg` kaynağından PWA, iOS ve Android
+  (adaptif + açılış ekranı) varyantları üretiliyor: `npm run build:icons`.
+- **Capacitor yapılandırması.** Paket adı, açılış ekranı ve durum çubuğu
+  ayarları hazır. Yerel entegrasyon (`src/platform/native.js`):
+  durum çubuğu teması, açılış ekranının kapatılması ve **Android geri
+  tuşu** — açık diyalog/test/tekrar katmanını kapatır, havuzdayken ana
+  ekrana döner, ancak en üstteyken uygulamadan çıkar.
+- **ANDROID.md** — Node yükseltmesinden imzalı AAB'ye kadar tüm adımlar,
+  keystore uyarıları ve sık karşılaşılan sorunlar.
+- **privacy-policy.md** — Play Store'un zorunlu tuttuğu gizlilik metni.
+- **store-listing.md** — mağaza kaydı için hazır Türkçe metinler,
+  içerik derecelendirmesi ve veri güvenliği formu cevapları.
+
+### Notlar
+- Capacitor 8 CLI **Node 22 LTS** gerektiriyor (kurulu sürüm 20.13).
+  `npx cap add android` çalıştırmadan önce Node yükseltilmeli.
+  Ayrıntı: ANDROID.md bölüm 0.
+- Capacitor build'i servis çalışanı üretmez (`npm run build:capacitor`):
+  yerel WebView'de gereksiz ve eski önbellek güncellemeleri gizleyebiliyor.
+
+## [1.5.0] - 2026-09-01
+
+### Eklendi
+- **Ana ekran.** Uygulamanın yeni açılış ekranı: seviye, günlük durum,
+  seri, seviye seviye ilerleme ve tek tuşla çalışmaya başlama.
+  Üst navigasyon: Ana Sayfa / Havuz.
+- **Seviye belirleme testi.** Basamaklı uyarlanabilir test: A2'den başlar,
+  her seviyede 4 soru sorar, %75+ doğruda yükselir, %50 altında iner.
+  En fazla 24 soru. Sonuç profile yazılır ve ana ekran o seviyeye
+  odaklanır. Cevaplar ilerlemeye yazılmaz — sadece seviye ölçülür.
+- **Kullanıcı profili ve seri takibi.** Günde en az bir cevapla seri
+  ilerler; bir günden fazla ara verilince sıfırlanır.
+
+### Değişti
+- İçerik paketi v3: 639 orta seviye kelime eklendi (sıklık listesinin
+  ilk 4000 sırasından seçilen, havuzda olmayan gerçek sözcükler).
+  Toplam **2493 kelime** — A1:599 A2:679 B1:639 B2:383 C1:174 C2:19.
+
+---
+
 ## [1.4.0] - 2026-08-31
 
 İçerik paketi v2. Seviye atamaları dış veriyle doğrulandı, A1 temel
