@@ -39,10 +39,29 @@ export const DEFAULT_SETTINGS = {
 	today: null
 };
 
-/** @type {{words: object[], settings: object, ready: boolean, packs: object}} */
+/**
+ * Kullanıcı profili: hedef seviye ve çalışma alışkanlığı.
+ * İçerikten ve ilerlemeden ayrı tutuluyor — ikisi de kelime bazlı,
+ * bu ise kullanıcı bazlı.
+ */
+export const DEFAULT_PROFILE = {
+	/** Seviye belirleme testinin ya da elle seçimin sonucu. */
+	level: null,
+	placedAt: null,
+	/** Üst üste çalışılan gün sayısı. */
+	streak: 0,
+	longestStreak: 0,
+	/** Son çalışılan günün ISO tarihi. */
+	lastStudyDate: null,
+	/** Bugün verilen cevap sayısı. */
+	studiedToday: 0
+};
+
+/** @type {{words: object[], settings: object, profile: object, ready: boolean, packs: object}} */
 export const state = {
 	words: [],
 	settings: { ...DEFAULT_SETTINGS, today: todayISO() },
+	profile: { ...DEFAULT_PROFILE },
 	ready: false,
 	packs: {}
 };
@@ -115,6 +134,14 @@ async function persistSettings() {
 	}
 }
 
+async function persistProfile() {
+	try {
+		await setMeta('profile', state.profile);
+	} catch (e) {
+		reportError(e, 'profil');
+	}
+}
+
 // ===================== Yaşam döngüsü =====================
 
 /**
@@ -149,6 +176,8 @@ export async function init({ packUrl } = {}) {
 		await loadIntoMemory();
 		result.repair = await runAutoRepairOnce();
 
+		state.profile = { ...DEFAULT_PROFILE, ...((await getMeta('profile')) || {}) };
+		refreshStreak();
 		state.settings = { ...DEFAULT_SETTINGS, ...((await getMeta('settings')) || {}) };
 		if (!state.settings.today) state.settings.today = todayISO();
 		if (!isSameDay(state.settings.today, new Date())) {
@@ -307,6 +336,7 @@ export async function markResult(id, known) {
 	replaceInMemory(updated);
 	emit();
 	await persistProgress(updated);
+	await recordStudyActivity();
 	return updated;
 }
 
@@ -376,6 +406,7 @@ export async function wipeAll() {
 	state.words = [];
 	byId.clear();
 	state.settings = { ...DEFAULT_SETTINGS, today: todayISO() };
+	state.profile = { ...DEFAULT_PROFILE };
 	state.packs = {};
 	emit();
 	try {
@@ -499,7 +530,108 @@ export async function applyRepair(mode) {
 	return { changed };
 }
 
+// ===================== Profil ve çalışma alışkanlığı =====================
+
+/**
+ * Seriyi gün değişimine göre tazeler.
+ *
+ * Bir gün atlanırsa seri sıfırlanır. Bugün ya da dün çalışılmışsa
+ * seri korunur — "dün çalıştım, bugün henüz başlamadım" durumunda
+ * seriyi düşürmek haksız olur.
+ */
+function refreshStreak() {
+	const last = state.profile.lastStudyDate;
+	if (!last) return;
+
+	const now = new Date();
+	if (isSameDay(last, now)) return;
+
+	const yesterday = new Date(now);
+	yesterday.setDate(yesterday.getDate() - 1);
+	if (isSameDay(last, yesterday)) {
+		// Seri duruyor ama bugünün sayacı sıfırlanmalı
+		state.profile.studiedToday = 0;
+		return;
+	}
+
+	// Bir günden fazla ara verilmiş
+	state.profile.streak = 0;
+	state.profile.studiedToday = 0;
+}
+
+/** Seviye belirleme testinin sonucunu kaydeder. */
+export async function savePlacement(result) {
+	state.profile.level = result.level;
+	state.profile.placedAt = new Date().toISOString();
+	emit();
+	await persistProfile();
+}
+
+/** Hedef seviyeyi elle ayarlar. */
+export async function setProfileLevel(level) {
+	state.profile.level = level;
+	emit();
+	await persistProfile();
+}
+
+/**
+ * Bir cevabı çalışma alışkanlığına işler.
+ * Seri, günde en az bir cevap verildiğinde ilerler.
+ */
+async function recordStudyActivity() {
+	const now = new Date();
+	const last = state.profile.lastStudyDate;
+
+	if (last && isSameDay(last, now)) {
+		state.profile.studiedToday++;
+	} else {
+		const yesterday = new Date(now);
+		yesterday.setDate(yesterday.getDate() - 1);
+		state.profile.streak = last && isSameDay(last, yesterday) ? state.profile.streak + 1 : 1;
+		state.profile.longestStreak = Math.max(state.profile.longestStreak, state.profile.streak);
+		state.profile.studiedToday = 1;
+		state.profile.lastStudyDate = todayISO();
+	}
+	await persistProfile();
+}
+
 // ===================== Türetilmiş sayılar =====================
+
+/**
+ * Ana ekran özeti: seviye ilerlemesi, bugünkü durum, seri.
+ *
+ * @param {(iso: string) => boolean} isDue
+ * @param {string[]} levels Kapsanacak CEFR seviyeleri (boşsa hepsi)
+ */
+export function getOverview(isDue, levels = []) {
+	const scope = levels.length ? state.words.filter((w) => levels.includes(w.cefr)) : state.words;
+
+	let due = 0;
+	let learned = 0;
+	let inProgress = 0;
+	for (const w of scope) {
+		if (w.level >= MAX_LEVEL) learned++;
+		else {
+			if (w.history.length) inProgress++;
+			if (isDue(w.nextReviewAt)) due++;
+		}
+	}
+
+	const total = scope.length;
+	return {
+		total,
+		due,
+		learned,
+		inProgress,
+		untouched: total - learned - inProgress,
+		percent: total ? Math.round((learned / total) * 100) : 0,
+		streak: state.profile.streak,
+		longestStreak: state.profile.longestStreak,
+		studiedToday: state.profile.studiedToday,
+		dailyGoal: state.settings.dailyGoal,
+		level: state.profile.level
+	};
+}
 
 /**
  * Üst rozetlerdeki sayılar.

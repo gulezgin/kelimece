@@ -6,11 +6,14 @@
  */
 import './styles/main.css';
 
+import { levelsUpTo } from './core/placement.js';
 import { buildReviewQueue, MAX_LEVEL } from './core/srs.js';
 import { isDue } from './core/time.js';
 import * as store from './data/store.js';
+import { renderDashboard } from './ui/dashboard.js';
 import { alertDialog, choiceDialog, confirmDialog, toast } from './ui/dialog.js';
 import { $, debounce } from './ui/dom.js';
+import { startPlacement } from './ui/placement.js';
 import * as review from './ui/review.js';
 import {
 	filterWords,
@@ -31,6 +34,10 @@ let activeView = 'cards';
 /** Seçili CEFR seviyesi: 'all' | 'A1'..'C2' | 'none' (seviyesiz) */
 let activeLevel = 'all';
 
+/** Görünen ana bölüm. */
+/** @type {'home'|'pool'} */
+let activeSection = 'home';
+
 // ===================== Render =====================
 
 /** Seçili seviyedeki kelimeler — hem liste hem tekrar kuyruğu bunu kullanır. */
@@ -44,22 +51,69 @@ function selectLevel(level) {
 }
 
 function render() {
+	const breakdown = levelBreakdown(store.state.words, MAX_LEVEL);
+
+	if (activeSection === 'home') {
+		// Profil seviyesi varsa özet o seviyeye ve altına odaklanır.
+		const scope = store.state.profile.level ? levelsUpTo(store.state.profile.level) : [];
+		renderDashboard(store.getOverview(isDue, scope), breakdown, dashboardHandlers);
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
+
 	const list = filterWords(store.state.words, {
 		query: $('search').value,
 		mode: $('filterDue').value,
 		cefr: activeLevel
 	});
 
-	const breakdown = levelBreakdown(store.state.words, MAX_LEVEL);
 	renderLevelBar(breakdown, activeLevel, selectLevel);
 	renderLevelInfo(breakdown, activeLevel);
-
 	renderStats(store.getStats(isDue, wordsAtLevel()), list.length, store.state.settings.dailyGoal);
 
-	// Sadece görünür olan görünümü çiz — 1600+ kelimede ikisini birden
+	// Sadece görünür olan görünümü çiz — 2500 kelimede ikisini birden
 	// çizmek her tuş vuruşunda gereksiz DOM işi demek.
 	if (activeView === 'cards') renderList(list, listHandlers);
 	else renderTiles(list);
+}
+
+// ===================== Ana ekran =====================
+
+const dashboardHandlers = {
+	/** Ana ekrandan doğrudan çalışmaya başla. */
+	onStart: (mode) => {
+		const level = store.state.profile.level;
+		activeLevel = 'all';
+		// Profil seviyesi varsa o seviye ve altını çalış
+		const scope = level ? levelsUpTo(level) : null;
+		startReviewSession({ free: mode === 'new', levels: scope });
+	},
+	onPlacement: () => runPlacement(),
+	onPickLevel: (level) => {
+		activeLevel = level;
+		showSection('pool');
+	},
+	onBrowse: () => showSection('pool')
+};
+
+/** Seviye belirleme testini çalıştırır ve sonucu profile yazar. */
+function runPlacement() {
+	const words = store.state.words.filter((w) => w.cefr);
+	const started = startPlacement(words, {
+		onFinish: async (result) => {
+			if (!result) return;
+			await store.savePlacement(result);
+			await alertDialog(
+				`Seviyen: ${result.level}\n\n` +
+					`${result.asked} soruda ${result.correct} doğru (%${Math.round(result.ratio * 100)}).\n\n` +
+					`Artık ana ekrandaki çalışma ${result.level} ve altındaki seviyelere odaklanacak. ` +
+					`Bunu istediğin zaman değiştirebilirsin.`,
+				{ title: '🎯 Seviye belirlendi' }
+			);
+			render();
+		}
+	});
+	if (!started) toast('Test için yeterli kelime yok.', 'warn');
 }
 
 const listHandlers = {
@@ -140,15 +194,28 @@ function onEnglishInput() {
 
 // ===================== Tekrar =====================
 
-async function handleStartReview() {
-	const free = $('freeReview').checked;
-	// Seviye seçiliyse yalnızca o seviyeyi çalış.
-	const queue = buildReviewQueue(wordsAtLevel(), { free, isDue });
+function handleStartReview() {
+	return startReviewSession({ free: $('freeReview').checked });
+}
+
+/**
+ * Tekrar oturumunu başlatır.
+ * @param {{free?: boolean, levels?: string[]|null}} options
+ *   levels verilirse yalnızca o CEFR seviyeleri; yoksa havuzdaki seçim.
+ */
+async function startReviewSession({ free = false, levels = null } = {}) {
+	const pool = levels
+		? store.state.words.filter((w) => levels.includes(w.cefr))
+		: wordsAtLevel();
+	const queue = buildReviewQueue(pool, { free, isDue });
 
 	if (!queue.length) {
-		const scope = activeLevel === 'all'
-			? ''
-			: ' (' + (activeLevel === 'none' ? 'seviyesiz' : activeLevel) + ' seviyesinde)';
+		const scopeLabel = levels
+			? ' (' + levels[levels.length - 1] + ' ve altı)'
+			: activeLevel === 'all'
+				? ''
+				: ' (' + (activeLevel === 'none' ? 'seviyesiz' : activeLevel) + ' seviyesinde)';
+		const scope = scopeLabel;
 		await alertDialog(
 			free
 				? 'Tekrar edilecek kelime kalmadı' + scope + ' — tümü öğrenilmiş görünüyor.'
@@ -315,6 +382,9 @@ function wireEvents() {
 		e.target.value = '';
 	});
 
+	$('navHome').addEventListener('click', () => showSection('home'));
+	$('navPool').addEventListener('click', () => showSection('pool'));
+
 	$('tabCards').addEventListener('click', () => switchView('cards'));
 	$('tabTiles').addEventListener('click', () => switchView('tiles'));
 
@@ -338,6 +408,19 @@ function wireEvents() {
 	});
 }
 
+/** Ana bölümler arasında geçiş. */
+function showSection(section) {
+	activeSection = section;
+	$('homeView').classList.toggle('hidden', section !== 'home');
+	$('poolView').classList.toggle('hidden', section !== 'pool');
+	$('navHome').classList.toggle('active', section === 'home');
+	$('navPool').classList.toggle('active', section === 'pool');
+	$('navHome').setAttribute('aria-selected', String(section === 'home'));
+	$('navPool').setAttribute('aria-selected', String(section === 'pool'));
+	window.scrollTo(0, 0);
+	render();
+}
+
 function switchView(view) {
 	activeView = view;
 	$('listView').classList.toggle('hidden', view !== 'cards');
@@ -356,13 +439,14 @@ async function boot() {
 	store.subscribe(render);
 
 	wireEvents();
-	switchView('cards');
+	activeView = 'cards';
 	$('list').textContent = 'Yükleniyor…';
+	showSection('home');
 
 	const result = await store.init({ packUrl: PACK_URL });
 
 	$('goalInput').value = store.state.settings.dailyGoal;
-	render();
+	showSection('home');
 
 	if (result.migrated && result.migrationReport) {
 		const r = result.migrationReport;
