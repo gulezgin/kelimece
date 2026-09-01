@@ -82,13 +82,35 @@ export function renderStats(stats, visibleCount, dailyGoal) {
 }
 
 /**
- * Kart listesi.
+ * Ilk cizimde gosterilecek kart sayisi ve her kaydirmada eklenecek miktar.
+ *
+ * 2493 kartin tamamini birden cizmek 43.900 DOM dugumu ve ~124ms
+ * demekti; telefonda bunun uc-dort kati. Her tus vurusunda liste
+ * yeniden ciziliyor, yani arama gorunur sekilde takiliyordu.
+ */
+const CHUNK_SIZE = 60;
+
+/** Kaydirma gozlemcisi; her yeni cizimde yenileniyor. */
+let listObserver = null;
+
+/**
+ * Kart listesi. Gorunur alan kadarini cizer, kaydirdikca devamini ekler.
+ *
+ * Gercek sanallastirma (gorunmez olani DOM'dan cikarma) yerine kademeli
+ * ekleme secildi: kart yukseklikleri degisken oldugu icin sanallastirma
+ * kaydirma cubugunu zipilatir, kademeli ekleme ise fark edilmez.
+ *
  * @param {object[]} list
  * @param {{onKnown: Function, onForgot: Function, onLearn: Function, onDelete: Function, onTagClick: Function}} handlers
  */
 export function renderList(list, handlers) {
 	const container = $('list');
 	container.textContent = '';
+
+	if (listObserver) {
+		listObserver.disconnect();
+		listObserver = null;
+	}
 
 	if (!list.length) {
 		container.appendChild(
@@ -97,9 +119,42 @@ export function renderList(list, handlers) {
 		return;
 	}
 
-	const frag = document.createDocumentFragment();
-	for (const w of list) frag.appendChild(wordCard(w, handlers));
-	container.appendChild(frag);
+	let rendered = 0;
+
+	const sentinel = el('div', { class: 'listSentinel' });
+
+	function renderChunk() {
+		const end = Math.min(rendered + CHUNK_SIZE, list.length);
+		const frag = document.createDocumentFragment();
+		for (let i = rendered; i < end; i++) frag.appendChild(wordCard(list[i], handlers));
+		container.insertBefore(frag, sentinel);
+		rendered = end;
+
+		if (rendered >= list.length) {
+			sentinel.remove();
+			if (listObserver) {
+				listObserver.disconnect();
+				listObserver = null;
+			}
+		} else {
+			sentinel.textContent = `${rendered} / ${list.length} gösteriliyor…`;
+		}
+	}
+
+	container.appendChild(sentinel);
+	renderChunk();
+
+	if (rendered < list.length) {
+		if (typeof IntersectionObserver === 'undefined') {
+			// Destek yoksa hepsini ciz - dogruluk performanstan once gelir
+			while (rendered < list.length) renderChunk();
+			return;
+		}
+		listObserver = new IntersectionObserver((entries) => {
+			if (entries.some((e) => e.isIntersecting)) renderChunk();
+		}, { rootMargin: '400px' });
+		listObserver.observe(sentinel);
+	}
 }
 
 function wordCard(w, { onKnown, onForgot, onLearn, onDelete, onTagClick }) {
@@ -181,7 +236,10 @@ export function renderTiles(list) {
 
 	const frag = document.createDocumentFragment();
 	const sorted = list.slice().sort((a, b) => a.en.localeCompare(b.en, 'en', { sensitivity: 'base' }));
-	for (const w of sorted) {
+	// Kutular kart listesinden cok daha hafif (2 dugum), ama yine de
+	// binlercesi birikmesin.
+	const limited = sorted.slice(0, 600);
+	for (const w of limited) {
 		frag.appendChild(
 			el('div', { class: 'tile' }, [
 				el('div', { class: 'tileTop' }, [
@@ -193,6 +251,13 @@ export function renderTiles(list) {
 		);
 	}
 	tiles.appendChild(frag);
+
+	if (sorted.length > limited.length) {
+		tiles.appendChild(el('div', {
+			class: 'small listSentinel',
+			text: `İlk ${limited.length} kelime gösteriliyor (toplam ${sorted.length}). Aramayla daraltabilirsin.`
+		}));
+	}
 }
 
 /** Sözcük türlerinin Türkçe karşılıkları. */
