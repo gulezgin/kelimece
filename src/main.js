@@ -227,6 +227,9 @@ async function startReviewSession({ free = false, levels = null } = {}) {
 	}
 
 	review.startSession(queue, {
+		// Yanıltıcı seçenekler seçili seviyenin havuzundan üretilir;
+		// böylece şıklar benzer zorlukta olur.
+		pool: pool.length >= 40 ? pool : store.state.words,
 		getWord: (id) => store.getWord(id),
 		onRate: (id, rating) => store.rateWord(id, rating),
 		onFinish: async (stats) => {

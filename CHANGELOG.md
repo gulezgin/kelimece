@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.9.0] - 2026-09-01
+
+Öz-değerlendirme yerine gerçek test; tanıma yanına üretim eklendi.
+
+### Değişti
+- **Cevaplar artık denetleniyor.** Önceki akışta kelimeyi görüp "İyi"ye
+  basıyordun — cevap hiç kontrol edilmiyordu. İnsan "biliyordum" demeye
+  yatkındır (hatırlama yanılsaması), bu yüzden öz-değerlendirme
+  öğrenmeyi olduğundan iyi gösteriyordu.
+- **Üretim yönü eklendi.** Önceden yalnızca EN→TR tanıma ölçülüyordu.
+  Artık TR→EN de var; konuşabilmek için gereken yön bu.
+
+### Eklendi — dört alıştırma tipi
+Kelimenin olgunluğuna göre otomatik seçiliyor:
+
+| Aşama | Alıştırma |
+|---|---|
+| İlk görüş | Çoktan seçmeli **EN→TR** (tanıştırma) |
+| 1-2 tekrar | Çoktan seçmeli **TR→EN** (üretim yönü, kolay) |
+| 3+ tekrar | **Yazarak** ya da **boşluk doldurma** (gerçek üretim) |
+| Olgun (21 gün+) | Klasik kart (bakım) |
+
+- **Boşluk doldurma** örnek cümleyi kullanıyor:
+  *"karar vermek"* → `Do I have to _____ right now?`
+  Türkçe çeviri ipucu olarak altında.
+- Yanıltıcı şıklar aynı CEFR seviyesinden seçiliyor — şıklar benzer
+  zorlukta olsun.
+- Yazılan cevapta büyük/küçük harf ve noktalama yok sayılıyor, **harf
+  hatası kabul edilmiyor** (yazımı da öğrenmek gerekiyor).
+  Tek harf hatası "az kaldı" geri bildirimi alıyor.
+- Eş anlamlılar kabul ediliyor (`accuse` için `blame` de doğru).
+- Klavye: 1-4 şık seçimi, Enter ile devam.
+
+### Düzeltildi
+- `.hidden` yardımcı sınıfı, dosyanın ilerisinde tanımlı `display: flex`
+  kurallarınca eziliyordu — gizlenmesi gereken alıştırma alanları
+  görünür kalıyordu. Artık `!important`.
+- Çekim tanıma ünsüz ikizleşmesini kaçırıyordu (`run` → `running`).
+- Uzun kart ekrana sığmazsa artık kaydırılabiliyor.
+
+---
+
 ## [1.8.0] - 2026-09-01
 
 En büyük içerik açığı kapandı: kelimeler artık bağlamıyla geliyor.

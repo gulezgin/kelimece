@@ -1,6 +1,6 @@
 {
   "name": "kelime-havuzum",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "private": true,
   "type": "module",
   "description": "Aralıklı tekrar (SRS) ile Türkçe-İngilizce kelime öğrenme uygulaması",
