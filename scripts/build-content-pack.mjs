@@ -40,7 +40,10 @@ const PACK_ID = 'core';
 //   4 -> 5 : sozcuk turu 841 -> 1560, konu 841 -> 1247 kayitta dolu.
 //   5 -> 6 : Oxford CEFR listeleri islendi - seviyeler dogrulandi,
 //            sozcuk turu tamamlandi, 2819 yeni kelime eklendi.
-const PACK_VERSION = 6;
+//   6 -> 7 : Turkce satir kirigi parcalari temizlendi (34 kayit) ve
+//            konu etiketi 1263 -> 2296 kayitta dolduruldu. Konu ekrani
+//            bu alani kullaniyor; eski paketle o ekran yari bos kalir.
+const PACK_VERSION = 7;
 
 const DRY = process.argv.includes('--dry');
 

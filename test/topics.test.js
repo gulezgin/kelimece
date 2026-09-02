@@ -5,6 +5,7 @@
  * ilerlemesini yanlış okumasına yol açar — sessiz ve fark edilmesi zor
  * bir hata türü.
  */
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { NO_PREMIUM, grantPremium, PRODUCTS } from '../src/core/entitlements.js';
 import { MAX_LEVEL } from '../src/core/srs.js';
@@ -124,5 +125,19 @@ describe('topicProgress', () => {
 	it('boş konuda sıfır', () => {
 		expect(topicProgress({ total: 0, learned: 0 })).toBe(0);
 		expect(topicProgress(null)).toBe(0);
+	});
+});
+
+describe('paket ile simge eşleşmesi', () => {
+	// Konu listesi scripts/infer-pos.mjs'de, simgeler src/core/topics.js'de
+	// duruyor. Yeni bir konu grubu eklenip simgesi unutulunca kart sessizce
+	// varsayilan simgeye dusuyor - ekranda fark edilmesi zor. Bu test o
+	// kaymayi yakalar.
+	it('paketteki her konunun simgesi var', () => {
+		const pack = JSON.parse(readFileSync('public/content/core-v1.json', 'utf8'));
+		const topics = [...new Set(pack.words.filter((w) => w.topic).map((w) => w.topic))];
+		expect(topics.length).toBeGreaterThan(0);
+		const missing = topics.filter((t) => !TOPIC_ICONS[t]);
+		expect(missing).toEqual([]);
 	});
 });

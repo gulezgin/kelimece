@@ -47,7 +47,13 @@ export const TOPIC_ICONS = {
 	'dilbilgisi': '📐',
 	'temel fiiller': '⚡',
 	'temel sıfatlar': '🏷️',
-	'temel kavramlar': '🧩'
+	'temel kavramlar': '🧩',
+	'para ve alışveriş': '💰',
+	'iletişim': '✉️',
+	'din ve inanç': '🕊️',
+	'spor': '⚽',
+	'duyular': '👁️',
+	'miktar ve ölçü': '📏'
 };
 
 /**

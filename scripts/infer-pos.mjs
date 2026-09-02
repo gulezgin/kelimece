@@ -254,12 +254,246 @@ const TOPIC_GROUPS = {
 		'rope', 'silver', 'steel', 'stone', 'string', 'tool', 'wood', 'junk']
 };
 
+/**
+ * İkinci tur konu grupları.
+ *
+ * Birinci tur (TOPIC_GROUPS) havuzun yalnızca dörtte birini kapsıyordu;
+ * konu ekranı eklendikten sonra bu az kaldı. Buradaki gruplar hem yeni
+ * alanlar açıyor (para, iletişim, spor, din, duyular, ölçü) hem de
+ * mevcut alanları büyütüyor — aynı başlık ikinci kez yazılabilir,
+ * kelimeler aynı konuya eklenir.
+ *
+ * Sıra önemli: ilk atama kazanır. Bu yüzden birinci tur önce işlenir,
+ * oradaki elle doğrulanmış atamalar korunur.
+ */
+const TOPIC_GROUPS_EXTRA = {
+	'para ve alışveriş': ['afford', 'bargain', 'bill', 'borrow', 'budget', 'cash', 'cheap',
+		'coin', 'commerce', 'cost', 'credit', 'currency', 'customer', 'debt', 'discount',
+		'expensive', 'fee', 'finance', 'financial', 'fund', 'income', 'insurance', 'invest',
+		'invoice', 'lend', 'loan', 'owe', 'payment', 'price', 'profit', 'purchase', 'receipt',
+		'refund', 'rent', 'sale', 'sell', 'shopping', 'spend', 'tax', 'trade', 'wealth',
+		'wealthy', 'rich', 'coupon', 'auction', 'cheque', 'deposit', 'earn', 'economy',
+		'economic', 'pay', 'store'],
+
+	'iletişim': ['announce', 'answer', 'broadcast', 'call', 'channel', 'chat', 'comment',
+		'communicate', 'communication', 'contact', 'conversation', 'describe', 'dial',
+		'discuss', 'discussion', 'email', 'envelope', 'explain', 'express', 'greet',
+		'inform', 'interview', 'invitation', 'invite', 'language', 'letter', 'mention',
+		'message', 'phone', 'question', 'quote', 'radio', 'reply', 'request', 'respond',
+		'response', 'shout', 'signature', 'speech', 'stamp', 'suggest', 'telephone',
+		'translate', 'translation', 'whisper', 'address', 'TV', 'telegram'],
+
+	'medya': ['advertisement', 'article', 'audience', 'blog', 'camera', 'cinema', 'column',
+		'documentary', 'edition', 'editor', 'headline', 'journalist', 'magazine',
+		'media', 'newspaper', 'news', 'photograph', 'photography', 'press', 'publish',
+		'reporter', 'subscribe', 'television'],
+
+	'din ve inanç': ['angel', 'belief', 'believer', 'bible', 'bless', 'blessing', 'ceremony',
+		'devil', 'faith', 'ghost', 'god', 'heaven', 'hell', 'holy', 'miracle', 'monk',
+		'moral', 'pray', 'prayer', 'preach', 'priest', 'prophet', 'ritual', 'sacred',
+		'sacrifice', 'saint', 'sin', 'worship'],
+
+	'spor': ['athlete', 'ball', 'boxing', 'chess', 'climb', 'coach', 'compete',
+		'competition', 'cycling', 'defeat', 'dive', 'fitness', 'goal', 'gym', 'gymnastics',
+		'jump', 'kick', 'marathon', 'match', 'medal', 'olympic', 'player', 'race', 'racing',
+		'referee', 'runner', 'skate', 'ski', 'soccer', 'stadium', 'swim', 'swimming',
+		'team', 'tennis', 'tournament', 'trophy', 'volleyball', 'wrestling'],
+
+	'duyular': ['aroma', 'bitter', 'blind', 'bright', 'dim', 'echo', 'fragrance', 'glance',
+		'glow', 'loud', 'noise', 'observe', 'quiet', 'rough', 'salty', 'scent',
+		'silence', 'silent', 'smell', 'smooth', 'sniff', 'soft', 'sight', 'sound', 'sour',
+		'spicy', 'stare', 'sweet', 'taste', 'texture', 'touch', 'visible', 'vision', 'voice'],
+
+	'miktar ve ölçü': ['amount', 'average', 'centimetre', 'degree', 'depth', 'dozen',
+		'enough', 'gallon', 'gram', 'height', 'inch', 'kilogram', 'kilometre', 'length',
+		'litre', 'majority', 'measure', 'measurement', 'metre', 'mile', 'minority', 'ounce',
+		'percent', 'percentage', 'plenty', 'portion', 'quantity', 'ratio', 'scale', 'size',
+		'ton', 'total', 'volume', 'weigh', 'weight', 'width', 'yard', 'level', 'double',
+		'triple', 'maximum', 'minimum'],
+
+	'bilim': ['acid', 'analysis', 'atom', 'biology', 'cell', 'chemical', 'chemistry',
+		'data', 'discovery', 'element', 'energy', 'evolution', 'experiment',
+		'formula', 'galaxy', 'gene', 'gravity', 'hypothesis', 'laboratory', 'lab',
+		'liquid', 'magnet', 'mathematics', 'method', 'microscope', 'molecule', 'orbit',
+		'oxygen', 'particle', 'physics', 'planet', 'research', 'satellite', 'solid',
+		'species', 'substance', 'telescope', 'theory', 'universe', 'science'],
+
+	'hukuk': ['agreement', 'attorney', 'authority', 'ban', 'burglar', 'confess', 'convict',
+		'custody', 'defend', 'fine', 'fraud', 'gang', 'gun', 'hostage', 'kidnap', 'kill',
+		'lawsuit', 'legislation', 'penalty', 'pistol', 'prosecutor', 'ransom', 'regulation',
+		'revenge', 'rifle', 'robbery', 'sentence', 'sheriff', 'smuggle', 'suicide',
+		'suspect', 'theft', 'thief', 'threat', 'weapon'],
+
+	'sağlık': ['allergy', 'bandage', 'breathe', 'cough', 'dentist', 'diagnosis', 'dizzy',
+		'drug', 'emergency', 'fatigue', 'flu', 'fracture', 'infection', 'injection',
+		'injury', 'operation', 'pharmacy', 'physical', 'prescription', 'recover',
+		'recovery', 'sneeze', 'suffer', 'swallow', 'symptom', 'tablet', 'treatment',
+		'vaccine', 'vitamin', 'ward', 'wheelchair', 'ill', 'illness'],
+
+	'duygular': ['admire', 'affection', 'amazed', 'amuse', 'annoyed', 'anxiety', 'apologize',
+		'appreciate', 'blame', 'bother', 'complain', 'concern', 'courage', 'delight',
+		'despair', 'disappointed', 'disgust', 'doubt', 'eager', 'embarrassed', 'enjoy',
+		'enthusiasm', 'envy', 'excitement', 'forgive', 'frustrated', 'giggle',
+		'hesitate', 'hopeful', 'hostile', 'humiliate', 'impress', 'laugh', 'laughter',
+		'mercy', 'mood', 'nostalgia', 'optimistic', 'panic', 'pessimistic',
+		'pity', 'pleasure', 'regret', 'rejoice', 'resent', 'satisfied', 'smile', 'sorrow',
+		'sympathy', 'tears', 'tender', 'terrified', 'thrill', 'weep', 'worried'],
+
+	'insanlar': ['acquaintance', 'adult', 'boy', 'buddy', 'colleague', 'companion',
+		'crowd', 'fellow', 'female', 'folk', 'friend', 'friendship', 'gentleman',
+		'girl', 'guest', 'guy', 'human', 'individual', 'kid', 'lady', 'male', 'man',
+		'mate', 'neighbour', 'neighbor', 'partner', 'people', 'person', 'population',
+		'stranger', 'teenager', 'woman', 'youth'],
+
+	'ev': ['blanket', 'broom', 'bucket', 'candle', 'ceiling', 'chair', 'chimney',
+		'corridor', 'cupboard', 'cushion', 'drawer', 'fireplace', 'fork', 'hall', 'jar',
+		'kettle', 'knife', 'ladder', 'mattress', 'pillow', 'pot', 'shelf', 'sink', 'soap',
+		'spoon', 'stove', 'towel', 'tray', 'vacuum', 'wardrobe', 'sweep', 'tidy',
+		'upstairs', 'downstairs', 'flat', 'household'],
+
+	'okul ve iş': ['achievement', 'agenda', 'application', 'appointment', 'board', 'boss',
+		'candidate', 'conference', 'deadline', 'diploma', 'discipline',
+		'education', 'employer', 'employment', 'grade', 'headmaster',
+		'knowledge', 'learn', 'lecture', 'management', 'meeting', 'notes',
+		'organization', 'performance', 'practice', 'principal', 'profession', 'promotion',
+		'qualification', 'resign', 'retire', 'schedule', 'scholarship',
+		'skill', 'subject', 'success', 'task', 'teamwork', 'training', 'workplace'],
+
+	'teknoloji': ['algorithm', 'antenna', 'app', 'battery', 'browser', 'chip',
+		'circuit', 'click', 'code', 'database', 'digital', 'download',
+		'folder', 'gadget', 'install', 'keyboard', 'laptop', 'link', 'memory',
+		'monitor', 'online', 'password', 'platform', 'printer', 'program',
+		'programming', 'remote', 'server', 'system', 'update', 'upload', 'username',
+		'virtual', 'website', 'wire', 'wireless'],
+
+	'yerler': ['avenue', 'balcony', 'bridge', 'campus', 'capital', 'cemetery',
+		'clinic', 'club', 'corner', 'farm', 'fountain', 'harbour', 'lane',
+		'lobby', 'monument', 'motel', 'nightclub', 'playground', 'port', 'region',
+		'ruins', 'salon', 'square', 'studio', 'suburb', 'terrace', 'venue',
+		'zoo', 'field', 'ground'],
+
+	'ulaşım': ['accident', 'anchor', 'brake', 'cargo', 'crash', 'cruise', 'departure',
+		'destination', 'fare', 'fuel', 'gasoline', 'horn', 'motorcycle', 'parking',
+		'passenger', 'petrol', 'ride', 'route', 'seatbelt', 'steering', 'tire', 'tyre',
+		'transport', 'vehicle', 'voyage', 'wagon', 'seat'],
+
+	'doğa ve hava': ['blossom', 'branch', 'breeze', 'bush', 'canyon', 'climate', 'creek',
+		'dawn', 'drought', 'dusk', 'environment', 'flood', 'frost', 'glacier', 'hurricane',
+		'jungle', 'leaf', 'meadow', 'mist', 'nature', 'peak', 'pollution', 'pond', 'rainbow',
+		'root', 'shade', 'shadow', 'soil', 'stream', 'sunlight', 'sunrise', 'sunset',
+		'sunshine', 'swamp', 'temperature', 'thunderstorm', 'tide', 'volcano', 'waterfall',
+		'wave', 'wilderness'],
+
+	'yiyecek ve içecek': ['bacon', 'berry', 'biscuit', 'boil', 'bottle', 'cabbage',
+		'cereal', 'cherry', 'chop', 'coconut', 'cucumber', 'dessert', 'dish',
+		'dough', 'feast', 'flavour', 'fry', 'garlic', 'grape', 'grill', 'honey', 'jam',
+		'ketchup', 'lemon', 'lettuce', 'menu', 'mushroom', 'mustard', 'noodle', 'nut',
+		'olive', 'pasta', 'peach', 'pear', 'plum', 'recipe', 'roast',
+		'sausage', 'seafood', 'snack', 'spice', 'spinach', 'strawberry', 'toast',
+		'vanilla', 'vinegar', 'watermelon', 'yogurt', 'appetite', 'glass'],
+
+	'vücut': ['bald', 'breast', 'eyelash', 'eyelid', 'fingernail', 'forehead', 'heel',
+		'hip', 'jaw', 'joint', 'kidney', 'liver', 'lung', 'nerve', 'organ', 'rib',
+		'skull', 'spine', 'thumb', 'vein', 'waist', 'breathing'],
+
+	'hayvanlar': ['ant', 'butterfly', 'camel', 'cricket', 'crocodile', 'deer',
+		'dolphin', 'donkey', 'dove', 'eagle', 'feather', 'fox', 'frog', 'goose',
+		'hen', 'kitten', 'lizard', 'mosquito', 'moth', 'owl', 'parrot', 'paw', 'pigeon',
+		'puppy', 'rooster', 'spider', 'squirrel', 'swan', 'turtle', 'whale',
+		'worm', 'zebra', 'nest', 'claw', 'fur'],
+
+	'giysi': ['apron', 'blouse', 'cap', 'collar', 'fashion', 'glove', 'hood',
+		'jewellery', 'lace', 'leather', 'outfit', 'pyjamas', 'ribbon',
+		'sandal', 'sew', 'silk', 'sleeve', 'slipper', 'sneaker', 'sock', 'stocking',
+		'wool', 'zip'],
+
+	'aile': ['ancestor', 'bride', 'engagement', 'granddaughter', 'grandparent',
+		'grandson', 'heir', 'orphan', 'relative', 'sibling', 'stepfather', 'stepmother',
+		'widow', 'birth', 'pregnancy'],
+
+	'toplum': ['ambassador', 'campaign', 'charity', 'colony', 'conflict', 'congress',
+		'constitution', 'debate', 'democracy', 'diplomat', 'equality', 'ethnic', 'federal',
+		'immigrant', 'independence', 'liberty', 'parliament', 'politics', 'poverty',
+		'protest', 'refugee', 'republic', 'senate', 'slavery', 'strike', 'territory',
+		'treaty', 'vote', 'welfare'],
+
+	'meslekler': ['architect', 'baker', 'barber', 'butcher', 'captain', 'carpenter',
+		'cashier', 'chief', 'cleaner', 'clerk', 'consultant', 'designer', 'electrician',
+		'farmer', 'guide', 'inspector', 'librarian', 'mechanic', 'merchant', 'miner',
+		'musician', 'officer', 'painter', 'photographer', 'plumber', 'programmer',
+		'receptionist', 'researcher', 'salesman', 'shepherd', 'tailor', 'technician',
+		'therapist', 'translator', 'trainer', 'waitress'],
+
+	'sanat ve eğlence': ['applause', 'ballet', 'band', 'canvas', 'cast', 'chapter',
+		'choir', 'circus', 'dance', 'draw', 'drawing', 'exhibition', 'gallery', 'hobby',
+		'humour', 'instrument', 'joke', 'lyrics', 'magic', 'melody', 'orchestra', 'paint',
+		'painting', 'plot', 'poet', 'puzzle', 'rhythm', 'sculpture', 'series', 'sing',
+		'singer', 'sketch', 'statue', 'tune', 'violin'],
+
+	'zaman': ['annual', 'calendar', 'clock', 'delay', 'duration', 'era', 'eventually',
+		'forever', 'frequency', 'frequent', 'future', 'immediately', 'instant', 'interval',
+		'meanwhile', 'moment', 'occasionally', 'past', 'permanent', 'previous', 'rarely',
+		'recent', 'recently', 'season', 'seldom', 'temporary', 'timetable', 'urgent'],
+
+	'yer ve yön': ['above', 'across', 'ahead', 'apart', 'backward', 'behind',
+		'below', 'beneath', 'beside', 'border', 'bottom', 'centre', 'compass',
+		'direction', 'distance', 'east', 'edge', 'forward', 'front', 'inside',
+		'middle', 'north', 'opposite', 'outside', 'south', 'surface', 'upward',
+		'west', 'position'],
+
+	'malzemeler': ['aluminium', 'brick', 'bronze', 'cement', 'clay', 'concrete', 'copper',
+		'fibre', 'foam', 'glue', 'grain', 'marble', 'plaster', 'powder', 'rubber', 'rust',
+		'screw', 'thread', 'tin', 'wax'],
+
+	'günlük konuşma': ['bye', 'cheers', 'congratulations', 'excuse', 'goodbye', 'greeting',
+		'okay', 'pardon', 'please', 'regards', 'sorry', 'thanks', 'welcome', 'wow', 'sir',
+		'madam']
+};
+
+/**
+ * Sozcuk turunden dogrudan cikan konular.
+ *
+ * Zamir, edat, baglac ve belirtec anlam tasimaz; islevleri dilbilgiseldir.
+ * Bunlari "dilbilgisi" altinda toplamak hem dogru hem de ise yarar:
+ * ogrenci "of / to / through" gibi kelimeleri birlikte calisir.
+ */
+const TOPIC_BY_POS = {
+	pronoun: 'dilbilgisi',
+	preposition: 'dilbilgisi',
+	conjunction: 'dilbilgisi',
+	determiner: 'dilbilgisi',
+	number: 'sayılar',
+	ordinal: 'sayılar',
+	interjection: 'günlük konuşma'
+};
+
+/**
+ * "Temel" gruplarin siklik siniri.
+ *
+ * "temel fiiller" adi zaten bir siklik iddiasi: en cok kullanilan
+ * fiiller demek. Bu yuzden konusuz kalan sik fiil/sifat/zarflar
+ * otomatik olarak bu gruplara giriyor. Sinirin disindakiler
+ * ("abandon", "accumulate") konusuz kaliyor - dogrusu da bu, cunku
+ * onlar "temel" degil.
+ *
+ * 1500, listedeki her grubun 100-300 kelimeye ulastigi ve calisilabilir
+ * kaldigi nokta; daha genisi grubu anlamsizlastiriyor.
+ */
+const BASIC_FREQ_LIMIT = 1500;
+const TOPIC_BY_BASIC_POS = {
+	verb: 'temel fiiller',
+	adjective: 'temel sıfatlar',
+	adverb: 'dilbilgisi'
+};
+
 const topicByWord = new Map();
-for (const [topic, words] of Object.entries(TOPIC_GROUPS)) {
-	for (const w of words) {
-		const key = w.toLowerCase();
-		// İlk atama kazanır: gruplar öncelik sırasına göre yazıldı
-		if (!topicByWord.has(key)) topicByWord.set(key, topic);
+for (const groups of [TOPIC_GROUPS, TOPIC_GROUPS_EXTRA]) {
+	for (const [topic, words] of Object.entries(groups)) {
+		for (const w of words) {
+			const key = w.toLowerCase();
+			// İlk atama kazanır: gruplar öncelik sırasına göre yazıldı
+			if (!topicByWord.has(key)) topicByWord.set(key, topic);
+		}
 	}
 }
 
@@ -292,7 +526,17 @@ for (const w of pack.words) {
 		topicMap[key] = manualTopic.get(key);
 		topicKept++;
 	} else {
-		const topic = topicByWord.get(w.en.toLowerCase());
+		// Oncelik: elle yazilan liste > sozcuk turu > siklik esigi.
+		// Anlamli bir konu her zaman islevsel bir konudan iyidir.
+		// posMap yalnizca bu betigin cikarsadiklarini tutar; pakette
+		// Oxford listesinden gelen turler de var. Konu icin ikisi de
+		// gecerli - burada tur cikarsamiyoruz, sadece kullaniyoruz.
+		const pos = posMap[key] || w.pos;
+		const rank = w.freqRank || Number.MAX_SAFE_INTEGER;
+		const topic =
+			topicByWord.get(w.en.toLowerCase()) ||
+			TOPIC_BY_POS[pos] ||
+			(rank <= BASIC_FREQ_LIMIT ? TOPIC_BY_BASIC_POS[pos] : null);
 		if (topic) {
 			topicMap[key] = topic;
 			topicFilled++;
