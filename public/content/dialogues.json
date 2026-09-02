@@ -1,0 +1,579 @@
+{
+  "pack": {
+    "id": "dialogues",
+    "version": 1,
+    "name": "Günlük Konuşma Diyalogları",
+    "language": "en-tr",
+    "count": 12
+  },
+  "dialogues": [
+    {
+      "id": "dlg:greeting",
+      "title": "Tanışma",
+      "icon": "👋",
+      "cefr": "A1",
+      "summary": "İlk kez tanışan iki kişi",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Hi! I'm Sam.",
+          "tr": "Merhaba! Ben Sam."
+        },
+        {
+          "s": "B",
+          "en": "Hello Sam. I'm Leyla. Nice to meet you.",
+          "tr": "Merhaba Sam. Ben Leyla. Tanıştığımıza memnun oldum."
+        },
+        {
+          "s": "A",
+          "en": "Nice to meet you too. Where are you from?",
+          "tr": "Ben de memnun oldum. Nerelisin?"
+        },
+        {
+          "s": "B",
+          "en": "I'm from Turkey. And you?",
+          "tr": "Türkiye'denim. Ya sen?"
+        },
+        {
+          "s": "A",
+          "en": "I'm from Canada. Is this your first time here?",
+          "tr": "Ben Kanadalıyım. Buraya ilk gelişin mi?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, it is. I arrived last week.",
+          "tr": "Evet, öyle. Geçen hafta geldim."
+        },
+        {
+          "s": "A",
+          "en": "Welcome! I hope you like it.",
+          "tr": "Hoş geldin! Umarım beğenirsin."
+        }
+      ]
+    },
+    {
+      "id": "dlg:cafe",
+      "title": "Kafede sipariş",
+      "icon": "☕",
+      "cefr": "A1",
+      "summary": "Kahve ve bir şeyler ısmarlamak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Good morning. What can I get you?",
+          "tr": "Günaydın. Ne alırdınız?"
+        },
+        {
+          "s": "B",
+          "en": "A large coffee, please.",
+          "tr": "Büyük boy bir kahve, lütfen."
+        },
+        {
+          "s": "A",
+          "en": "With milk or black?",
+          "tr": "Sütlü mü sade mi?"
+        },
+        {
+          "s": "B",
+          "en": "With milk, please. And a piece of cake.",
+          "tr": "Sütlü olsun lütfen. Bir de bir dilim pasta."
+        },
+        {
+          "s": "A",
+          "en": "Anything else?",
+          "tr": "Başka bir şey?"
+        },
+        {
+          "s": "B",
+          "en": "No, thanks. How much is it?",
+          "tr": "Hayır, teşekkürler. Ne kadar tutuyor?"
+        },
+        {
+          "s": "A",
+          "en": "That's eight dollars.",
+          "tr": "Sekiz dolar."
+        },
+        {
+          "s": "B",
+          "en": "Here you are. Thank you.",
+          "tr": "Buyurun. Teşekkürler."
+        }
+      ]
+    },
+    {
+      "id": "dlg:directions",
+      "title": "Yol sormak",
+      "icon": "🧭",
+      "cefr": "A2",
+      "summary": "Sokakta bir yeri bulmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Excuse me, how do I get to the train station?",
+          "tr": "Affedersiniz, tren istasyonuna nasıl giderim?"
+        },
+        {
+          "s": "B",
+          "en": "Go straight ahead and turn left at the traffic lights.",
+          "tr": "Dümdüz gidin ve trafik ışıklarından sola dönün."
+        },
+        {
+          "s": "A",
+          "en": "Is it far from here?",
+          "tr": "Buradan uzak mı?"
+        },
+        {
+          "s": "B",
+          "en": "About ten minutes on foot.",
+          "tr": "Yürüyerek yaklaşık on dakika."
+        },
+        {
+          "s": "A",
+          "en": "Can I take a bus instead?",
+          "tr": "Onun yerine otobüse binebilir miyim?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, the number 12 stops right over there.",
+          "tr": "Evet, 12 numara tam şurada duruyor."
+        },
+        {
+          "s": "A",
+          "en": "Thank you so much for your help.",
+          "tr": "Yardımınız için çok teşekkür ederim."
+        },
+        {
+          "s": "B",
+          "en": "You're welcome. Have a good day!",
+          "tr": "Rica ederim. İyi günler!"
+        }
+      ]
+    },
+    {
+      "id": "dlg:shopping",
+      "title": "Alışveriş",
+      "icon": "🛍️",
+      "cefr": "A2",
+      "summary": "Mağazada beden ve fiyat sormak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Hi, can I try this jacket on?",
+          "tr": "Merhaba, bu ceketi deneyebilir miyim?"
+        },
+        {
+          "s": "B",
+          "en": "Of course. What size do you need?",
+          "tr": "Elbette. Hangi bedene ihtiyacınız var?"
+        },
+        {
+          "s": "A",
+          "en": "Medium, I think. The changing room is over there?",
+          "tr": "Sanırım orta beden. Deneme kabini şurada mı?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, on your right.",
+          "tr": "Evet, sağınızda."
+        },
+        {
+          "s": "A",
+          "en": "It's a bit tight. Do you have a larger one?",
+          "tr": "Biraz dar. Daha büyüğü var mı?"
+        },
+        {
+          "s": "B",
+          "en": "Let me check. Yes, here's a large.",
+          "tr": "Bir bakayım. Evet, işte büyük beden."
+        },
+        {
+          "s": "A",
+          "en": "This one fits well. I'll take it.",
+          "tr": "Bu tam oldu. Bunu alıyorum."
+        },
+        {
+          "s": "B",
+          "en": "Great. Will you pay by card or in cash?",
+          "tr": "Harika. Kartla mı nakit mi ödeyeceksiniz?"
+        }
+      ]
+    },
+    {
+      "id": "dlg:restaurant",
+      "title": "Restoranda",
+      "icon": "🍽️",
+      "cefr": "A2",
+      "summary": "Masa ayırtmak ve yemek söylemek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Good evening. Do you have a table for two?",
+          "tr": "İyi akşamlar. İki kişilik masanız var mı?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, please follow me. Here's the menu.",
+          "tr": "Evet, beni takip edin lütfen. Buyurun menü."
+        },
+        {
+          "s": "A",
+          "en": "Thank you. What do you recommend?",
+          "tr": "Teşekkürler. Ne tavsiye edersiniz?"
+        },
+        {
+          "s": "B",
+          "en": "The grilled fish is very popular today.",
+          "tr": "Bugün ızgara balık çok tutuluyor."
+        },
+        {
+          "s": "A",
+          "en": "That sounds good. I'll have the fish, please.",
+          "tr": "Kulağa güzel geliyor. Balık alayım lütfen."
+        },
+        {
+          "s": "B",
+          "en": "And to drink?",
+          "tr": "İçecek olarak?"
+        },
+        {
+          "s": "A",
+          "en": "Just water, thanks. Could we get the bill later?",
+          "tr": "Sadece su, teşekkürler. Hesabı sonra alabilir miyiz?"
+        },
+        {
+          "s": "B",
+          "en": "Certainly. Enjoy your meal.",
+          "tr": "Tabii ki. Afiyet olsun."
+        }
+      ]
+    },
+    {
+      "id": "dlg:phone",
+      "title": "Telefonda",
+      "icon": "📞",
+      "cefr": "A2",
+      "summary": "Randevu almak için aramak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Hello, this is Dr. Kaya's office.",
+          "tr": "Alo, Dr. Kaya'nın muayenehanesi."
+        },
+        {
+          "s": "B",
+          "en": "Hi, I'd like to make an appointment.",
+          "tr": "Merhaba, randevu almak istiyorum."
+        },
+        {
+          "s": "A",
+          "en": "Sure. When would suit you?",
+          "tr": "Tabii. Ne zaman uygun olur?"
+        },
+        {
+          "s": "B",
+          "en": "Is Thursday morning possible?",
+          "tr": "Perşembe sabahı mümkün mü?"
+        },
+        {
+          "s": "A",
+          "en": "We have an opening at ten o'clock.",
+          "tr": "Saat onda boş yerimiz var."
+        },
+        {
+          "s": "B",
+          "en": "That works. My name is Ali Demir.",
+          "tr": "Bu uyar. Adım Ali Demir."
+        },
+        {
+          "s": "A",
+          "en": "Thank you. We'll see you on Thursday.",
+          "tr": "Teşekkürler. Perşembe görüşürüz."
+        }
+      ]
+    },
+    {
+      "id": "dlg:hotel",
+      "title": "Otelde",
+      "icon": "🏨",
+      "cefr": "A2",
+      "summary": "Giriş yapmak ve oda sormak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Good afternoon. I have a reservation.",
+          "tr": "İyi günler. Rezervasyonum var."
+        },
+        {
+          "s": "B",
+          "en": "May I have your name, please?",
+          "tr": "Adınızı alabilir miyim?"
+        },
+        {
+          "s": "A",
+          "en": "It's under Yilmaz. Two nights.",
+          "tr": "Yılmaz adına. İki gece."
+        },
+        {
+          "s": "B",
+          "en": "Found it. Room 305, on the third floor.",
+          "tr": "Buldum. Oda 305, üçüncü katta."
+        },
+        {
+          "s": "A",
+          "en": "Is breakfast included?",
+          "tr": "Kahvaltı dahil mi?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, from seven to ten in the morning.",
+          "tr": "Evet, sabah yediden ona kadar."
+        },
+        {
+          "s": "A",
+          "en": "What time do we have to check out?",
+          "tr": "Saat kaçta çıkış yapmamız gerekiyor?"
+        },
+        {
+          "s": "B",
+          "en": "Before noon. Here is your key card.",
+          "tr": "Öğleden önce. Buyurun anahtar kartınız."
+        }
+      ]
+    },
+    {
+      "id": "dlg:doctor",
+      "title": "Doktorda",
+      "icon": "🩺",
+      "cefr": "B1",
+      "summary": "Şikayetini anlatmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "What seems to be the problem?",
+          "tr": "Şikayetiniz nedir?"
+        },
+        {
+          "s": "B",
+          "en": "I've had a sore throat for three days.",
+          "tr": "Üç gündür boğazım ağrıyor."
+        },
+        {
+          "s": "A",
+          "en": "Do you have a fever as well?",
+          "tr": "Ateşiniz de var mı?"
+        },
+        {
+          "s": "B",
+          "en": "A slight one, especially in the evening.",
+          "tr": "Hafif, özellikle akşamları."
+        },
+        {
+          "s": "A",
+          "en": "Let me take a look. Open your mouth, please.",
+          "tr": "Bir bakayım. Ağzınızı açın lütfen."
+        },
+        {
+          "s": "B",
+          "en": "Is it serious?",
+          "tr": "Ciddi mi?"
+        },
+        {
+          "s": "A",
+          "en": "No, it's just an infection. I'll prescribe something.",
+          "tr": "Hayır, sadece bir enfeksiyon. Bir ilaç yazacağım."
+        },
+        {
+          "s": "B",
+          "en": "How often should I take it?",
+          "tr": "Ne sıklıkla almalıyım?"
+        },
+        {
+          "s": "A",
+          "en": "Twice a day, after meals, for one week.",
+          "tr": "Günde iki kez, yemeklerden sonra, bir hafta boyunca."
+        }
+      ]
+    },
+    {
+      "id": "dlg:job",
+      "title": "İş görüşmesi",
+      "icon": "💼",
+      "cefr": "B1",
+      "summary": "Kendini tanıtmak ve soru sormak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Thanks for coming in. Tell me about yourself.",
+          "tr": "Geldiğiniz için teşekkürler. Bize kendinizden bahsedin."
+        },
+        {
+          "s": "B",
+          "en": "I've worked as a designer for four years.",
+          "tr": "Dört yıldır tasarımcı olarak çalışıyorum."
+        },
+        {
+          "s": "A",
+          "en": "Why do you want to leave your current job?",
+          "tr": "Şu anki işinizden neden ayrılmak istiyorsunuz?"
+        },
+        {
+          "s": "B",
+          "en": "I'm looking for more responsibility.",
+          "tr": "Daha fazla sorumluluk arıyorum."
+        },
+        {
+          "s": "A",
+          "en": "What would you say is your biggest weakness?",
+          "tr": "En büyük zayıflığınız nedir dersiniz?"
+        },
+        {
+          "s": "B",
+          "en": "I sometimes take on too much at once.",
+          "tr": "Bazen aynı anda çok fazla iş üstleniyorum."
+        },
+        {
+          "s": "A",
+          "en": "Do you have any questions for us?",
+          "tr": "Bize sormak istediğiniz bir şey var mı?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, what does a typical week look like?",
+          "tr": "Evet, tipik bir hafta nasıl geçiyor?"
+        }
+      ]
+    },
+    {
+      "id": "dlg:smalltalk",
+      "title": "Hava durumu ve sohbet",
+      "icon": "💬",
+      "cefr": "B1",
+      "summary": "Günlük küçük sohbet",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Terrible weather today, isn't it?",
+          "tr": "Bugün hava berbat, değil mi?"
+        },
+        {
+          "s": "B",
+          "en": "Awful. It hasn't stopped raining since Monday.",
+          "tr": "Korkunç. Pazartesiden beri yağmur dinmedi."
+        },
+        {
+          "s": "A",
+          "en": "They say it'll clear up by the weekend.",
+          "tr": "Hafta sonuna kadar açacağını söylüyorlar."
+        },
+        {
+          "s": "B",
+          "en": "I hope so. I've got plans on Saturday.",
+          "tr": "Umarım. Cumartesi planlarım var."
+        },
+        {
+          "s": "A",
+          "en": "Anything nice?",
+          "tr": "Güzel bir şey mi?"
+        },
+        {
+          "s": "B",
+          "en": "We're going hiking, if the weather allows.",
+          "tr": "Hava izin verirse yürüyüşe gideceğiz."
+        },
+        {
+          "s": "A",
+          "en": "Sounds great. Fingers crossed for you.",
+          "tr": "Kulağa harika geliyor. Şansın açık olsun."
+        }
+      ]
+    },
+    {
+      "id": "dlg:complaint",
+      "title": "Şikayet etmek",
+      "icon": "😤",
+      "cefr": "B2",
+      "summary": "Bozuk bir ürünü iade etmek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "I'd like to return this. It stopped working after two days.",
+          "tr": "Bunu iade etmek istiyorum. İki gün sonra çalışmayı bıraktı."
+        },
+        {
+          "s": "B",
+          "en": "I'm sorry to hear that. Do you have the receipt?",
+          "tr": "Bunu duyduğuma üzüldüm. Fişiniz var mı?"
+        },
+        {
+          "s": "A",
+          "en": "Here it is. I bought it last Friday.",
+          "tr": "Buyurun. Geçen cuma aldım."
+        },
+        {
+          "s": "B",
+          "en": "Would you prefer a refund or a replacement?",
+          "tr": "Para iadesi mi yoksa değişim mi tercih edersiniz?"
+        },
+        {
+          "s": "A",
+          "en": "A refund, please. I'd rather not risk it again.",
+          "tr": "Para iadesi lütfen. Aynı riski tekrar almak istemem."
+        },
+        {
+          "s": "B",
+          "en": "That's fair enough. It may take a few days to process.",
+          "tr": "Bu makul. İşlemin birkaç gün sürmesi mümkün."
+        },
+        {
+          "s": "A",
+          "en": "That's fine, as long as it goes back to my card.",
+          "tr": "Kartıma geri döndüğü sürece sorun değil."
+        }
+      ]
+    },
+    {
+      "id": "dlg:meeting",
+      "title": "Toplantıda fikir belirtmek",
+      "icon": "🗣️",
+      "cefr": "B2",
+      "summary": "Katılmak, katılmamak, öneri sunmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "I think we should postpone the launch.",
+          "tr": "Bence lansmanı ertelemeliyiz."
+        },
+        {
+          "s": "B",
+          "en": "I see your point, but we've already announced the date.",
+          "tr": "Ne demek istediğini anlıyorum ama tarihi çoktan duyurduk."
+        },
+        {
+          "s": "A",
+          "en": "True, though shipping a broken product would cost us more.",
+          "tr": "Doğru, ama bozuk bir ürün çıkarmak bize daha pahalıya patlar."
+        },
+        {
+          "s": "B",
+          "en": "Fair point. What do you suggest?",
+          "tr": "Haklı bir nokta. Ne öneriyorsun?"
+        },
+        {
+          "s": "A",
+          "en": "We could release it to a small group first.",
+          "tr": "Önce küçük bir gruba açabiliriz."
+        },
+        {
+          "s": "B",
+          "en": "That sounds like a reasonable compromise.",
+          "tr": "Bu makul bir orta yol gibi görünüyor."
+        },
+        {
+          "s": "A",
+          "en": "Let's put it to the team and decide by Friday.",
+          "tr": "Ekibe soralım ve cumaya kadar karar verelim."
+        }
+      ]
+    }
+  ]
+}

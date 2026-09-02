@@ -43,7 +43,13 @@ const PACK_ID = 'core';
 //   6 -> 7 : Turkce satir kirigi parcalari temizlendi (34 kayit) ve
 //            konu etiketi 1263 -> 2296 kayitta dolduruldu. Konu ekrani
 //            bu alani kullaniyor; eski paketle o ekran yari bos kalir.
-const PACK_VERSION = 7;
+//   7 -> 8 : Anlam ve ornek denetimi. 36 kayitta Ingilizce fiil cekimi
+//            anlam alanina sizmisti ("sahip olmak, had - had"); temizlendi.
+//            Sik kullanilan 400 kelime elle gozden gecirildi, 93 anlam
+//            duzeltildi. 44 kelimenin ornek cumlesi kelimeyi yalnizca
+//            tireli bir bilesikte iceriyordu ("old" -> "ten-year-old");
+//            ornekler yeniden secildi.
+const PACK_VERSION = 8;
 
 const DRY = process.argv.includes('--dry');
 
@@ -131,7 +137,121 @@ const FIXES = {
 		package: 'paketlemek, paket',
 		// Ceviri degil, kullanicinin kendi hatirlatma notu
 		'in order to': '-mek için, amacıyla',
-		'stay': 'kalmak, konaklamak'
+		'stay': 'kalmak, konaklamak',
+
+		// --- Sik kullanilan 400 kelimenin elle gozden gecirilmesinden ---
+		//
+		// Uc hata turu cikti:
+		//  1. Yanlis birincil anlam: "will" en sik kullanildigi haliyle
+		//     gelecek zaman eki, "vasiyet" degil. Ogrenci karti acinca
+		//     kelimenin asil isini goremiyordu.
+		//  2. Bicim bozuklugu: "oynamak oyun, oynamak" - virgul eksik ve
+		//     ayni anlam iki kez.
+		//  3. Yazim hatasi: "kesmet", "donmek", "herzaman", "sagtaraf".
+		//
+		// Islevsel kelimelerde (edat, zamir, kip) Turkce karsiligi
+		// yazmak yerine EKI vermek dogru: "to" bir nesne degil, "-e"dir.
+		to: '-e, -a, -mek/-mak (mastar)',
+		of: '-in, -ın (aitlik), -den',
+		not: 'değil, -me/-ma',
+		at: '-de, -da, -e, -a',
+		by: 'tarafından, ile, yanında',
+		will: '-ecek/-acak (gelecek zaman), irade, vasiyet',
+		would: '-erdi, -ardı, isterdi',
+		can: 'yapabilmek, -abilmek, konserve kutusu',
+		with: 'ile, -li',
+		without: 'olmadan, -sız',
+		until: '-e kadar, -a kadar',
+		there: 'orada, oraya',
+		they: 'onlar',
+		his: 'onun (erkek)',
+		its: 'onun',
+		anyone: 'kimse, herhangi biri',
+		nobody: 'hiç kimse',
+		everybody: 'herkes',
+		any: 'herhangi, hiç',
+		even: 'bile, hatta, düz',
+		very: 'çok',
+		yes: 'evet',
+		no: 'hayır, yok',
+		yeah: 'evet, tamam',
+		OK: 'tamam, peki, onaylamak',
+
+		// Yanlis birincil anlam
+		well: 'iyi, peki, kuyu',
+		right: 'sağ, doğru, haklı, hak',
+		about: 'yaklaşık, hakkında',
+		lot: 'çok, birçok, pay',
+		being: 'varlık, olma',
+		left: 'sol, bırakılmış',
+		bit: 'parça, az miktar',
+		mine: 'benimki, maden, mayın',
+		body: 'vücut, beden, gövde',
+		high: 'yüksek, yüce',
+		hand: 'el, uzatmak',
+		part: 'bölüm, parça, ayırmak',
+		miss: 'özlemek, kaçırmak, ıskalamak',
+		actually: 'aslında, gerçekte',
+		ask: 'sormak, istemek',
+		far: 'uzak',
+		young: 'genç',
+		wrong: 'yanlış, hatalı',
+		shot: 'atış, vuruş',
+		hell: 'cehennem',
+		least: 'en az, asgari',
+		stuff: 'şey, eşya, tıkmak',
+
+		// Bicim bozuklugu: virgul eksik ya da ayni anlam iki kez
+		love: 'sevgi, aşk, sevmek',
+		idea: 'fikir, düşünce',
+		run: 'koşmak, koşu, çalıştırmak',
+		phone: 'telefon, telefon etmek',
+		play: 'oynamak, oyun',
+		sleep: 'uyumak, uyku',
+		husband: 'koca, eş',
+		wife: 'eş, karı',
+		side: 'yan, taraf, kenar',
+		late: 'geç, gecikmiş',
+		May: 'mayıs',
+		married: 'evli',
+		looking: 'bakış, görünüş',
+		thinking: 'düşünme, düşünce',
+		minute: 'dakika',
+		doctor: 'doktor, hekim',
+		room: 'oda, yer',
+		course: 'kurs, ders, seyir',
+		leave: 'ayrılmak, bırakmak, izin',
+		place: 'yer, koymak',
+		own: 'kendi, sahip olmak',
+		long: 'uzun, özlemek',
+		eat: 'yemek yemek',
+		drink: 'içmek, içecek',
+		shut: 'kapamak, kapalı',
+
+		// Yazim hatasi ve bitisik yazim
+		always: 'her zaman, hep',
+		turn: 'dönmek, dönüş, sıra',
+		cut: 'kesmek, kesik',
+		sometimes: 'bazen, ara sıra',
+		light: 'ışık, hafif, açık renk',
+		top: 'üst, tepe, üst kısım',
+		pick: 'seçmek, toplamak',
+		spend: 'harcamak, geçirmek',
+		outdoor: 'açık hava, dış mekan',
+
+		// Turkce karsiligi hic olmayan ya da eksik kalanlar.
+		// stripEnglishForms bunlari bosaltacagi icin dokunmuyordu.
+		uphold: 'desteklemek, onamak',
+		oversee: 'gözetmek, denetlemek',
+		bleed: 'kanamak, kan kaybetmek',
+		rid: 'kurtulmak, temizlemek',
+		freeze: 'donmak, dondurmak',
+
+		// Anlam alanina sizmis birim aciklamalari
+		teenage: '13-19 yaş arası',
+		ton: 'ton (1000 kg)',
+		gallon: 'galon',
+		mile: 'mil',
 	},
 	tr: {
 		'teleaş': 'telaş',
@@ -197,9 +317,33 @@ function collapse(text) {
 	return String(text || '').replace(/\s+/g, ' ').trim();
 }
 
+/**
+ * Turkce anlamdan Ingilizce fiil cekimi kalintilarini temizler.
+ *
+ * 1.0 verisinde duzensiz fiillerin ikinci/ucuncu halleri anlam alanina
+ * sizmis: `have` icin anlam "sahip olmak, had - had" goruunuyordu.
+ * Kullanici karti acinca Turkce karsiligin yaninda anlamsiz bir
+ * Ingilizce parca goruyor. `uphold` gibi bazi kayitlarda Turkce
+ * karsilik hic yoktu - anlam yalnizca "upheld - upheld" idi.
+ *
+ * Yalnizca "kelime - kelime" bicimindeki, tamami ASCII olan parcalar
+ * siliniyor. Turkce anlamlardaki tireler ("-mek icin", "-abilir")
+ * bastaki tire yuzunden bu kalibi tutturmuyor, dokunulmuyor.
+ */
+const EN_FORM_SEGMENT = /^[a-z]+(?:\/[a-z]+)* - [a-z]+(?:\/[a-z]+)*$/i;
+
+function stripEnglishForms(tr) {
+	const parts = String(tr || '').split(',').map((p) => p.trim());
+	const kept = parts.filter((p) => p && !EN_FORM_SEGMENT.test(p));
+	// Hepsi silinecekse dokunma: bos anlam, yanlis anlamdan kotudur.
+	// Bu durumdaki kayitlar FIXES.trByWord ile elle duzeltiliyor.
+	return kept.length ? kept.join(', ') : tr;
+}
+
 const report = {
 	input: 0,
 	output: 0,
+	strippedForms: [],
 	fixedEn: [],
 	fixedTr: [],
 	fixedDotlessI: [],
@@ -393,6 +537,7 @@ for (const w of words) {
 		tr = FIXES.tr[tr];
 	}
 
+
 	if (!en || !tr) {
 		report.dropped.push(w.en || '(boş)');
 		continue;
@@ -564,6 +709,26 @@ for (const file of ADDITION_FILES) {
 		added++;
 	}
 	report.oxfordAdded = added;
+}
+
+// Anlam duzeltmeleri ve temizlik - tek noktada, en sonda.
+//
+// Neden burada: anlam alani uc ayri yoldan (1.0 yedegi, ek dosyalari,
+// Oxford listeleri) doluyor ve araya birlestirme adimlari giriyor.
+// FIXES.trByWord yalnizca 1.0 dongusunde uygulaniyordu, dolayisiyla
+// Oxford'dan gelen "will" ya da "at" gibi kelimelere hic degmiyordu.
+// Ayni sekilde erken yapilan temizlik sonraki birlestirmede geri
+// geliyordu. Son gecis ikisini de kesinlestiriyor.
+for (const def of definitions) {
+	if (FIXES.trByWord[def.en] && FIXES.trByWord[def.en] !== def.tr) {
+		report.fixedTr.push(`${def.en}: ${def.tr} -> ${FIXES.trByWord[def.en]}`);
+		def.tr = FIXES.trByWord[def.en];
+	}
+	const stripped = stripEnglishForms(def.tr);
+	if (stripped !== def.tr) {
+		report.strippedForms.push(`${def.en}: ${def.tr} -> ${stripped}`);
+		def.tr = stripped;
+	}
 }
 
 definitions.sort((a, b) => a.en.localeCompare(b.en, 'en', { sensitivity: 'base' }));

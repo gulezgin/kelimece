@@ -68,3 +68,6 @@ data/sources/*.tsv
 
 # Oxford liste PDF leri (buyuk ikili dosyalar; cikti data/oxford-lists.json)
 Oxford_Lists_*.pdf
+
+# Icerik tarama raporu (uretilen cikti)
+audit-report.txt

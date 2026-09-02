@@ -9,6 +9,8 @@ import './styles/main.css';
 import { isLevelUnlocked, lockedLevels } from './core/entitlements.js';
 import { levelsUpTo } from './core/placement.js';
 import { renderTopicChip, renderTopics } from './ui/topics.js';
+import { findDialogue, loadDialogues } from './core/dialogues.js';
+import { renderDialogue, renderDialogueList } from './ui/dialogues.js';
 import { buildReviewQueue, countQueue, MAX_LEVEL } from './core/srs.js';
 import { isDue } from './core/time.js';
 import * as store from './data/store.js';
@@ -34,6 +36,7 @@ import {
 
 /** Uygulamayla birlikte gelen içerik paketi. */
 const PACK_URL = import.meta.env.BASE_URL + 'content/core-v1.json';
+const DIALOGUES_URL = import.meta.env.BASE_URL + 'content/dialogues.json';
 
 /** @type {'cards'|'tiles'} */
 let activeView = 'cards';
@@ -50,6 +53,30 @@ let activeSection = 'home';
 /** Seçili seviyedeki kelimeler — hem liste hem tekrar kuyruğu bunu kullanır. */
 function wordsAtLevel() {
 	return filterWords(store.state.words, { cefr: activeLevel, topic: activeTopic });
+}
+
+/** Yuklenen diyaloglar ve acik olanin kimligi. */
+let dialogues = [];
+let openDialogueId = null;
+
+/**
+ * Diyalogda kelimeye dokunulabilmesi icin havuz dizini.
+ * Her cizimde 5276 kelime icin yeniden kurmak pahali; kelime sayisi
+ * degismedikce yeniden kurulmuyor.
+ */
+let wordIndexCache = null;
+let wordIndexSize = -1;
+
+function getWordIndex() {
+	if (wordIndexCache && wordIndexSize === store.state.words.length) return wordIndexCache;
+	const map = new Map();
+	for (const w of store.state.words) {
+		const key = (w.en || '').toLowerCase();
+		if (key && !map.has(key)) map.set(key, w);
+	}
+	wordIndexCache = map;
+	wordIndexSize = store.state.words.length;
+	return map;
 }
 
 /**
@@ -137,6 +164,17 @@ function render() {
 		return;
 	}
 
+	if (activeSection === 'dialogues') {
+		const open = openDialogueId ? findDialogue(dialogues, openDialogueId) : null;
+		if (open) {
+			renderDialogue(open, dialogueHandlers, getWordIndex());
+		} else {
+			renderDialogueList(dialogues, store.state.profile.premium, dialogueHandlers);
+		}
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
+
 	if (activeSection === 'topics') {
 		renderTopics(store.state.words, store.state.profile.premium, topicHandlers);
 		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
@@ -206,6 +244,26 @@ const dashboardHandlers = {
 		showSection('pool');
 	},
 	onBrowse: () => showSection('pool')
+};
+
+const dialogueHandlers = {
+	onOpen: (id) => {
+		openDialogueId = id;
+		window.scrollTo(0, 0);
+		render();
+	},
+	onBack: () => {
+		openDialogueId = null;
+		window.scrollTo(0, 0);
+		render();
+	},
+	onLocked: () => openPaywall(),
+	/** Diyalogda kelimeye dokunmak anlamini gosteriyor. */
+	onWord: (word) => {
+		const parts = [word.tr];
+		if (word.cefr) parts.push('Seviye: ' + word.cefr);
+		alertDialog(parts.join(String.fromCharCode(10, 10)), { title: word.en });
+	}
 };
 
 const topicHandlers = {
@@ -534,6 +592,7 @@ function wireEvents() {
 
 	$('navHome').addEventListener('click', () => showSection('home'));
 	$('navTopics').addEventListener('click', () => showSection('topics'));
+	$('navDialogues').addEventListener('click', () => showSection('dialogues'));
 	$('navStats').addEventListener('click', () => showSection('stats'));
 	$('navPool').addEventListener('click', () => showSection('pool'));
 
@@ -590,6 +649,7 @@ function showSection(section) {
 	for (const [name, viewId, navId] of [
 		['home', 'homeView', 'navHome'],
 		['topics', 'topicsView', 'navTopics'],
+		['dialogues', 'dialoguesView', 'navDialogues'],
 		['stats', 'statsView', 'navStats'],
 		['pool', 'poolView', 'navPool']
 	]) {
@@ -703,6 +763,13 @@ async function boot() {
 
 	// Veri hazir; giris ekrani artik gidebilir.
 	hideLaunchScreen();
+
+	// Diyaloglar acilisi bekletmesin: arka planda yuklenip geldiginde
+	// ekran tazeleniyor. Yuklenemezse liste bos kalir, uygulama calisir.
+	loadDialogues(DIALOGUES_URL).then((list) => {
+		dialogues = list;
+		if (activeSection === 'dialogues') render();
+	});
 
 	if (result.repair && result.repair.changed) {
 		const a = result.repair.analysis;

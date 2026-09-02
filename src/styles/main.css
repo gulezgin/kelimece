@@ -900,10 +900,30 @@ button.levelBtn.active {
 /* ==============================================
    ANA NAVIGASYON
    ============================================== */
+/*
+ * Bes sekme dar ekrana sigmiyor (375px'te 35px tasiyordu). Sarmalamak
+ * baslik yuksekligini iki katina cikariyor ve calisma alanini yiyor;
+ * yatay kaydirma sekmeleri tek satirda tutuyor.
+ *
+ * min-width: 0 sart: esnek bir ogenin varsayilan min-width:auto degeri
+ * kaydirmayi engelleyip tasmayi disari itiyor.
+ */
 .mainNav {
 	display: flex;
 	gap: 6px;
 	margin-left: 18px;
+	min-width: 0;
+	overflow-x: auto;
+	scrollbar-width: none;
+	-webkit-overflow-scrolling: touch;
+}
+
+.mainNav::-webkit-scrollbar {
+	display: none;
+}
+
+button.navBtn {
+	flex: none;
 }
 
 button.navBtn {
@@ -2167,5 +2187,180 @@ button.topicChipClear {
 	.launchName,
 	.launchDots span {
 		animation: none;
+	}
+}
+
+/* ==============================================
+   DİYALOGLAR
+   ============================================== */
+.dlgGrid {
+	display: grid;
+	gap: 10px;
+}
+
+button.dlgCard {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) auto auto;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 14px;
+	text-align: left;
+	border: 1px solid #263049;
+	border-radius: 14px;
+	background: var(--panel);
+	color: var(--text);
+	cursor: pointer;
+	transition: border-color var(--transition);
+}
+
+button.dlgCard:hover {
+	border-color: var(--acc);
+}
+
+button.dlgCard--locked {
+	opacity: 0.6;
+}
+
+.dlgIcon {
+	font-size: 24px;
+	line-height: 1;
+}
+
+.dlgMeta {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.dlgTitle {
+	font-weight: 700;
+	font-size: 14px;
+}
+
+.dlgSummary {
+	color: var(--muted);
+	font-size: 12px;
+}
+
+.dlgLines {
+	color: var(--muted);
+	font-size: 11px;
+	white-space: nowrap;
+}
+
+.dlgHead {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	margin-bottom: 14px;
+}
+
+.dlgLineList {
+	display: grid;
+	gap: 8px;
+}
+
+/* Iki konusmaci gorsel olarak ayrilsin */
+.dlgLine {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) auto;
+	align-items: start;
+	gap: 10px;
+	padding: 11px 13px;
+	border-radius: 12px;
+	border: 1px solid #232c44;
+	background: #0f1529;
+	cursor: pointer;
+}
+
+.dlgLine--b {
+	background: #131a30;
+	border-color: #2a3450;
+}
+
+.dlgSpeaker {
+	width: 22px;
+	height: 22px;
+	flex: none;
+	display: grid;
+	place-items: center;
+	border-radius: 50%;
+	font-size: 11px;
+	font-weight: 700;
+	background: #1d2740;
+	color: var(--acc);
+}
+
+.dlgLine--b .dlgSpeaker {
+	background: #24304d;
+	color: var(--good);
+}
+
+.dlgBody {
+	min-width: 0;
+}
+
+.dlgEn {
+	font-size: 15px;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
+
+.dlgTr {
+	margin-top: 6px;
+	color: var(--muted);
+	font-size: 13px;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
+
+/* Havuzda karsiligi olan kelime: dokunulabilir */
+.dlgWord {
+	border-bottom: 1px dotted #3d5788;
+	cursor: pointer;
+}
+
+.dlgWord:hover {
+	color: var(--acc);
+	border-bottom-color: var(--acc);
+}
+
+.dlgSpeak {
+	align-self: center;
+}
+
+.dlgLock {
+	font-size: 13px;
+	opacity: 0.75;
+}
+
+.dlgHint {
+	margin-top: 16px;
+	line-height: 1.6;
+}
+
+/*
+ * Dar ekranda bes sekmeyi de gorunur tut.
+ *
+ * Yatay kaydirma tasmayi cozuyor ama "Istatistik" ve "Havuz" ekranin
+ * disinda kaliyordu; kullanici kaydirilabildigini anlamazsa havuzu hic
+ * bulamaz. Dolgu ve yazi boyutunu kucultmek besini de sigdiriyor,
+ * kaydirma da guvenlik agi olarak yerinde kaliyor.
+ */
+@media (max-width: 460px) {
+	.mainNav {
+		margin-left: 0;
+		gap: 3px;
+	}
+
+	button.navBtn {
+		padding: 6px 6px;
+		font-size: 11px;
+	}
+
+	header h1 {
+		font-size: 15px;
 	}
 }

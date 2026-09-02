@@ -40,6 +40,15 @@ MIN_WORDS, MAX_WORDS, IDEAL_WORDS = 4, 12, 7
 
 TOKEN_RE = re.compile(r"[a-zA-Z']+")
 
+# Tireli bilesigi TEK belirtec sayar.
+#
+# TOKEN_RE tireyi ayirici sayiyor, bu yuzden "ten-year-old" icinden
+# "old" eslesiyordu ve `old` kelimesinin ornek cumlesi
+# "They have a ten-year-old son." oluyordu. Kelime cumlede tek basina
+# gecmedigi icin bosluk doldurma alistirmasi da onu bulamiyor.
+# 44 kelime bu durumdaydi (old, three, seek, sky, split...).
+WHOLE_TOKEN_RE = re.compile(r"[a-zA-Z']+(?:-[a-zA-Z']+)*")
+
 
 def log(msg):
     print(msg, flush=True)
@@ -201,6 +210,8 @@ with bz2.open(os.path.join(SRC, "eng_sentences.tsv.bz2"), "rt", encoding="utf-8"
             log("  ... %d cumle tarandi, %d kelime eslesti" % (scanned, len(best)))
 
         tokens = [t.lower() for t in TOKEN_RE.findall(text)]
+        # Tek kelime eslesmesi bilesigi bolmeden yapilmali
+        whole_tokens = {t.lower() for t in WHOLE_TOKEN_RE.findall(text)}
         n = len(tokens)
         if n < MIN_WORDS or n > MAX_WORDS:
             continue
@@ -212,11 +223,15 @@ with bz2.open(os.path.join(SRC, "eng_sentences.tsv.bz2"), "rt", encoding="utf-8"
         lower = text.lower()
         hits = set()
 
-        # Tek kelimeler
-        for t in set(tokens):
+        # Tek kelimeler: bilesigin parcasi sayilmaz
+        for t in whole_tokens:
             for wid in surface_to_word.get(t, ()):
                 hits.add(wid)
-            # Cok kelimeli ifadeler: yalnizca ilk sozcugu tutan cumlelerde ara
+
+        # Cok kelimeli ifadeler: yalnizca ilk sozcugu tutan cumlelerde ara.
+        # Burada bolunmus belirtecler kullaniliyor cunku phrase_by_first
+        # anahtarlari tek sozcuk ("t-shirt" -> "t").
+        for t in set(tokens):
             for phrase, wid in phrase_by_first.get(t, ()):
                 if phrase in lower:
                     hits.add(wid)

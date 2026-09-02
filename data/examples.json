@@ -1,7 +1,7 @@
 {
  "_source": "Tatoeba (https://tatoeba.org) - CC BY 2.0 FR",
  "_note": "Otomatik secildi: scripts/build-examples.py. Kelime -> ornek cumle.",
- "_generated": 5161,
+ "_generated": 5160,
  "examples": {
   "AIDS": {
    "en": "Everybody must unite to fight against AIDS.",
@@ -214,10 +214,10 @@
    "score": 7.5
   },
   "absent": {
-   "en": "Even intelligent people are sometimes absent-minded.",
-   "tr": "Zeki insanlar bile bazen dalgındırlar.",
-   "id": 1424449,
-   "score": 6.0
+   "en": "My father is absent on business.",
+   "tr": "Babam işten dolayı burada değil.",
+   "id": 319277,
+   "score": 7.5
   },
   "absolute": {
    "en": "I have absolute trust in you.",
@@ -898,10 +898,10 @@
    "score": 6.0
   },
   "aged": {
-   "en": "She's a middle-aged fat woman.",
-   "tr": "O, orta yaşlı şişman bir kadındır.",
-   "id": 1189864,
-   "score": 9.5
+   "en": "We should be kind to the aged.",
+   "tr": "Yaşlılara karşı nazik olmalıyız.",
+   "id": 64129,
+   "score": 10.0
   },
   "agency": {
    "en": "I work for a travel agency.",
@@ -1036,16 +1036,16 @@
    "score": 7.5
   },
   "alcohol": {
-   "en": "Do you have alcohol-free drinks?",
-   "tr": "Alkolsüz içecekleriniz var mı ?",
-   "id": 511181,
+   "en": "Do you drink alcohol every day?",
+   "tr": "Her gün içki içiyor musunuz?",
+   "id": 9850952,
    "score": 7.5
   },
   "alcoholic": {
-   "en": "Do you have any non-alcoholic drinks?",
-   "tr": "Alkolsüz içkin var mı?",
-   "id": 67307,
-   "score": 8.0
+   "en": "Sake is a traditional Japanese alcoholic drink.",
+   "tr": "Sake geleneksel alkollü Japon içkisidir.",
+   "id": 2276608,
+   "score": 10.0
   },
   "alert": {
    "en": "Stay quiet and be alert.",
@@ -4270,10 +4270,10 @@
    "score": 8.0
   },
   "cease": {
-   "en": "They agreed on cease-fire terms.",
-   "tr": "Onlar ateşkes şartları üzerinde anlaşmaya vardılar.",
-   "id": 306347,
-   "score": 7.5
+   "en": "At last, they ceased working.",
+   "tr": "Nihayet çalışmayı sona erdirdiler.",
+   "id": 39855,
+   "score": 9.0
   },
   "ceiling": {
    "en": "There is a lamp on the ceiling.",
@@ -4606,10 +4606,10 @@
    "score": 10.5
   },
   "child": {
-   "en": "You have a child-like face.",
-   "tr": "Çocuksu bir yüzün var.",
-   "id": 5108386,
-   "score": 5.5
+   "en": "Please keep your eye on my child.",
+   "tr": "Lütfen gözünü çocuğumdan ayırma.",
+   "id": 250985,
+   "score": 6.0
   },
   "childhood": {
    "en": "We have known each other since childhood.",
@@ -5176,10 +5176,10 @@
    "score": 7.5
   },
   "coloured": {
-   "en": "I have a pink-coloured car.",
-   "tr": "Pembe renkli bir arabam var.",
-   "id": 6190890,
-   "score": 7.5
+   "en": "Tom and Mary coloured some eggs for Easter.",
+   "tr": "Tom ve Mary Paskalya için birkaç yumurta boyadı.",
+   "id": 5011258,
+   "score": 12.5
   },
   "colourful": {
    "en": "She discovered a colourful new world.",
@@ -7414,10 +7414,10 @@
    "score": 7.5
   },
   "defence": {
-   "en": "The man pleaded self-defence.",
-   "tr": "Adam kendini savunmak için yalvardı.",
-   "id": 45301,
-   "score": 9.0
+   "en": "He practised the natural defence style.",
+   "tr": "O doğal savunma stili egzersizi yaptı.",
+   "id": 2603009,
+   "score": 9.5
   },
   "defend": {
    "en": "This place will be difficult to defend.",
@@ -7990,10 +7990,10 @@
    "score": 9.5
   },
   "diagnosis": {
-   "en": "Self-diagnosis can be dangerous.",
-   "tr": "Kendi kendine teşhis koyma tehlikeli olabilir.",
-   "id": 4948474,
-   "score": 9.0
+   "en": "Tom kept his diagnosis a secret.",
+   "tr": "Tom aldığı tanıyı kimseye söylemedi.",
+   "id": 7795008,
+   "score": 11.0
   },
   "diagram": {
    "en": "I don't understand this diagram.",
@@ -9256,10 +9256,10 @@
    "score": 10.0
   },
   "eight": {
-   "en": "I have an eight-year-old daughter.",
-   "tr": "Sekiz yaşında bir kızım var.",
-   "id": 4468011,
-   "score": 6.0
+   "en": "They work eight hours a day.",
+   "tr": "Onlar günde sekiz saat çalışırlar.",
+   "id": 305413,
+   "score": 7.5
   },
   "eighteen": {
    "en": "There are eighteen of them.",
@@ -11074,9 +11074,9 @@
    "score": 6.0
   },
   "feeding": {
-   "en": "I'm bottle-feeding my baby.",
-   "tr": "Bebeğimi biberonla besliyorum.",
-   "id": 270352,
+   "en": "Stop feeding me wormy fruit.",
+   "tr": "Kurtlanmış meyve ile beni beslemekten vazgeç.",
+   "id": 4370518,
    "score": 9.0
   },
   "feel": {
@@ -12742,10 +12742,10 @@
    "score": 10.0
   },
   "grandfather": {
-   "en": "Tom was my great-great-great-grandfather.",
-   "tr": "Tom benim büyük-büyük-büyük-büyükbabamdı.",
-   "id": 1774047,
-   "score": 7.5
+   "en": "My grandfather has snowy white hair.",
+   "tr": "Büyükbabamın kar beyazı saçı var.",
+   "id": 273878,
+   "score": 9.0
   },
   "grandma": {
    "en": "I'll give grandma a shirt for Christmas.",
@@ -13378,10 +13378,10 @@
    "score": 4.0
   },
   "heel": {
-   "en": "Mary put her high-heels back on.",
-   "tr": "Mary yüksek topuklu ayakkabılarını giydi.",
-   "id": 5671862,
-   "score": 5.5
+   "en": "Use your head to save your heels.",
+   "tr": "Akılsız başın cezasını ayaklar çekermiş.",
+   "id": 5010999,
+   "score": 8.0
   },
   "height": {
    "en": "I'm exactly the same height as Tom.",
@@ -13888,10 +13888,10 @@
    "score": 8.5
   },
   "hundred": {
-   "en": "I'll eat a hundred-year egg.",
-   "tr": "Ben yüz yıllık yumurta yiyeceğim.",
-   "id": 5460619,
-   "score": 7.5
+   "en": "Hundreds of people eat here every day.",
+   "tr": "Burada her gün yüzlerce insan yiyor.",
+   "id": 6699037,
+   "score": 8.0
   },
   "hunger": {
    "en": "The whole world hungers for peace.",
@@ -14566,10 +14566,10 @@
    "score": 8.0
   },
   "inflict": {
-   "en": "Tom died from self-inflicted injuries.",
-   "tr": "Tom kendi kendine olan yaralardan öldü.",
-   "id": 4497274,
-   "score": 13.0
+   "en": "A sadist likes inflicting pain; a masochist, receiving it.",
+   "tr": "Bir sadist acı vermekten; bir mazoşist onu almaktan hoşlanır.",
+   "id": 710975,
+   "score": 19.0
   },
   "influence": {
    "en": "Don't drive under the influence of drink.",
@@ -14956,10 +14956,10 @@
    "score": 9.5
   },
   "intellectual": {
-   "en": "Non-intellectuals are always poor.",
-   "tr": "Entelektüel olmayanlar her zaman fakirdir.",
-   "id": 11606036,
-   "score": 9.0
+   "en": "It is important to have intellectual curiosity.",
+   "tr": "Entelektüel meraka sahip olmak önemlidir.",
+   "id": 277057,
+   "score": 10.0
   },
   "intelligence": {
    "en": "Artificial intelligence cannot beat natural stupidity.",
@@ -15004,10 +15004,10 @@
    "score": 11.5
   },
   "intensive": {
-   "en": "This task is labor-intensive.",
-   "tr": "Bu iş yoğun iş gücü gerektirmektedir.",
-   "id": 2700640,
-   "score": 11.0
+   "en": "The patient is in intensive care.",
+   "tr": "Hasta yoğun bakımda.",
+   "id": 10643400,
+   "score": 11.5
   },
   "intent": {
    "en": "I have no real intent.",
@@ -15700,10 +15700,10 @@
    "score": 4.0
   },
   "knee": {
-   "en": "Mary put on her knee-high boots.",
-   "tr": "Mary diz üstü botlarını giydi.",
-   "id": 5785817,
-   "score": 5.5
+   "en": "The snow was knee deep.",
+   "tr": "Kar diz boyuydu.",
+   "id": 272605,
+   "score": 7.0
   },
   "knife": {
    "en": "Mother cut the cheese with a knife.",
@@ -16144,10 +16144,10 @@
    "score": 7.5
   },
   "length": {
-   "en": "Tom has shoulder-length brown hair.",
-   "tr": "Tom'un omuz hizasında, kahverengi saçı var.",
-   "id": 3170618,
-   "score": 7.0
+   "en": "Could you cut it shoulder length?",
+   "tr": "Omuz uzunluğunda keser misiniz?",
+   "id": 239267,
+   "score": 9.5
   },
   "lengthy": {
    "en": "We've had lengthy discussions with Tom.",
@@ -16204,10 +16204,10 @@
    "score": 6.0
   },
   "level": {
-   "en": "Many high-level officials attended the meeting.",
-   "tr": "Birçok üst düzey yetkili toplantıya katıldı.",
-   "id": 681630,
-   "score": 6.0
+   "en": "The river level is high.",
+   "tr": "Nehir seviyesi yüksektir.",
+   "id": 5746130,
+   "score": 7.0
   },
   "liable": {
    "en": "We are liable for the damage.",
@@ -17608,10 +17608,10 @@
    "score": 7.5
   },
   "mind": {
-   "en": "Even intelligent people are sometimes absent-minded.",
-   "tr": "Zeki insanlar bile bazen dalgındırlar.",
-   "id": 1424449,
-   "score": 6.0
+   "en": "They say Zen cultivates our mind.",
+   "tr": "Zen'in aklımızı işlediğini söylüyorlar.",
+   "id": 273842,
+   "score": 7.5
   },
   "mine": {
    "en": "Tom's dog isn't as big as mine.",
@@ -17680,9 +17680,9 @@
    "score": 9.5
   },
   "minute": {
-   "en": "Do you have any last-minute advice?",
-   "tr": "Hiç son dakika tavsiyen var mı?",
-   "id": 1886099,
+   "en": "Tom should be back any minute now.",
+   "tr": "Tom şimdi her an geri dönmeli.",
+   "id": 3484019,
    "score": 3.5
   },
   "miracle": {
@@ -19072,9 +19072,9 @@
    "score": 7.0
   },
   "old": {
-   "en": "They have a ten-year-old son.",
-   "tr": "Onların on yaşında bir oğlu var.",
-   "id": 305060,
+   "en": "Old people need something to live for.",
+   "tr": "Yaşlı insanlar, uğruna yaşayacak bir şeye ihtiyaç duyar.",
+   "id": 326415,
    "score": 4.0
   },
   "old-fashioned": {
@@ -21802,10 +21802,10 @@
    "score": 9.5
   },
   "protein": {
-   "en": "Red meat is a high-protein food.",
-   "tr": "Kırmızı etler, proteinli gıdalardır.",
-   "id": 1427248,
-   "score": 6.0
+   "en": "I don't feel like eating animal proteins today.",
+   "tr": "Bugün kendimi hayvan proteinleri yiyor gibi hissetmiyorum.",
+   "id": 2595652,
+   "score": 11.5
   },
   "protest": {
    "en": "He protested against the new plan.",
@@ -22282,10 +22282,10 @@
    "score": 9.5
   },
   "range": {
-   "en": "She only eats free-range chicken.",
-   "tr": "O sadece serbest gezinen tavuk yer.",
-   "id": 1749272,
-   "score": 5.5
+   "en": "It's only effective at close range.",
+   "tr": "Bu sadece yakın mesafede etkili.",
+   "id": 1690495,
+   "score": 7.5
   },
   "rank": {
    "en": "How do you rank that?",
@@ -22294,10 +22294,10 @@
    "score": 9.0
   },
   "ranking": {
-   "en": "A general is a high-ranking military officer.",
-   "tr": "General yüksek rütbeli bir subaydır.",
-   "id": 681626,
-   "score": 11.5
+   "en": "Tom is the ranking officer.",
+   "tr": "Tom yüksek rütbeli subay.",
+   "id": 1533903,
+   "score": 12.5
   },
   "rapid": {
    "en": "Rapid action also has advantages.",
@@ -22366,10 +22366,10 @@
    "score": 4.5
   },
   "ray": {
-   "en": "Sami's suitcase was x-rayed.",
-   "tr": "Sami'nin çantasının röntgeni çekildi.",
-   "id": 6711734,
-   "score": 11.0
+   "en": "Ultraviolet rays can cause skin cancer.",
+   "tr": "Ultraviyole ışınları cilt kanserine neden olabilir.",
+   "id": 263366,
+   "score": 11.5
   },
   "reach": {
    "en": "Keep a dictionary within easy reach.",
@@ -22864,16 +22864,16 @@
    "score": 9.0
   },
   "relate": {
-   "en": "They don't have any work-related problems.",
-   "tr": "Hiçbir problemleri yok işle iligili.",
-   "id": 8655514,
-   "score": 6.0
+   "en": "They're related to each other.",
+   "tr": "Onlar birbirlerine akrabalar.",
+   "id": 629208,
+   "score": 9.0
   },
   "related": {
-   "en": "They don't have any work-related problems.",
-   "tr": "Hiçbir problemleri yok işle iligili.",
-   "id": 8655514,
-   "score": 6.0
+   "en": "They're related to each other.",
+   "tr": "Onlar birbirlerine akrabalar.",
+   "id": 629208,
+   "score": 9.0
   },
   "related to": {
    "en": "They're related to each other.",
@@ -24394,16 +24394,16 @@
    "score": 3.5
   },
   "seek": {
-   "en": "Let's play hide-and-seek!",
-   "tr": "Hadi saklambaç oynayalım!",
-   "id": 1064354,
+   "en": "Let's play hide and seek.",
+   "tr": "Saklambaç oynayalım.",
+   "id": 2007528,
    "score": 7.0
   },
   "seeker": {
-   "en": "Oliver is a thrill-seeker.",
-   "tr": "Oliver bir maceraperest.",
-   "id": 1391761,
-   "score": 13.0
+   "en": "Germany is expecting about 1.5 million asylum seekers this year.",
+   "tr": "Almanya bu yıl yaklaşık bir buçuk milyon sığınmacı bekliyor.",
+   "id": 4584622,
+   "score": 17.0
   },
   "seem": {
    "en": "Some people seem to complain about everything.",
@@ -24460,10 +24460,10 @@
    "score": 11.0
   },
   "self": {
-   "en": "Some people find self-harm comforting.",
-   "tr": "Bazı insanlar kendine zarar vermeyi teselli edici buluyor.",
-   "id": 4056643,
-   "score": 5.5
+   "en": "She is her old self again.",
+   "tr": "O tekrar eskisi gibi.",
+   "id": 312226,
+   "score": 9.5
   },
   "selfish": {
    "en": "You seem quite selfish.",
@@ -24970,10 +24970,10 @@
    "score": 8.5
   },
   "shut": {
-   "en": "I need to get some shut-eye.",
-   "tr": "Biraz kestirmeye ihtiyacım var.",
-   "id": 267787,
-   "score": 6.0
+   "en": "The bank shuts late on Fridays.",
+   "tr": "Banka cuma günleri geç kapanır.",
+   "id": 18479,
+   "score": 7.5
   },
   "shutdown": {
    "en": "Tom opposed the shutdown.",
@@ -25294,10 +25294,10 @@
    "score": 9.5
   },
   "sky": {
-   "en": "Prices right now are sky-high.",
-   "tr": "Fiyatlar şu anda çok yüksek.",
-   "id": 4891905,
-   "score": 5.5
+   "en": "The sky was as clear as ever.",
+   "tr": "Hava her zamanki gibi açıktı.",
+   "id": 18273,
+   "score": 6.0
   },
   "slam": {
    "en": "Tom heard a car door slam.",
@@ -26008,10 +26008,10 @@
    "score": 9.5
   },
   "split": {
-   "en": "I put on my socks lickety-split.",
-   "tr": "Çoraplarımı çabucak giydim.",
-   "id": 2654648,
-   "score": 8.0
+   "en": "Tom split the bill with Mary.",
+   "tr": "Tom hesabı Mary ile paylaştı.",
+   "id": 1140899,
+   "score": 8.5
   },
   "spoil": {
    "en": "We spoil our youngest daughter.",
@@ -27376,9 +27376,9 @@
    "score": 7.5
   },
   "tail": {
-   "en": "Do not always ride on someone's coat-tail.",
-   "tr": "Her zaman birisinin frag-kuyruğunda yolculuk yapmayın.",
-   "id": 269970,
+   "en": "Why do pigs have curly tails?",
+   "tr": "Domuzların neden kıvırcık kuyrukları var?",
+   "id": 11999454,
    "score": 7.5
   },
   "take": {
@@ -27472,10 +27472,10 @@
    "score": 7.0
   },
   "tax": {
-   "en": "Do you have any tax-free articles?",
-   "tr": "Vergiden muaf eşyaların var mı?",
-   "id": 57759,
-   "score": 4.0
+   "en": "Is there any tax on this?",
+   "tr": "Bununla ilgili herhangi bir vergi var mı?",
+   "id": 57423,
+   "score": 5.5
   },
   "taxi": {
    "en": "Tell the taxi driver to drive faster.",
@@ -27628,10 +27628,10 @@
    "score": 9.0
   },
   "ten": {
-   "en": "They have a ten-year-old son.",
-   "tr": "Onların on yaşında bir oğlu var.",
-   "id": 305060,
-   "score": 4.0
+   "en": "They have been married for ten years.",
+   "tr": "Onlar on yıldır evliler.",
+   "id": 283575,
+   "score": 6.0
   },
   "tenant": {
    "en": "I had problems with my former tenants.",
@@ -28012,10 +28012,10 @@
    "score": 6.0
   },
   "thirteen": {
-   "en": "I have a thirteen-year-old son.",
-   "tr": "On üç yaşında bir oğlum var.",
-   "id": 3619353,
-   "score": 6.0
+   "en": "Thirteen people have died.",
+   "tr": "On üç kişi hayatını kaybetti.",
+   "id": 4497288,
+   "score": 8.5
   },
   "thirty": {
    "en": "We have room for thirty people.",
@@ -28072,9 +28072,9 @@
    "score": 9.0
   },
   "thousand": {
-   "en": "I'll eat a thousand-year-old egg.",
-   "tr": "Bin yıllık bir yumurta yiyeceğim.",
-   "id": 5460623,
+   "en": "There were about a thousand people there.",
+   "tr": "Orada yaklaşık bin kişi vardı.",
+   "id": 10296663,
    "score": 6.0
   },
   "thread": {
@@ -28096,10 +28096,10 @@
    "score": 7.0
   },
   "three": {
-   "en": "We have a three-month-old baby.",
-   "tr": "Üç aylık bir bebeğimiz var.",
-   "id": 6664124,
-   "score": 6.0
+   "en": "Now they have three children.",
+   "tr": "Şimdi onların üç çocuğu var.",
+   "id": 305516,
+   "score": 7.0
   },
   "threshold": {
    "en": "Tom has a high threshold for pain.",
@@ -28354,9 +28354,9 @@
    "score": 9.0
   },
   "tongue": {
-   "en": "Do you know any Finnish tongue-twisters?",
-   "tr": "Hiç Fince tekerlemeler biliyor musun?",
-   "id": 3205583,
+   "en": "I do not have a mother tongue.",
+   "tr": "Benim bir anadilim yok.",
+   "id": 7800748,
    "score": 8.0
   },
   "tonight": {
@@ -29134,9 +29134,9 @@
    "score": 7.5
   },
   "understand": {
-   "en": "Begin with an easy-to-understand book.",
-   "tr": "Kolay anlaşılır bir kitapla başla.",
-   "id": 2744110,
+   "en": "Only they themselves understand what they say.",
+   "tr": "Onlar söylediklerini sadece kendileri anlıyor.",
+   "id": 4823878,
    "score": 4.0
   },
   "understanding": {
@@ -29630,12 +29630,6 @@
    "tr": "Onlar yürüyerek büyük kıtayı geçtiler.",
    "id": 307221,
    "score": 6.0
-  },
-  "vb": {
-   "en": "VB6 killed my sister.",
-   "tr": "VB6 kız kardeşimi öldürdü.",
-   "id": 6042761,
-   "score": 10.5
   },
   "vegetable": {
    "en": "She cooked vegetable soup last night.",
@@ -30856,9 +30850,9 @@
    "score": 9.0
   },
   "year": {
-   "en": "They have a ten-year-old son.",
-   "tr": "Onların on yaşında bir oğlu var.",
-   "id": 305060,
+   "en": "Last year they built a summer house.",
+   "tr": "Geçen yıl onlar bir yazlık inşa ettiler.",
+   "id": 1166184,
    "score": 4.0
   },
   "yearly": {
