@@ -83,25 +83,84 @@ export function applyResult(word, known, now = todayISO()) {
 	return next;
 }
 
+/** Günlük oturumda tanıştırılacak varsayılan yeni kelime sayısı. */
+export const DEFAULT_NEW_LIMIT = 10;
+
+/** Kelime daha önce hiç çalışıldı mı? */
+function isFresh(word) {
+	return !(word.history && word.history.length);
+}
+
 /**
  * Tekrar kuyruğunu oluşturur.
  *
- * - free=false (normal): SADECE tekrar zamanı gelmiş kelimeler,
- *   en çok gecikmiş olan başta.
- * - free=true (serbest): öğrenilmemiş tüm kelimeler, rastgele sırayla.
+ * İKİ AYRI AKIŞ birleştiriliyor:
  *
- * Öğrenilmiş kelimeler hiçbir modda kuyruğa girmez.
+ *  1. TEKRARLAR — daha önce çalışılmış ve zamanı gelmiş kelimeler,
+ *     en çok gecikmiş olan başta. Bunlar sınırsız: biriken tekrarı
+ *     temizlemek yeni kelime öğrenmekten önceliklidir, yoksa unutma
+ *     hızı öğrenme hızını geçer.
+ *
+ *  2. YENİ KELİMELER — hiç çalışılmamışlar, KULLANIM SIKLIĞINA göre.
+ *     Bu, müfredat sırasının kendisi: "you", "and", "time" gibi çok
+ *     geçen kelimeler "actor", "abandon"dan önce gelir. Sıklık verisi
+ *     olmayanlar sona alınır.
+ *     Sayıları sınırlı: 5000 kelimelik havuzda sınırsız yeni kelime
+ *     vermek, ertesi gün kaldırılamayacak bir tekrar yükü yaratır.
+ *
+ * free=true (serbest tekrar) bu düzeni atlar: öğrenilmemiş her şeyi
+ * rastgele sırayla verir.
  *
  * @param {Array<object>} words
- * @param {{free?: boolean, isDue: (iso: string) => boolean, shuffle?: (a: Array) => Array}} options
+ * @param {{
+ *   free?: boolean,
+ *   isDue: (iso: string) => boolean,
+ *   shuffle?: (a: Array) => Array,
+ *   newLimit?: number
+ * }} options
  * @returns {Array<object>}
  */
-export function buildReviewQueue(words, { free = false, isDue, shuffle = defaultShuffle }) {
+export function buildReviewQueue(words, {
+	free = false,
+	isDue,
+	shuffle = defaultShuffle,
+	newLimit = DEFAULT_NEW_LIMIT
+}) {
 	const unlearned = words.filter((w) => (w.level || 0) < MAX_LEVEL);
 	if (free) return shuffle(unlearned.slice());
-	return unlearned
-		.filter((w) => isDue(w.nextReviewAt))
+
+	const due = unlearned.filter((w) => isDue(w.nextReviewAt));
+
+	const reviews = due
+		.filter((w) => !isFresh(w))
 		.sort((a, b) => new Date(a.nextReviewAt) - new Date(b.nextReviewAt));
+
+	const fresh = due
+		.filter(isFresh)
+		.sort((a, b) => {
+			// Sıklık sırası düşük olan (daha yaygın kelime) önce gelir.
+			// Verisi olmayan sona.
+			const ra = a.freqRank || Number.MAX_SAFE_INTEGER;
+			const rb = b.freqRank || Number.MAX_SAFE_INTEGER;
+			if (ra !== rb) return ra - rb;
+			return a.en.localeCompare(b.en, 'en');
+		})
+		.slice(0, Math.max(0, newLimit));
+
+	return [...reviews, ...fresh];
+}
+
+/**
+ * Kuyruğa girmeye aday sayıları — arayüzde "kaç kelime var" demek için.
+ * buildReviewQueue ile aynı kuralları kullanır.
+ */
+export function countQueue(words, { isDue, newLimit = DEFAULT_NEW_LIMIT }) {
+	const unlearned = words.filter((w) => (w.level || 0) < MAX_LEVEL);
+	const due = unlearned.filter((w) => isDue(w.nextReviewAt));
+	const reviews = due.filter((w) => !isFresh(w)).length;
+	const freshAvailable = due.filter(isFresh).length;
+	const fresh = Math.min(freshAvailable, Math.max(0, newLimit));
+	return { reviews, fresh, freshAvailable, total: reviews + fresh };
 }
 
 /** Fisher-Yates karıştırma. Diziyi yerinde değiştirir ve döner. */

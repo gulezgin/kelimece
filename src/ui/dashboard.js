@@ -32,10 +32,16 @@ function heroSection(o, handlers) {
 	]);
 
 	const subtitle = el('div', { class: 'heroSubtitle' });
+	const s = o.session || { total: 0, reviews: 0, fresh: 0, freshAvailable: 0 };
 	if (!hasLevel) {
 		subtitle.textContent = 'Nereden başlayacağını bilmiyorsan kısa bir testle seviyeni ölçelim.';
-	} else if (o.due > 0) {
-		subtitle.textContent = `Bugün tekrar zamanı gelen ${o.due} kelime var.`;
+	} else if (s.total > 0) {
+		// Tekrar ile yeni kelimeyi ayri soylemek, oturumun neye
+		// benzeyecegini onceden gosteriyor.
+		const parts = [];
+		if (s.reviews) parts.push(`${s.reviews} tekrar`);
+		if (s.fresh) parts.push(`${s.fresh} yeni kelime`);
+		subtitle.textContent = 'Bugünkü oturumun: ' + parts.join(' + ') + '.';
 	} else if (o.untouched > 0) {
 		subtitle.textContent = `Bugünlük tekrar bitti. ${o.untouched} yeni kelime seni bekliyor.`;
 	} else {
@@ -44,11 +50,12 @@ function heroSection(o, handlers) {
 
 	const actions = el('div', { class: 'heroActions' });
 
+	const session = o.session || { total: o.due, reviews: 0, fresh: 0 };
 	const startBtn = el('button', {
 		class: 'primary heroStart',
-		text: o.due > 0 ? `Çalışmaya başla (${o.due})` : 'Yeni kelimelerle çalış'
+		text: session.total > 0 ? `Çalışmaya başla (${session.total})` : 'Yeni kelimelerle çalış'
 	});
-	startBtn.onclick = () => handlers.onStart(o.due > 0 ? 'due' : 'new');
+	startBtn.onclick = () => handlers.onStart(session.total > 0 ? 'due' : 'new');
 	actions.appendChild(startBtn);
 
 	const placeBtn = el('button', {
@@ -68,13 +75,21 @@ function heroSection(o, handlers) {
 /** Günlük hedef, seri ve genel ilerleme. */
 function statsRow(o) {
 	const goalPct = o.dailyGoal ? Math.min(100, Math.round((o.studiedToday / o.dailyGoal) * 100)) : 0;
+	const s = o.session || { total: o.due, reviews: 0, fresh: 0, freshAvailable: 0 };
+
+	// Ham "bekleyen kelime" sayısı 5000'i geçebiliyor ve yıldırıcı
+	// görünüyor. Kartta bugünkü oturumun uzunluğu gösteriliyor;
+	// havuzun tamamı alt satırda bilgi olarak kalıyor.
+	const sessionNote = s.total > 0
+		? (s.reviews ? `${s.reviews} tekrar + ${s.fresh} yeni` : `${s.fresh} yeni kelime`)
+		: 'bugünlük bitti';
 
 	return el('section', { class: 'statCards' }, [
 		statCard('🔥', 'Seri', o.streak > 0 ? `${o.streak} gün` : 'Henüz yok',
 			o.longestStreak > o.streak ? `En uzun: ${o.longestStreak} gün` : ''),
 		statCard('📅', 'Bugün', `${o.studiedToday} / ${o.dailyGoal}`, `%${goalPct} tamamlandı`, goalPct),
 		statCard('📚', 'Öğrenilen', `${o.learned} / ${o.total}`, `%${o.percent}`, o.percent),
-		statCard('⏰', 'Tekrar sırası', String(o.due), o.due > 0 ? 'bugün' : 'temiz')
+		statCard('⏰', 'Bugünkü oturum', String(s.total), sessionNote)
 	]);
 }
 

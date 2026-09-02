@@ -2,13 +2,13 @@
  "_source": "Oxford CEFR kelime listeleri (kullanici tarafindan saglandi), Turkce cevirili",
  "_note": "scripts/extract-oxford.py ile ayristirildi. Ayni kelime birden fazla seviyede gecerse en dusuk seviye alinir.",
  "_counts": {
-  "total": 4921,
+  "total": 4887,
   "byLevel": {
-   "A1": 895,
-   "A2": 788,
-   "B1": 687,
-   "B2": 1287,
-   "C1": 1264
+   "A1": 890,
+   "A2": 783,
+   "B1": 686,
+   "B2": 1279,
+   "C1": 1249
   }
  },
  "words": [
@@ -3812,17 +3812,6 @@
    ]
   },
   {
-   "en": "anlatan",
-   "cefr": "A1",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "olumsuz yardımcı fiil",
-     "pos": "verb"
-    }
-   ]
-  },
-  {
    "en": "anniversary",
    "cefr": "B2",
    "pos": "noun",
@@ -4738,17 +4727,6 @@
     {
      "tr": "nisan ayı",
      "pos": "noun"
-    }
-   ]
-  },
-  {
-   "en": "aramak",
-   "cefr": "B2",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "(fahişe)",
-     "pos": "verb"
     }
    ]
   },
@@ -8540,17 +8518,6 @@
     },
     {
      "tr": "bisiklet sürmek",
-     "pos": "verb"
-    }
-   ]
-  },
-  {
-   "en": "bilgisayara",
-   "cefr": "A2",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "program)",
      "pos": "verb"
     }
    ]
@@ -26213,17 +26180,6 @@
    ]
   },
   {
-   "en": "duruma",
-   "cefr": "C1",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "getirmek",
-     "pos": "verb"
-    }
-   ]
-  },
-  {
    "en": "dust",
    "cefr": "B1",
    "pos": "verb",
@@ -26682,36 +26638,6 @@
     },
     {
      "tr": "uç",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
-   "en": "edici",
-   "cefr": "B2",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "sözlerle)",
-     "pos": "verb"
-    },
-    {
-     "tr": "garanti etmek",
-     "pos": "verb"
-    },
-    {
-     "tr": "sigorta etmek",
-     "pos": "verb"
-    }
-   ]
-  },
-  {
-   "en": "edilen",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "içecek",
      "pos": "noun"
     }
    ]
@@ -27188,17 +27114,6 @@
     {
      "tr": "dirsekle vurmak",
      "pos": "verb"
-    }
-   ]
-  },
-  {
-   "en": "elde",
-   "cefr": "A1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "edilen içeceklerin tümü",
-     "pos": "noun"
     }
    ]
   },
@@ -29595,17 +29510,6 @@
     {
      "tr": "ırksal",
      "pos": "adjective"
-    }
-   ]
-  },
-  {
-   "en": "etmek",
-   "cefr": "B1",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "kızartmak",
-     "pos": "verb"
     }
    ]
   },
@@ -36153,21 +36057,6 @@
    ]
   },
   {
-   "en": "gelecek",
-   "cefr": "A2",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "zaman yardımcı fiili",
-     "pos": "verb"
-    },
-    {
-     "tr": "kaçınılmazlık belirtir",
-     "pos": "verb"
-    }
-   ]
-  },
-  {
    "en": "gender",
    "cefr": "B2",
    "pos": "noun",
@@ -38564,21 +38453,6 @@
     {
      "tr": "biçmek",
      "pos": "verb"
-    }
-   ]
-  },
-  {
-   "en": "hastanesinde",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "bulunan kimse",
-     "pos": "noun"
-    },
-    {
-     "tr": "oturan kimse ev",
-     "pos": "noun"
     }
    ]
   },
@@ -41035,17 +40909,6 @@
     {
      "tr": "önemsememek",
      "pos": "verb"
-    }
-   ]
-  },
-  {
-   "en": "ilahi",
-   "cefr": "B2",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "türü",
-     "pos": "noun"
     }
    ]
   },
@@ -44994,17 +44857,6 @@
    ]
   },
   {
-   "en": "istenmeyen",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "mesajlar",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
    "en": "it",
    "cefr": "A1",
    "pos": "noun",
@@ -45073,17 +44925,6 @@
     {
      "tr": "bizzat",
      "pos": "pronoun"
-    }
-   ]
-  },
-  {
-   "en": "izin",
-   "cefr": "B2",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "vermek",
-     "pos": "verb"
     }
    ]
   },
@@ -45688,43 +45529,6 @@
    ]
   },
   {
-   "en": "kadar",
-   "cefr": "B2",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "olan sayılar",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
-   "en": "kalmak",
-   "cefr": "A2",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "dalgın dalgın dolaşmak",
-     "pos": "verb"
-    }
-   ]
-  },
-  {
-   "en": "kavramak",
-   "cefr": "B2",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "(anlamak)",
-     "pos": "verb"
-    },
-    {
-     "tr": "emmek",
-     "pos": "verb"
-    }
-   ]
-  },
-  {
    "en": "keen",
    "cefr": "B1",
    "pos": "adjective",
@@ -45921,21 +45725,6 @@
    "senses": [
     {
      "tr": "kilometre",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
-   "en": "kimse",
-   "cefr": "A1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "delikanlı",
-     "pos": "noun"
-    },
-    {
-     "tr": "yeniyetme",
      "pos": "noun"
     }
    ]
@@ -46142,47 +45931,6 @@
     {
      "tr": "bili",
      "pos": "noun"
-    }
-   ]
-  },
-  {
-   "en": "kokteyl",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "kesik kuyruklu",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
-   "en": "koruyucu",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "şey",
-     "pos": "noun"
-    },
-    {
-     "tr": "ufak yastık",
-     "pos": "noun"
-    },
-    {
-     "tr": "şişirmek",
-     "pos": "verb"
-    }
-   ]
-  },
-  {
-   "en": "koymak",
-   "cefr": "A2",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "sağlam emniyete almak",
-     "pos": "verb"
     }
    ]
   },
@@ -51402,17 +51150,6 @@
    ]
   },
   {
-   "en": "mesafesini",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "saptama sistemi",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
    "en": "mess",
    "cefr": "B1",
    "pos": "noun",
@@ -53412,21 +53149,6 @@
    ]
   },
   {
-   "en": "mutfak",
-   "cefr": "A2",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "aleti)",
-     "pos": "noun"
-    },
-    {
-     "tr": "fırın",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
    "en": "mutual",
    "cefr": "C1",
    "pos": "adjective",
@@ -54584,17 +54306,6 @@
     },
     {
      "tr": "90",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
-   "en": "nitelemek",
-   "cefr": "A1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "için kullanılır",
      "pos": "noun"
     }
    ]
@@ -56240,36 +55951,6 @@
    ]
   },
   {
-   "en": "olan",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "cüz",
-     "pos": "noun"
-    },
-    {
-     "tr": "bütün şey",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
-   "en": "olay",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "birdenbire)",
-     "pos": "noun"
-    },
-    {
-     "tr": "çıkma",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
    "en": "old",
    "cefr": "A1",
    "pos": "adjective",
@@ -56304,17 +55985,6 @@
     {
      "tr": "nuh nebi`den kalma",
      "pos": "adjective"
-    }
-   ]
-  },
-  {
-   "en": "omuz",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "silkme",
-     "pos": "noun"
     }
    ]
   },
@@ -57844,17 +57514,6 @@
    ]
   },
   {
-   "en": "oynanan",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "iskambil oyunu",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
    "en": "pace",
    "cefr": "B2",
    "pos": "noun",
@@ -58172,17 +57831,6 @@
     },
     {
      "tr": "don",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
-   "en": "papaz",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "idaresindeki mıntıka",
      "pos": "noun"
     }
    ]
@@ -71123,21 +70771,6 @@
    ]
   },
   {
-   "en": "saman",
-   "cefr": "B2",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "veya kuru ot",
-     "pos": "verb"
-    },
-    {
-     "tr": "karıştırmak",
-     "pos": "verb"
-    }
-   ]
-  },
-  {
    "en": "same",
    "cefr": "A1",
    "pos": "adjective",
@@ -81713,17 +81346,6 @@
    ]
   },
   {
-   "en": "temsili",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "prömiyer",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
    "en": "ten",
    "cefr": "A1",
    "pos": "noun",
@@ -83976,25 +83598,6 @@
     },
     {
      "tr": "bahis",
-     "pos": "noun"
-    }
-   ]
-  },
-  {
-   "en": "toplanan",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "para",
-     "pos": "noun"
-    },
-    {
-     "tr": "adak",
-     "pos": "noun"
-    },
-    {
-     "tr": "kurban",
      "pos": "noun"
     }
    ]
@@ -87578,21 +87181,6 @@
    ]
   },
   {
-   "en": "vb",
-   "cefr": "B2",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "ülke dışı",
-     "pos": "noun"
-    },
-    {
-     "tr": "yurtdışı",
-     "pos": "adjective"
-    }
-   ]
-  },
-  {
    "en": "vegetable",
    "cefr": "A1",
    "pos": "noun",
@@ -87745,17 +87333,6 @@
    ]
   },
   {
-   "en": "vermek",
-   "cefr": "A1",
-   "pos": "verb",
-   "senses": [
-    {
-     "tr": "makine ile yapmak",
-     "pos": "verb"
-    }
-   ]
-  },
-  {
    "en": "verse",
    "cefr": "C1",
    "pos": "noun",
@@ -87885,25 +87462,6 @@
     {
      "tr": "kıdemli",
      "pos": "adjective"
-    }
-   ]
-  },
-  {
-   "en": "veya",
-   "cefr": "C1",
-   "pos": "noun",
-   "senses": [
-    {
-     "tr": "bağışıklık",
-     "pos": "noun"
-    },
-    {
-     "tr": "hak",
-     "pos": "noun"
-    },
-    {
-     "tr": "melce",
-     "pos": "noun"
     }
    ]
   },

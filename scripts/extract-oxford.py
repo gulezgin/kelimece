@@ -85,6 +85,55 @@ def load_english_vocabulary():
 ENGLISH = load_english_vocabulary()
 
 
+def load_turkish_vocabulary():
+    """
+    Turkce sozcuk dagarcigi (Tatoeba Turkce cumlelerinden, ~156.000).
+
+    Neden gerekli: PDF'te uzun bir Turkce anlam alt satira tasindiginda
+    o satirin ilk kelimesi bas sozcuk saniliyor. Ornek satir:
+        "... elde edilen iceceklerin tumu [i.]"
+    Buradan "elde" diye bir "Ingilizce kelime" uretiliyordu. 32 boyle
+    kayit vardi (anlatan, kadar, mutfak, vermek, veya...).
+
+    Dosya yoksa filtre devre disi kalir - ayristirma yine calisir.
+    """
+    path = os.path.join(ROOT, "data", "sources", "tur_sentences.tsv.bz2")
+    vocab = set()
+    if not os.path.exists(path):
+        return vocab
+    import bz2 as _bz2
+    token = re.compile(r"[a-z\u00e7\u011f\u0131\u00f6\u015f\u00fc]+")
+    with _bz2.open(path, "rt", encoding="utf-8", errors="replace") as f:
+        for line in f:
+            parts = line.split("\t")
+            if len(parts) < 3:
+                continue
+            for t in token.findall(parts[2].lower()):
+                vocab.add(t)
+    return vocab
+
+
+TURKISH = load_turkish_vocabulary()
+
+# Turkce korpusunda bulunmayan ama Turkce olan birkac kayit.
+TURKISH_EXTRA = {"nitelemek", "temsili"}
+
+
+def looks_turkish(word):
+    """Bas sozcuk aslinda Turkce mi?"""
+    w = word.lower()
+    # Ingilizce sozlukte varsa Ingilizcedir - "cat", "kilo" gibi ortak
+    # yazimli kelimeler yanlislikla elenmesin.
+    if w in ENGLISH:
+        return False
+    if w in TURKISH_EXTRA:
+        return True
+    # Turkce mastar eki
+    if len(w) > 5 and (w.endswith("mek") or w.endswith("mak")):
+        return True
+    return w in TURKISH
+
+
 def split_headword(line):
     """
     Satirin basindaki Ingilizce bas sozcugu ayirir.
@@ -158,6 +207,9 @@ def parse_line(line):
     if not term or not rest:
         return None
     if len(term) > 40:
+        return None
+    # Satir kaydirma artigi: bas sozcuk aslinda Turkce
+    if looks_turkish(term):
         return None
 
     senses = SENSE_RE.findall(rest)
@@ -240,6 +292,7 @@ for level, filename in FILES:
 log("")
 log("=== OZET ===")
 log("  Toplam kelime : %d" % len(entries))
+log("  Turkce sozluk : %d sozcuk (satir kaydirma artiklarini eler)" % len(TURKISH))
 log("  Seviyeye gore : %s" % "  ".join("%s:%d" % (k, v) for k, v in per_level.items()))
 
 pos_counter = Counter()

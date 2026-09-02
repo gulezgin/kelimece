@@ -9,6 +9,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	applyResult,
 	buildReviewQueue,
+	countQueue,
 	correctStreak,
 	INTERVALS,
 	isLearned,
@@ -161,5 +162,85 @@ describe('buildReviewQueue', () => {
 		const snapshot = words.map((w) => w.id);
 		buildReviewQueue(words, { free: true, isDue });
 		expect(words.map((w) => w.id)).toEqual(snapshot);
+	});
+});
+
+describe('buildReviewQueue - müfredat sırası', () => {
+	/** Hiç çalışılmamış kelime (geçmişi boş). */
+	const fresh = (id, freqRank) => word({ id, level: 0, nextReviewAt: day(0), history: [], freqRank });
+	/** Daha önce çalışılmış, zamanı gelmiş kelime. */
+	const review = (id, overdueDays) =>
+		word({ id, level: 2, nextReviewAt: day(-overdueDays), history: [{ known: true }] });
+
+	it('yeni kelimeler kullanım sıklığına göre gelir', () => {
+		// Müfredat sırasının kendisi: "and" (#8) "actor"dan (#2499) önce.
+		const pool = [fresh('actor', 2499), fresh('and', 8), fresh('time', 80)];
+		const q = buildReviewQueue(pool, { isDue, newLimit: 10 });
+		expect(q.map((w) => w.id)).toEqual(['and', 'time', 'actor']);
+	});
+
+	it('sıklık verisi olmayan kelimeler sona kalır', () => {
+		const pool = [fresh('bilinmeyen', null), fresh('and', 8)];
+		const q = buildReviewQueue(pool, { isDue, newLimit: 10 });
+		expect(q.map((w) => w.id)).toEqual(['and', 'bilinmeyen']);
+	});
+
+	it('tekrarlar yeni kelimelerden önce gelir', () => {
+		// Biriken tekrarı temizlemek önceliklidir; yoksa unutma hızı
+		// öğrenme hızını geçer.
+		const pool = [fresh('yeni', 5), review('eski', 3)];
+		const q = buildReviewQueue(pool, { isDue, newLimit: 10 });
+		expect(q[0].id).toBe('eski');
+		expect(q[1].id).toBe('yeni');
+	});
+
+	it('tekrarlar en çok gecikmiş olan başta sıralanır', () => {
+		const pool = [review('az', 1), review('cok', 30), review('orta', 7)];
+		const q = buildReviewQueue(pool, { isDue });
+		expect(q.map((w) => w.id)).toEqual(['cok', 'orta', 'az']);
+	});
+
+	it('yeni kelime sayısı sınırlanır', () => {
+		// 5000 kelimelik havuzda sınırsız yeni kelime vermek, ertesi gün
+		// kaldırılamayacak bir tekrar yükü yaratır.
+		const pool = Array.from({ length: 200 }, (_, i) => fresh('w' + i, i + 1));
+		expect(buildReviewQueue(pool, { isDue, newLimit: 10 })).toHaveLength(10);
+		expect(buildReviewQueue(pool, { isDue, newLimit: 3 })).toHaveLength(3);
+	});
+
+	it('tekrar sayısı sınırlanmaz', () => {
+		const pool = Array.from({ length: 60 }, (_, i) => review('r' + i, i + 1));
+		expect(buildReviewQueue(pool, { isDue, newLimit: 5 })).toHaveLength(60);
+	});
+
+	it('sınır sıfırsa hiç yeni kelime verilmez', () => {
+		const pool = [fresh('a', 1), review('b', 2)];
+		const q = buildReviewQueue(pool, { isDue, newLimit: 0 });
+		expect(q.map((w) => w.id)).toEqual(['b']);
+	});
+
+	it('serbest tekrar sınırı ve sırayı atlar', () => {
+		const pool = Array.from({ length: 50 }, (_, i) => fresh('w' + i, i + 1));
+		expect(buildReviewQueue(pool, { free: true, isDue, newLimit: 5 })).toHaveLength(50);
+	});
+});
+
+describe('countQueue', () => {
+	const fresh = (id, freqRank) => word({ id, level: 0, nextReviewAt: day(0), history: [], freqRank });
+	const review = (id) => word({ id, level: 2, nextReviewAt: day(-1), history: [{ known: true }] });
+
+	it('oturum uzunluğunu buildReviewQueue ile aynı hesaplar', () => {
+		const pool = [...Array.from({ length: 40 }, (_, i) => fresh('f' + i, i)), review('r1'), review('r2')];
+		const counts = countQueue(pool, { isDue, newLimit: 10 });
+		expect(counts.reviews).toBe(2);
+		expect(counts.fresh).toBe(10);
+		expect(counts.freshAvailable).toBe(40);
+		expect(counts.total).toBe(12);
+		expect(buildReviewQueue(pool, { isDue, newLimit: 10 })).toHaveLength(counts.total);
+	});
+
+	it('bekleyen yoksa sıfır döner', () => {
+		const notDue = word({ level: 2, nextReviewAt: day(9), history: [{ known: true }] });
+		expect(countQueue([notDue], { isDue }).total).toBe(0);
 	});
 });

@@ -7,7 +7,7 @@
 import './styles/main.css';
 
 import { levelsUpTo } from './core/placement.js';
-import { buildReviewQueue, MAX_LEVEL } from './core/srs.js';
+import { buildReviewQueue, countQueue, MAX_LEVEL } from './core/srs.js';
 import { isDue } from './core/time.js';
 import * as store from './data/store.js';
 import * as notifications from './platform/notifications.js';
@@ -69,7 +69,14 @@ function render() {
 	if (activeSection === 'home') {
 		// Profil seviyesi varsa özet o seviyeye ve altına odaklanır.
 		const scope = store.state.profile.level ? levelsUpTo(store.state.profile.level) : [];
-		renderDashboard(store.getOverview(isDue, scope), breakdown, dashboardHandlers);
+		const overview = store.getOverview(isDue, scope);
+		// Ana ekrandaki sayi gercek oturum uzunlugunu gostermeli:
+		// 5000 bekleyen kelime degil, bugun calisilacak kadari.
+		const scopeWords = scope.length
+			? store.state.words.filter((w) => scope.includes(w.cefr))
+			: store.state.words;
+		overview.session = countQueue(scopeWords, { isDue, newLimit: store.state.settings.dailyGoal });
+		renderDashboard(overview, breakdown, dashboardHandlers);
 		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
 		return;
 	}
@@ -220,7 +227,9 @@ async function startReviewSession({ free = false, levels = null } = {}) {
 	const pool = levels
 		? store.state.words.filter((w) => levels.includes(w.cefr))
 		: wordsAtLevel();
-	const queue = buildReviewQueue(pool, { free, isDue });
+	// Gunluk hedef = bir oturumda tanistirilacak yeni kelime sayisi.
+	const newLimit = store.state.settings.dailyGoal;
+	const queue = buildReviewQueue(pool, { free, isDue, newLimit });
 
 	if (!queue.length) {
 		const scopeLabel = levels
