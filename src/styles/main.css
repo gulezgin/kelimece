@@ -1888,3 +1888,129 @@ button.planCard--featured {
 	button.planCard { flex-direction: row; justify-content: space-between; padding: 14px; }
 	.planBadge { left: auto; right: 12px; transform: none; }
 }
+
+/* ==============================================
+   KONULAR
+   ============================================== */
+.sectionHead {
+	margin-bottom: 18px;
+}
+
+.sectionHead h2 {
+	margin: 0 0 6px;
+	font-size: 20px;
+}
+
+.topicGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	gap: 12px;
+}
+
+button.topicCard {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6px;
+	position: relative;
+	padding: 14px;
+	text-align: left;
+	border: 1px solid #263049;
+	border-radius: 14px;
+	background: var(--panel);
+	color: var(--text);
+	cursor: pointer;
+	transition: border-color var(--transition), transform var(--transition);
+}
+
+button.topicCard:hover {
+	border-color: var(--acc);
+	transform: translateY(-2px);
+}
+
+button.topicCard:focus-visible {
+	outline: 2px solid var(--acc);
+	outline-offset: 2px;
+}
+
+.topicIcon {
+	font-size: 26px;
+	line-height: 1;
+}
+
+.topicName {
+	font-weight: 700;
+	font-size: 14px;
+	/* Konu adlari uzun olabilir; kart yuksekligi sabit kalsin */
+	line-height: 1.3;
+}
+
+.topicCount {
+	color: var(--muted);
+	font-size: 12px;
+}
+
+.topicBar {
+	display: block;
+	width: 100%;
+	height: 5px;
+	margin-top: 2px;
+	border-radius: 999px;
+	background: #232b42;
+	overflow: hidden;
+}
+
+.topicBarFill {
+	display: block;
+	height: 100%;
+	border-radius: 999px;
+	background: var(--good);
+	transition: width var(--transition);
+}
+
+.topicMeta {
+	color: var(--warn);
+	font-size: 11px;
+}
+
+.topicLock {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	font-size: 13px;
+	opacity: 0.75;
+}
+
+button.topicCard--locked {
+	opacity: 0.6;
+}
+
+.topicFootnote {
+	margin-top: 18px;
+	line-height: 1.6;
+}
+
+/* Havuzdaki etkin konu rozeti */
+.topicChip {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 5px 6px 5px 12px;
+	border: 1px solid var(--acc);
+	border-radius: 999px;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.topicChipCount {
+	color: var(--muted);
+	font-weight: 500;
+}
+
+button.topicChipClear {
+	padding: 0 8px;
+	min-height: 0;
+	line-height: 1.4;
+	font-size: 16px;
+	border-radius: 999px;
+}

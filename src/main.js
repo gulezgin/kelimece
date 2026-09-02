@@ -8,6 +8,7 @@ import './styles/main.css';
 
 import { isLevelUnlocked, lockedLevels } from './core/entitlements.js';
 import { levelsUpTo } from './core/placement.js';
+import { renderTopicChip, renderTopics } from './ui/topics.js';
 import { buildReviewQueue, countQueue, MAX_LEVEL } from './core/srs.js';
 import { isDue } from './core/time.js';
 import * as store from './data/store.js';
@@ -48,7 +49,19 @@ let activeSection = 'home';
 
 /** Seçili seviyedeki kelimeler — hem liste hem tekrar kuyruğu bunu kullanır. */
 function wordsAtLevel() {
-	return filterWords(store.state.words, { cefr: activeLevel });
+	return filterWords(store.state.words, { cefr: activeLevel, topic: activeTopic });
+}
+
+/**
+ * Havuz ekraninda secili konu. null = konu suzgeci yok.
+ * Konu ekranindan "listeye bak" ile gelindiginde doluyor.
+ */
+let activeTopic = null;
+
+/** Konu suzgecini temizler ve havuza doner. */
+function clearTopicFilter() {
+	activeTopic = null;
+	render();
 }
 
 /**
@@ -124,6 +137,12 @@ function render() {
 		return;
 	}
 
+	if (activeSection === 'topics') {
+		renderTopics(store.state.words, store.state.profile.premium, topicHandlers);
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
+
 	if (activeSection === 'home') {
 		// Profil seviyesi varsa özet o seviyeye ve altına odaklanır.
 		const scope = store.state.profile.level ? levelsUpTo(store.state.profile.level) : [];
@@ -142,11 +161,22 @@ function render() {
 	const list = filterWords(store.state.words, {
 		query: $('search').value,
 		mode: $('filterDue').value,
-		cefr: activeLevel
+		cefr: activeLevel,
+		topic: activeTopic
 	});
 
-	renderLevelBar(breakdown, activeLevel, selectLevel, locked);
-	renderLevelInfo(breakdown, activeLevel);
+	// Konu suzgeci aciksa kullanici bunu gormeli ve kapatabilmeli
+	renderTopicChip(activeTopic, list.length, clearTopicFilter);
+
+	// Konu suzgeci aciksa seviye cubugu da o konuyu anlatmali; yoksa
+	// rozet "33" derken cubuk "5276" der ve kullanici hangisine
+	// inanacagini bilemez.
+	const poolBreakdown = activeTopic
+		? levelBreakdown(store.state.words.filter((w) => w.topic === activeTopic), MAX_LEVEL)
+		: breakdown;
+
+	renderLevelBar(poolBreakdown, activeLevel, selectLevel, locked);
+	renderLevelInfo(poolBreakdown, activeLevel);
 	renderStats(store.getStats(isDue, wordsAtLevel()), list.length, store.state.settings.dailyGoal);
 
 	// Sadece görünür olan görünümü çiz — 2500 kelimede ikisini birden
@@ -176,6 +206,20 @@ const dashboardHandlers = {
 		showSection('pool');
 	},
 	onBrowse: () => showSection('pool')
+};
+
+const topicHandlers = {
+	/** Konuya dokunmak dogrudan o konuyu calismaya baslatir. */
+	onStudy: (topic) => {
+		activeTopic = topic;
+		startReviewSession({ topic });
+	},
+	/** Calismak yerine listeye bakmak isteyen icin. */
+	onBrowse: (topic) => {
+		activeTopic = topic;
+		activeLevel = 'all';
+		showSection('pool');
+	}
 };
 
 /** Seviye belirleme testini çalıştırır ve sonucu profile yazar. */
@@ -285,10 +329,14 @@ function handleStartReview() {
  * @param {{free?: boolean, levels?: string[]|null}} options
  *   levels verilirse yalnızca o CEFR seviyeleri; yoksa havuzdaki seçim.
  */
-async function startReviewSession({ free = false, levels = null } = {}) {
-	let pool = levels
-		? store.state.words.filter((w) => levels.includes(w.cefr))
-		: wordsAtLevel();
+async function startReviewSession({ free = false, levels = null, topic = null } = {}) {
+	// Konu secimi seviye kapsamini gecersiz kilar: kullanici "mutfak"
+	// dedigi anda istedigi sey o konunun tamami.
+	let pool = topic
+		? store.state.words.filter((w) => w.topic === topic)
+		: levels
+			? store.state.words.filter((w) => levels.includes(w.cefr))
+			: wordsAtLevel();
 
 	// Kilitli seviyeler oturuma girmez. Kullanicinin kendi kelimeleri
 	// her zaman kalir - kendi verisi kisitlanamaz.
@@ -306,11 +354,13 @@ async function startReviewSession({ free = false, levels = null } = {}) {
 	const queue = buildReviewQueue(pool, { free, isDue, newLimit });
 
 	if (!queue.length) {
-		const scopeLabel = levels
-			? ' (' + levels[levels.length - 1] + ' ve altı)'
-			: activeLevel === 'all'
-				? ''
-				: ' (' + (activeLevel === 'none' ? 'seviyesiz' : activeLevel) + ' seviyesinde)';
+		const scopeLabel = topic
+			? ' (' + topic + ' konusunda)'
+			: levels
+				? ' (' + levels[levels.length - 1] + ' ve altı)'
+				: activeLevel === 'all'
+					? ''
+					: ' (' + (activeLevel === 'none' ? 'seviyesiz' : activeLevel) + ' seviyesinde)';
 		const scope = scopeLabel;
 		await alertDialog(
 			free
@@ -483,6 +533,7 @@ function wireEvents() {
 	});
 
 	$('navHome').addEventListener('click', () => showSection('home'));
+	$('navTopics').addEventListener('click', () => showSection('topics'));
 	$('navStats').addEventListener('click', () => showSection('stats'));
 	$('navPool').addEventListener('click', () => showSection('pool'));
 
@@ -538,6 +589,7 @@ function showSection(section) {
 	activeSection = section;
 	for (const [name, viewId, navId] of [
 		['home', 'homeView', 'navHome'],
+		['topics', 'topicsView', 'navTopics'],
 		['stats', 'statsView', 'navStats'],
 		['pool', 'poolView', 'navPool']
 	]) {

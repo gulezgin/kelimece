@@ -19,6 +19,7 @@
 		<h1>📚 Kelime Havuzum</h1>
 		<nav class="mainNav" role="tablist" aria-label="Ana bölümler">
 			<button id="navHome" class="navBtn active" role="tab" aria-selected="true">🏠 Ana Sayfa</button>
+			<button id="navTopics" class="navBtn" role="tab" aria-selected="false">🗂️ Konular</button>
 			<button id="navStats" class="navBtn" role="tab" aria-selected="false">📊 İstatistik</button>
 			<button id="navPool" class="navBtn" role="tab" aria-selected="false">📚 Havuz</button>
 		</nav>
@@ -31,6 +32,9 @@
 
 	<!-- ANA SAYFA -->
 	<main id="homeView" class="homeView"></main>
+
+	<!-- KONULAR -->
+	<main id="topicsView" class="homeView hidden"></main>
 
 	<!-- İSTATİSTİK -->
 	<main id="statsView" class="homeView hidden"></main>
@@ -96,6 +100,7 @@
 				<h2 style="margin-right:auto">📊 Havuz</h2>
 				<span class="small" id="listInfo">0 sonuç</span>
 			</div>
+			<div id="topicChipRow" class="toolbar hidden" style="margin-bottom:8px"></div>
 			<div class="toolbar" style="margin-bottom:8px">
 				<button id="poolAllBtn" class="ghost">Tümü <span class="badge" id="poolCountAll">0</span></button>
 				<button id="poolDueBtn" class="ghost">Tekrar <span class="badge warn" id="poolCountDue">0</span></button>

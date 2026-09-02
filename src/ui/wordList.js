@@ -12,10 +12,14 @@ import { $, el } from './dom.js';
 /**
  * Arama ve filtreye göre kelimeleri süzer.
  * @param {object[]} words
- * @param {{query?: string, mode?: string, cefr?: string}} filter
+ * @param {{query?: string, mode?: string, cefr?: string, topic?: string}} filter
  */
-export function filterWords(words, { query = '', mode = 'all', cefr = 'all' }) {
+export function filterWords(words, { query = '', mode = 'all', cefr = 'all', topic = null }) {
 	let list = words;
+
+	// Konu suzgeci en dista: secili konu disindaki hicbir kelime
+	// digerleri hesaplanirken de sayilmasin.
+	if (topic) list = list.filter((w) => w.topic === topic);
 
 	// Seviye süzgeci önce uygulanır: diğer sayaçlar da seçilen seviyeye göre
 	// anlam kazansın diye.
