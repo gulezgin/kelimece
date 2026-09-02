@@ -4,60 +4,51 @@ Bu belge, uygulamayı Capacitor ile Android projesine dönüştürüp Play
 Store'a yüklenebilir **imzalı bir AAB** üretmek için gereken her adımı
 içerir.
 
-Kodun Capacitor tarafı hazır: yapılandırma, ikonlar, açılış ekranı
-kaynakları ve yerel entegrasyon (durum çubuğu, geri tuşu) yazıldı.
-Kalan adımlar makinende çalıştırman gerekenler.
+**Durum:** 0-3 arası adımlar tamamlandı. `android/` projesi oluşturuldu,
+ikonlar ve açılış ekranı tüm yoğunluklar için üretildi, bildirim ikonu
+eklendi, web varlıkları kopyalandı. **Başlangıç noktan 4. bölüm.**
+
+Kalan her şey senin makinende yapılması gerekenler: Android Studio kurulumu
+(JDK 17+ ve SDK'yı birlikte getirir), imzalama anahtarı ve Play Console.
 
 ---
 
 ## 0. Ön koşullar
 
-| Gereksinim | Sürüm | Not |
+| Gereksinim | Sürüm | Durum |
 |---|---|---|
-| **Node.js** | **22 LTS** | Capacitor 8 CLI en az 22 istiyor. Şu an 20.13 kurulu — **önce bunu yükselt** |
-| Java JDK | 21 | Android Studio ile birlikte gelir |
-| Android Studio | Güncel sürüm | SDK ve emülatör için |
-| Android SDK | Platform 35 + Build Tools 35 | Play Store yeni uygulamalarda API 35 istiyor |
+| **Node.js** | 22+ | ✅ v24.19.0 kurulu |
+| **Java JDK** | **17+** | ❌ Şu an 11 — Android Studio 17'yi birlikte getirir |
+| **Android Studio** | Güncel sürüm | ❌ Kurulmadı |
+| **Android SDK** | Platform 36 + Build Tools 36 | ❌ Kurulmadı (proje targetSdk 36) |
 
-### Node yükseltme (Windows)
-
-```bash
-winget install OpenJS.NodeJS.LTS
-```
-
-Sonra yeni bir terminal aç ve doğrula:
-
-```bash
-node -v
-```
-
-`v22.x.x` görmelisin. Ardından bağımlılıkları tazele:
-
-```bash
-npm install
-```
+Gradle derlemesi JDK 17 ve SDK olmadan çalışmaz; ikisi de Android
+Studio kurulumuyla geliyor, ayrıca kurmana gerek yok.
 
 ### Android Studio
 
 [developer.android.com/studio](https://developer.android.com/studio)
 adresinden kur. İlk açılışta **SDK Manager**'dan şunları işaretle:
 
-- Android SDK Platform 35
-- Android SDK Build-Tools 35
+- Android SDK Platform 36
+- Android SDK Build-Tools 36
 - Android SDK Platform-Tools
 - Android SDK Command-line Tools
 
+Kurulum bitince Android Studio'yu bir kez açıp **File → Open** ile bu
+projenin `android/` klasörünü seç. İlk Gradle eşitlemesi birkaç dakika
+sürer ve eksik bileşenleri kendisi indirir.
+
 ---
 
-## 1. Android projesini oluştur
+## 1. Android projesini oluştur ✅ yapıldı
+
+`android/` klasörü oluşturuldu ve git'e girdi. Tekrar çalıştırman
+gerekmiyor; sıfırdan kurman gerekirse komut şu:
 
 ```bash
 npm run android:add
 ```
-
-Bu komut `npx cap add android` çalıştırır ve kök dizinde `android/`
-klasörünü oluşturur. **Bu klasör git'e girer** — içinde imzalama
-ayarları ve yerel özelleştirmeler olacak.
 
 > Paket adı `capacitor.config.json` içinde `com.gulezgin.kelimehavuzum`
 > olarak ayarlı. **Play Store'a ilk yüklemeden sonra bu asla
@@ -79,9 +70,14 @@ kopyalar.
 
 ---
 
-## 3. İkon ve açılış ekranı
+## 3. İkon ve açılış ekranı ✅ yapıldı
 
-Kaynak görseller `assets/generated/` altında hazır:
+74 varlık üretildi (tüm yoğunluklar, yatay/dikey, açık/koyu). Ayrıca
+`res/drawable/ic_stat_notify.xml` eklendi: Android bildirim ikonunu
+maske olarak çizdiği için uygulama ikonu orada kullanılamaz — beyaz bir
+lekeye dönüşür. Bu dosya aynı kitap şeklinin tek renk siluetidir.
+
+Kaynak görseller `assets/generated/` altında:
 
 | Dosya | Kullanım |
 |---|---|
@@ -322,6 +318,78 @@ alanına gir.
 - [ ] Gizlilik politikası URL'si yayında
 - [ ] İçerik derecelendirmesi ve veri güvenliği formları dolduruldu
 - [ ] 12 test kullanıcısıyla 14 günlük kapalı test tamamlandı
+
+
+---
+
+## 12. Play Billing'i bağlama
+
+`src/platform/billing.js` arayüz sözleşmesini ve akışı tanımlıyor ama
+**gerçek bir satın alma eklentisine bağlı değil**. Sebep: satın alma akışı
+yalnızca imzalı bir AAB ve Play Console'da tanımlı ürünlerle test
+edilebiliyor. O güne kadar ekran "yakında" diyor ve satın alma denemiyor.
+
+> **Önce 6. bölümü bitir.** Sade uygulamanın derlendiğini görmeden
+> eklenti ekleme; derleme patlarsa hatanın kurulumdan mı yoksa eklentiden
+> mi geldiğini ayırt edemezsin.
+
+### 12.1 Eklentiyi kur
+
+```bash
+npm install @capacitor-community/in-app-purchases
+npx cap sync android
+```
+
+`billing.js` eklentiye Capacitor'ın çalışma zamanı kaydından erişiyor
+(`Capacitor.Plugins.InAppPurchases`), doğrudan `import` ile değil. Böylece
+eklenti yokken derleme kırılmıyor ve kurulduğu anda **kod değişikliği
+gerekmeden** devreye giriyor.
+
+Kurduktan sonra eklentinin kayıt adını doğrula — farklıysa `billing.js`
+içindeki `Capacitor.Plugins.InAppPurchases` satırını ona göre düzelt:
+
+```js
+// Uygulama cihazda çalışırken Chrome DevTools konsolunda:
+Object.keys(Capacitor.Plugins)
+```
+
+### 12.2 Ürünleri Play Console'da tanımla
+
+**Monetize → Products** altında aşağıdaki kimlikleri **birebir** oluştur.
+Bunlar `src/core/entitlements.js` içindeki `PRODUCTS` ile eşleşmeli;
+bir harf farkı satın almayı sessizce bozar:
+
+| Kimlik | Tür | Önerilen fiyat |
+|---|---|---|
+| `premium_monthly` | Abonelik | ₺59 / ay |
+| `premium_yearly` | Abonelik | ₺399 / yıl |
+| `premium_lifetime` | Tek seferlik ürün | ₺899 |
+
+Fiyatlar `billing.js` içindeki `PRICING` dizisinde de yer alıyor, ama
+oradakiler yalnızca **eklenti yokken** gösterilen yer tutuculardır.
+Eklenti bağlandığında gerçek fiyat Play'den, kullanıcının para
+biriminde gelir. İkisini tutarlı tutmakta fayda var.
+
+### 12.3 Test et
+
+Satın alma **yalnızca Play üzerinden kurulmuş imzalı bir yapıda**
+çalışır. `adb install` ile kurulan APK'da çalışmaz.
+
+1. AAB'yi **Internal testing** kanalına yükle
+2. **Setup → License testing** altına kendi Google hesabını ekle —
+   böylece gerçek ücret ödemeden satın alma yapabilirsin
+3. Test bağlantısından kur ve ödeme duvarını dene
+4. **Geri yükleme yolunu da test et** — Play politikası bunu zorunlu
+   tutuyor: cihaz değiştiren kullanıcı ödediğini geri alabilmeli
+
+### 12.4 Sunucu taraflı doğrulama (sonraya bırakıldı)
+
+Şu anki doğrulama cihazda yapılıyor: eklenti "satın alındı" derse abonelik
+etkinleşiyor. Bu, kökü açılmış bir cihazda aşılabilir.
+
+Kullanıcı sayısı anlamlı gelire ulaşınca **Play Developer API** ile sunucu
+tarafı doğrulama ekle. Bugün için doğru karar değil: sunucu işletme
+maliyeti, kaybı muhtemel gelirden yüksek.
 
 ---
 

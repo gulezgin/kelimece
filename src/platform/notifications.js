@@ -132,7 +132,14 @@ export async function scheduleDaily({ hour, minute, due = 0, streak = 0 }) {
 					body,
 					// Her gün aynı saatte
 					schedule: { on: { hour, minute }, allowWhileIdle: true },
-					smallIcon: 'ic_stat_icon_config_sample'
+					// Eklentinin varsayılanı `true` ve bu iki şeye yol açıyor:
+					// SCHEDULE_EXACT_ALARM izni isteniyor (Play bu izni yalnızca
+					// alarm/takvim uygulamalarına açıyor) ve izin yoksa API 31+
+					// üzerinde kullanıcının yüzüne sistem ayar ekranı açılıyor.
+					// Çalışma hatırlatmasının 20:00 yerine 20:03'te gelmesi
+					// sorun değil; mağaza reddi ve o ayar ekranı sorun.
+					isExactNotification: false,
+					smallIcon: 'ic_stat_notify'
 				}]
 			});
 			return true;
