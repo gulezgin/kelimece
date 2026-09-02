@@ -2364,3 +2364,13 @@ button.dlgCard--locked {
 		font-size: 15px;
 	}
 }
+
+/*
+ * Dinleme sorusunda kelimenin yazili hali gizli; yerinde duran
+ * gostergeye normal kelime gorunumu vermek yaniltici olurdu.
+ */
+.en--audio {
+	color: var(--acc);
+	letter-spacing: 4px;
+	opacity: 0.75;
+}

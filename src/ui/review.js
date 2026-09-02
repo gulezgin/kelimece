@@ -299,8 +299,12 @@ function finishExercise(result, nearMiss) {
 		refs.feedback.textContent = '✗ Doğrusu: ' + result.expected;
 	}
 
-	// Ingilizce kelimeyi goster (Turkce sorulmussa henuz gorunmuyordu)
-	if (ex.promptLang === 'tr') refs.enNode.textContent = ex.word.en;
+	// Ingilizce kelimeyi goster: Turkce sorulmussa ya da ses sorusunda
+	// gizlenmisse henuz gorunmuyordu.
+	if (ex.promptLang === 'tr' || ex.audioPrompt) {
+		refs.enNode.textContent = ex.word.en;
+		refs.enNode.classList.remove('en--audio');
+	}
 
 	session.stats.byType[ex.type] = session.stats.byType[ex.type] || { asked: 0, correct: 0 };
 	session.stats.byType[ex.type].asked++;
@@ -381,8 +385,12 @@ function paint(w) {
 		when.textContent = formatInterval(preview[key]);
 	}
 
-	// Alistirma tipini kelimenin olgunluguna gore sec ve kur
-	const exercise = buildExercise(w, session.pool);
+	// Alistirma tipini kelimenin olgunluguna gore sec ve kur.
+	// Dinleme yalnizca cihazda Ingilizce ses varsa verilebilir; core
+	// modulu platformu bilmedigi icin karar burada aktariliyor.
+	const exercise = buildExercise(w, session.pool, {
+		allowListen: hasEnglishVoice()
+	});
 	session.exercise = exercise;
 	session.answered = false;
 
@@ -423,11 +431,20 @@ function setupExercise(ex) {
 		return;
 	}
 
-	// Soru metni: hangi yonde sordugumuza gore
-	refs.enNode.textContent = ex.prompt;
+	// Soru metni: hangi yonde sordugumuza gore.
+	// Dinlemede yazili hal GIZLENIR - gorulurse soru dinleme olmaktan
+	// cikar, okuma olur.
+	refs.enNode.textContent = ex.audioPrompt ? '🔈 ⋯' : ex.prompt;
+	refs.enNode.classList.toggle('en--audio', !!ex.audioPrompt);
 	refs.enRow.classList.remove('hidden');
 	// Turkce sorularda telaffuz dugmesi anlamsiz
 	if (refs.speakBtn) refs.speakBtn.classList.toggle('hidden', ex.promptLang !== 'en');
+
+	if (ex.audioPrompt) {
+		// Otomatik bir kez calinir; tekrar dinlemek icin dugme duruyor.
+		// Beklemeden calmak, kullaniciyi once dugme aramaya zorlamiyor.
+		speak(ex.prompt);
+	}
 
 	if (ex.type === TYPES.CLOZE) {
 		// Bosluk doldurma: soru Turkce anlam, altinda bosluklu cumle

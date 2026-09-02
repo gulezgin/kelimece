@@ -17,7 +17,7 @@
 import { readSchedule } from './scheduler.js';
 
 /**
- * @typedef {'choice-en-tr'|'choice-tr-en'|'type-en'|'cloze'|'recall'} ExerciseType
+ * @typedef {'choice-en-tr'|'choice-tr-en'|'listen'|'type-en'|'cloze'|'recall'} ExerciseType
  */
 
 export const TYPES = {
@@ -30,7 +30,21 @@ export const TYPES = {
 	/** Örnek cümlede boşluk doldurulur. Bağlamda üretim - en zorlayıcı. */
 	CLOZE: 'cloze',
 	/** Klasik kart: aç ve kendini değerlendir. Olgun kelimelerin bakımı için. */
-	RECALL: 'recall'
+	RECALL: 'recall',
+	/**
+	 * Kelime SESLİ okunur, yazılı hâli gizlidir; doğru Türkçe karşılık
+	 * seçilir.
+	 *
+	 * Diğer beş tipin sorusu da yazılı: uygulama okumayı çalıştırıyor,
+	 * dinlemeyi hiç çalıştırmıyordu. Türkçe konuşan biri için genelde
+	 * en zayıf beceri bu.
+	 *
+	 * Cevap tarafı bilerek kolay tutuldu (yazdırmak yerine seçtirmek):
+	 * soru zaten yazılı ipucu vermiyor, iki tarafı birden zorlaştırmak
+	 * öğretmez, yıldırır. Yazdırmak ayrıca dinlemeyi değil İngilizce
+	 * yazımı ölçerdi.
+	 */
+	LISTEN: 'listen'
 };
 
 const DEFAULT_OPTION_COUNT = 4;
@@ -52,20 +66,35 @@ function shuffle(arr, random = Math.random) {
  *
  * Aşamalar:
  *   ilk görüş     -> çoktan seçmeli EN->TR   (tanıştırma)
- *   1-2 tekrar    -> çoktan seçmeli TR->EN   (üretim yönü, kolay)
+ *   1-2 tekrar    -> dinleme / çoktan seçmeli TR->EN
  *   3+ tekrar     -> yazarak / boşluk doldurma (gerçek üretim)
  *   olgun (21g+)  -> klasik kart             (bakım, hız önemli)
  *
+ * Dinleme ilk görüşte VERİLMEZ: hiç görmediğin bir kelimenin sesini
+ * tanıyamazsın, soru bilgi değil şans ölçer.
+ *
+ * `allowListen` çağıranın sorumluluğu: cihazda İngilizce ses yoksa
+ * (`hasEnglishVoice()`) bu tip seçilemez. Bu modül saf kalsın diye
+ * kontrol dışarıda yapılıyor.
+ *
  * @param {object} word
- * @param {{random?: () => number, allowCloze?: boolean}} [options]
+ * @param {{random?: () => number, allowCloze?: boolean, allowListen?: boolean}} [options]
  * @returns {ExerciseType}
  */
-export function pickType(word, { random = Math.random, allowCloze = true } = {}) {
+export function pickType(
+	word,
+	{ random = Math.random, allowCloze = true, allowListen = false } = {}
+) {
 	const { reps, interval } = readSchedule(word);
 
 	if (interval >= MATURE_INTERVAL) return TYPES.RECALL;
 	if (reps === 0) return TYPES.CHOICE_EN_TR;
-	if (reps <= 2) return TYPES.CHOICE_TR_EN;
+	if (reps <= 2) {
+		// Bu asamada iki tip donusumlu: kelime taniniyor ama henuz
+		// uretilemiyor, ikisi de tanima duzeyinde.
+		if (allowListen && random() < 0.4) return TYPES.LISTEN;
+		return TYPES.CHOICE_TR_EN;
+	}
 
 	// Olgunlaşan kelimede üretim: cümle varsa boşluk doldurma daha
 	// öğretici, yoksa düz yazma.
@@ -147,13 +176,22 @@ function pickDistractors(word, pool, count, field, random) {
  *
  * @param {object} word
  * @param {object[]} pool Yanıltıcı havuzu
- * @param {{type?: ExerciseType, random?: () => number, optionCount?: number}} [options]
+ * @param {{type?: ExerciseType, random?: () => number, optionCount?: number,
+ *   allowCloze?: boolean, allowListen?: boolean}} [options]
  * @returns {object}
  */
 export function buildExercise(word, pool, options = {}) {
 	const random = options.random || Math.random;
 	const optionCount = options.optionCount || DEFAULT_OPTION_COUNT;
-	const type = options.type || pickType(word, { random });
+	// allowCloze/allowListen'i iletmek sart: iletilmezse pickType kendi
+	// varsayilanlarini kullanir ve cagiranin karari sessizce yok sayilir.
+	const type =
+		options.type ||
+		pickType(word, {
+			random,
+			allowCloze: options.allowCloze !== false,
+			allowListen: !!options.allowListen
+		});
 
 	const base = { wordId: word.id, type, word };
 
@@ -182,6 +220,23 @@ export function buildExercise(word, pool, options = {}) {
 			options: choices.map((w) => w.en),
 			correctIndex: choices.findIndex((w) => w.id === word.id),
 			answer: word.en
+		};
+	}
+
+	if (type === TYPES.LISTEN) {
+		const distractors = pickDistractors(word, pool, optionCount - 1, 'tr', random);
+		const choices = shuffle([word, ...distractors], random);
+		return {
+			...base,
+			prompt: word.en,
+			promptLang: 'en',
+			// Arayuz bunu gorunce kelimeyi GIZLER ve calma dugmesi gosterir.
+			// prompt yine de dolu: cevaptan sonra aciga cikariliyor.
+			audioPrompt: true,
+			instruction: 'Dinle ve doğru Türkçe karşılığı seç',
+			options: choices.map((w) => w.tr),
+			correctIndex: choices.findIndex((w) => w.id === word.id),
+			answer: word.tr
 		};
 	}
 

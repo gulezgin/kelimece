@@ -242,3 +242,63 @@ describe('editDistance', () => {
 		expect(editDistance('abc', '')).toBe(3);
 	});
 });
+
+describe('dinleme alıştırması', () => {
+	it('ilk görüşte dinleme verilmez', () => {
+		// Hic gormedigin bir kelimenin sesini taniyamazsin; soru bilgi
+		// degil sans olcer.
+		expect(pickType(word({ reps: 0, interval: 0 }), { random: noShuffle, allowListen: true }))
+			.toBe(TYPES.CHOICE_EN_TR);
+	});
+
+	it('tanışma aşamasında dinleme seçilebilir', () => {
+		expect(pickType(word({ reps: 1, interval: 1 }), { random: () => 0.1, allowListen: true }))
+			.toBe(TYPES.LISTEN);
+		expect(pickType(word({ reps: 2, interval: 3 }), { random: () => 0.1, allowListen: true }))
+			.toBe(TYPES.LISTEN);
+	});
+
+	it('aynı aşamada bazen yazılı soru gelir', () => {
+		// Her seferinde dinleme olsa uretim yonu hic calisilmazdi.
+		expect(pickType(word({ reps: 1, interval: 1 }), { random: () => 0.9, allowListen: true }))
+			.toBe(TYPES.CHOICE_TR_EN);
+	});
+
+	it('ses yoksa dinleme hiç seçilmez', () => {
+		// Cihazda Ingilizce ses yoksa soru sessiz kalir ve cozulemez.
+		for (const reps of [0, 1, 2, 4, 9]) {
+			expect(pickType(word({ reps, interval: reps }), { random: () => 0.1 }))
+				.not.toBe(TYPES.LISTEN);
+		}
+	});
+
+	it('olgun kelimede bakım modu dinlemeyi ezer', () => {
+		expect(pickType(word({ reps: 9, interval: 60 }), { random: () => 0.1, allowListen: true }))
+			.toBe(TYPES.RECALL);
+	});
+
+	it('buildExercise seçeneği pickType\'a iletir', () => {
+		// Iletilmezse cagiranin karari sessizce yok sayilir ve dinleme
+		// hic uretilmez.
+		const ex = buildExercise(word({ reps: 1, interval: 1 }), pool(), {
+			random: () => 0.1,
+			allowListen: true
+		});
+		expect(ex.type).toBe(TYPES.LISTEN);
+	});
+
+	it('soru sesli, seçenekler Türkçe', () => {
+		const ex = buildExercise(word(), pool(), { type: TYPES.LISTEN, random: noShuffle });
+		expect(ex.audioPrompt).toBe(true);
+		expect(ex.prompt).toBe('abandon');
+		expect(ex.promptLang).toBe('en');
+		expect(ex.options).toHaveLength(4);
+		expect(ex.options[ex.correctIndex]).toBe('terk etmek');
+	});
+
+	it('doğru cevap seçenekler arasında tek', () => {
+		const dupes = [word({ id: 'x', tr: 'terk etmek' }), ...pool(6)];
+		const ex = buildExercise(word(), dupes, { type: TYPES.LISTEN, random: noShuffle });
+		expect(ex.options.filter((o) => o === 'terk etmek')).toHaveLength(1);
+	});
+});
