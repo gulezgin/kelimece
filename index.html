@@ -15,6 +15,44 @@
 </head>
 
 <body>
+	<!--
+		Giriş ekranı.
+
+		Gövdenin en başında ve satır içi duruyor: JS paketi yüklenmeden
+		boyanabilsin diye. Capacitor'ın yerel açılış ekranı da aynı
+		#0f1320 rengini kullanıyor, böylece ikisi arasında geçiş
+		görünmüyor — kullanıcı tek bir açılış görüyor.
+
+		main.js veri hazır olduğunda .launch--done ekleyip kaldırıyor.
+	-->
+	<div id="launchScreen" class="launch" role="presentation" aria-hidden="true">
+		<div class="launchArt">
+			<svg viewBox="0 0 200 200" width="120" height="120" aria-hidden="true">
+				<defs>
+					<linearGradient id="lpL" x1="0" y1="0" x2="1" y2="1">
+						<stop offset="0%" stop-color="#6ad2ff"/>
+						<stop offset="100%" stop-color="#3ddc97"/>
+					</linearGradient>
+					<linearGradient id="lpR" x1="1" y1="0" x2="0" y2="1">
+						<stop offset="0%" stop-color="#8fb6ff"/>
+						<stop offset="100%" stop-color="#5cc8ff"/>
+					</linearGradient>
+				</defs>
+				<g class="launchBook">
+					<path class="launchPage launchPage--l"
+						d="M28 46 Q64 30 96 46 L96 154 Q64 138 28 154 Z" fill="url(#lpL)"/>
+					<path class="launchPage launchPage--r"
+						d="M172 46 Q136 30 104 46 L104 154 Q136 138 172 154 Z" fill="url(#lpR)" opacity="0.8"/>
+					<rect x="96" y="46" width="8" height="108" fill="#0c1020" opacity="0.35"/>
+				</g>
+			</svg>
+			<div class="launchDots" aria-hidden="true">
+				<span></span><span></span><span></span><span></span><span></span><span></span>
+			</div>
+			<div class="launchName">Kelime Havuzum</div>
+		</div>
+	</div>
+
 	<header>
 		<h1>📚 Kelime Havuzum</h1>
 		<nav class="mainNav" role="tablist" aria-label="Ana bölümler">

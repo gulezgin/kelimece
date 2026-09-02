@@ -33,11 +33,17 @@ export async function isNative() {
 export async function setupNative({ onBack }) {
 	if (!(await isNative())) return false;
 
-	// Durum çubuğu: uygulamanın koyu temasıyla uyumlu olsun.
+	// Tam ekran: durum çubuğu gizleniyor ve web görünümü tüm ekranı
+	// kaplıyor. Saat/pil şeridi çalışma ekranında dikkat dağıtıyordu.
+	//
+	// Çentikli telefonlarda içeriğin kamera deliğinin altında kalmaması
+	// için CSS tarafında env(safe-area-inset-*) dolgusu var; bu yüzden
+	// overlaysWebView açık olmasına rağmen başlık kesilmiyor.
 	try {
 		const { StatusBar, Style } = await import('@capacitor/status-bar');
 		await StatusBar.setStyle({ style: Style.Dark });
-		await StatusBar.setBackgroundColor({ color: '#0f1320' });
+		await StatusBar.setOverlaysWebView({ overlay: true });
+		await StatusBar.hide();
 	} catch {
 		// Durum çubuğu eklentisi yoksa sessizce geç
 	}

@@ -654,6 +654,27 @@ async function setupReminderUi() {
 
 // ===================== Başlat =====================
 
+/**
+ * Giriş ekranını kaldırır.
+ *
+ * Asgari süre var: veri önbellekten 80 ms'de gelirse animasyon yarıda
+ * kesilir ve ekran "takılmış gibi" titrer. Bekleme veri yüklemesini
+ * geciktirmiyor — yalnızca katmanın kaybolmasını hizalıyor.
+ */
+const LAUNCH_MIN_MS = 900;
+const launchStartedAt = Date.now();
+
+async function hideLaunchScreen() {
+	const node = $('launchScreen');
+	if (!node) return;
+	const remaining = LAUNCH_MIN_MS - (Date.now() - launchStartedAt);
+	if (remaining > 0) await new Promise((r) => setTimeout(r, remaining));
+	node.classList.add('launch--done');
+	// Geçiş bitince DOM'dan tamamen çıkar: ekran okuyucular ve
+	// sekme sırası için görünmez bir katman bile fazla.
+	setTimeout(() => node.remove(), 600);
+}
+
 async function boot() {
 	store.setStorageErrorHandler((message) => alertDialog(message, { title: 'Kayıt hatası' }));
 	store.subscribe(render);
@@ -679,6 +700,9 @@ async function boot() {
 	// Android kabugu: durum cubugu, acilis ekrani ve geri tusu.
 	// Tarayicida hicbir sey yapmaz.
 	setupNative({ onBack: handleBackButton });
+
+	// Veri hazir; giris ekrani artik gidebilir.
+	hideLaunchScreen();
 
 	if (result.repair && result.repair.changed) {
 		const a = result.repair.analysis;
