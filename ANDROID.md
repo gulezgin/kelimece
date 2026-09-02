@@ -17,15 +17,23 @@ Kalan her şey senin makinende yapılması gerekenler: Android Studio kurulumu
 
 | Gereksinim | Sürüm | Durum |
 |---|---|---|
-| **Node.js** | 22+ | ✅ v24.19.0 kurulu |
-| **Java JDK** | **17+** | ❌ Şu an 11 — Android Studio 17'yi birlikte getirir |
-| **Android Studio** | Güncel sürüm | ❌ Kurulmadı |
-| **Android SDK** | Platform 36 + Build Tools 36 | ❌ Kurulmadı (proje targetSdk 36) |
+| **Node.js** | 22+ | ✅ v24.19.0 |
+| **Java JDK** | **21** | ✅ Temurin 21 kuruldu |
+| **Android SDK** | Platform 36 + Build Tools 35/36 | ✅ komut satırı araçlarıyla kuruldu |
+| Android Studio | — | Kurulmadı; **derleme için gerekmiyor** |
 
-Gradle derlemesi JDK 17 ve SDK olmadan çalışmaz; ikisi de Android
-Studio kurulumuyla geliyor, ayrıca kurmana gerek yok.
+**Java 21 şart.** Capacitor 8 eklentileri 21 hedefliyor; JDK 17 ile
+derleme `Cannot find a Java installation ... languageVersion=21`
+hatasıyla duruyor.
 
-### Android Studio
+Android Studio yalnızca emülatör ve görsel hata ayıklama için
+gerekli. APK/AAB üretmek için komut satırı yeterli:
+
+```bash
+npm run android:apk
+```
+
+### Android Studio (isteğe bağlı)
 
 [developer.android.com/studio](https://developer.android.com/studio)
 adresinden kur. İlk açılışta **SDK Manager**'dan şunları işaretle:
@@ -184,26 +192,30 @@ yüklemede mutlaka artmalı.
 
 ---
 
-## 6. AAB üret
+## 6. APK / AAB üret
+
+**Telefonda denemek için (imza gerektirmez):**
+
+```bash
+npm run android:apk
+```
+
+Çıktı: `android/app/build/outputs/apk/debug/app-debug.apk` (~5,3 MB).
+Telefona kopyalayıp aç — "bilinmeyen kaynaklardan yükleme"ye izin
+vermen gerekir. Bu yapıyla **satın alma test edilemez** (12. bölüm).
+
+**Play Store için (imzalı):**
 
 ```bash
 npm run android:build
 ```
 
-Çıktı:
+Çıktı: `android/app/build/outputs/bundle/release/app-release.aab`.
+Önce 4. bölümdeki keystore'u oluşturmuş olman gerekir.
 
-```
-android/app/build/outputs/bundle/release/app-release.aab
-```
-
-Yüklemeden önce yerel olarak test etmek istersen:
-
-```bash
-npm run android:open
-```
-
-Android Studio açılır; oradan emülatörde veya bağlı cihazda
-çalıştırabilirsin.
+Her iki komut da `scripts/android-gradle.mjs` üzerinden çalışıyor;
+bu betik JAVA_HOME'u ve TEMP'i kendisi ayarlıyor (sebebi aşağıda,
+"Sık karşılaşılan sorunlar").
 
 ---
 
@@ -395,8 +407,32 @@ maliyeti, kaybı muhtemel gelirden yüksek.
 
 ## Sık karşılaşılan sorunlar
 
-**`npx cap add android` "requires NodeJS >=22" diyor**
-Node'u yükselt (bkz. bölüm 0). `nvm` kullanıyorsan `nvm use 22`.
+**Gradle "Unable to establish loopback connection" diyor**
+Bu makineye özgü ve tanısı zor bir sorun: Windows kullanıcı adı
+ASCII dışı bir harf içerdiği için `TEMP` 8.3 kısa biçimde tutuluyor
+(`MS9AC9~1` gibi). JDK 17+ selector borusu için AF_UNIX soketi
+kullanıyor ve onu `TEMP` altında otomatik adlandırıyor; Windows'un
+AF_UNIX `connect()` çağrısı kısa yolu bind edilen adla
+eşleştiremiyor ve Gradle daemon hiç başlamıyor.
+
+`npm run android:apk` / `android:build` bunu kendisi çözüyor. Elle
+`gradlew` çalıştıracaksan önce:
+
+```bash
+export TEMP=/c/AndroidBuildTmp TMP=/c/AndroidBuildTmp
+```
+
+**Gradle "Your project path contains non-ASCII characters" diyor**
+Aynı sebep, farklı nokta. `android/gradle.properties` içindeki
+`android.overridePathCheck=true` bu denetimi kapatıyor — derleme
+bu ayarla sorunsuz tamamlanıyor.
+
+**Gradle "Cannot find a Java installation ... languageVersion=21" diyor**
+JDK 21 kurulu değil ya da Gradle başka bir JDK seçmiş:
+
+```bash
+winget install EclipseAdoptium.Temurin.21.JDK
+```
 
 **Gradle "SDK location not found" diyor**
 `android/local.properties` oluştur:
@@ -407,9 +443,9 @@ Node'u yükselt (bkz. bölüm 0). `nvm` kullanıyorsan `nvm use 22`.
 çalıştığından ve `dist/index.html` oluştuğundan emin ol, sonra
 `npx cap sync android`.
 
-**Play Console "targetSdkVersion 35 olmalı" diyor**
-`android/variables.gradle` içinde `targetSdkVersion` ve
-`compileSdkVersion` değerlerini 35 yap, sonra `npx cap sync android`.
+**Play Console targetSdkVersion uyarısı veriyor**
+Proje şu an 36 hedefliyor (`android/variables.gradle`). Play'in alt
+sınırı yükselirse buradan değiştirip `npx cap sync android` çalıştır.
 
 **AAB imzasız görünüyor**
 `keystore.properties` yolu yanlış olabilir. `storeFile` yolu

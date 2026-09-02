@@ -17,11 +17,12 @@
     "android:add": "npx cap add android",
     "android:sync": "npm run build:capacitor && npx cap sync android",
     "android:open": "npx cap open android",
-    "android:build": "npm run android:sync && cd android && gradlew bundleRelease",
+    "android:build": "npm run android:sync && node scripts/android-gradle.mjs bundleRelease",
     "build:capacitor": "node scripts/build-capacitor.mjs",
     "build:examples": "python scripts/build-examples.py",
     "infer:pos": "node scripts/infer-pos.mjs",
-    "extract:oxford": "python scripts/extract-oxford.py"
+    "extract:oxford": "python scripts/extract-oxford.py",
+    "android:apk": "npm run android:sync && node scripts/android-gradle.mjs assembleDebug"
   },
   "keywords": [
     "vocabulary",
