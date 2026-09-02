@@ -304,7 +304,7 @@ export function levelBreakdown(words, maxLevel) {
  * @param {string} active Seçili seviye ('all' | 'A1'... | 'none')
  * @param {(level: string) => void} onSelect
  */
-export function renderLevelBar(breakdown, active, onSelect) {
+export function renderLevelBar(breakdown, active, onSelect, lockedLevels = new Set()) {
 	const bar = $('levelBar');
 	if (!bar) return;
 	bar.textContent = '';
@@ -317,12 +317,17 @@ export function renderLevelBar(breakdown, active, onSelect) {
 	const frag = document.createDocumentFragment();
 	for (const b of buttons) {
 		if (!b.count && b.key !== 'all') continue;
+		const isLocked = lockedLevels.has(b.key);
 		const btn = el('button', {
-			class: 'levelBtn' + (b.key === active ? ' active' : '') + (b.key !== 'all' ? ' cefr--' + b.key : ''),
+			class: 'levelBtn' + (b.key === active ? ' active' : '')
+				+ (b.key !== 'all' ? ' cefr--' + b.key : '')
+				+ (isLocked ? ' levelBtn--locked' : ''),
+			title: isLocked ? 'Abonelikle açılır' : '',
 			attrs: { 'aria-pressed': String(b.key === active) }
 		}, [
 			el('span', { class: 'levelBtnLabel', text: b.label }),
-			el('span', { class: 'levelBtnCount', text: String(b.count) })
+			el('span', { class: 'levelBtnCount', text: String(b.count) }),
+			isLocked ? el('span', { class: 'levelLock', text: '🔒' }) : null
 		]);
 		btn.onclick = () => onSelect(b.key);
 		frag.appendChild(btn);

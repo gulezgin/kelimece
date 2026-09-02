@@ -6,6 +6,7 @@
  */
 import './styles/main.css';
 
+import { isLevelUnlocked, lockedLevels } from './core/entitlements.js';
 import { levelsUpTo } from './core/placement.js';
 import { buildReviewQueue, countQueue, MAX_LEVEL } from './core/srs.js';
 import { isDue } from './core/time.js';
@@ -15,6 +16,8 @@ import { setupNative } from './platform/native.js';
 import { renderDashboard } from './ui/dashboard.js';
 import { alertDialog, choiceDialog, confirmDialog, toast } from './ui/dialog.js';
 import { $, debounce } from './ui/dom.js';
+import * as billing from './platform/billing.js';
+import * as paywall from './ui/paywall.js';
 import { startPlacement } from './ui/placement.js';
 import { renderStatsView } from './ui/statsView.js';
 import * as review from './ui/review.js';
@@ -48,13 +51,68 @@ function wordsAtLevel() {
 	return filterWords(store.state.words, { cefr: activeLevel });
 }
 
+/**
+ * Abonelik akışı: paywall aç, satın alma ya da geri yükleme.
+ * Satın alma altyapısı henüz Play Billing'e bağlı değil; o durumda
+ * paywall bilgilendirme yapıyor ve satın alma denemiyor.
+ */
+async function openPaywall() {
+	await paywall.showPaywall(store.state.words, store.state.profile.premium, {
+		onPurchase: async (productId) => {
+			const result = await billing.purchase(productId);
+			if (result.ok) {
+				await store.activatePremium(result.product);
+				await alertDialog(
+					'Teşekkürler! Tüm seviyelerin kilidi açıldı.',
+					{ title: '🔓 Abonelik etkin' }
+				);
+				render();
+				return;
+			}
+			if (result.reason === 'unavailable') {
+				await alertDialog(
+					'Satın alma henüz etkin değil.\n\nUygulama Google Play üzerinden ' +
+						'kurulduğunda bu ekrandan abone olabileceksin.',
+					{ title: 'Yakında' }
+				);
+			} else if (result.reason !== 'cancelled') {
+				await alertDialog('Satın alma tamamlanamadı.', { title: 'Hata' });
+			}
+		},
+		onRestore: async () => {
+			const result = await billing.restore();
+			if (result.ok) {
+				await store.activatePremium(result.product);
+				await alertDialog('Aboneliğin geri yüklendi.', { title: 'Tamamlandı' });
+				render();
+			} else {
+				await alertDialog(
+					result.reason === 'unavailable'
+						? 'Geri yükleme yalnızca Google Play kurulumunda çalışır.'
+						: 'Bu hesapta geri yüklenecek bir satın alma bulunamadı.',
+					{ title: 'Geri yükleme' }
+				);
+			}
+		}
+	});
+}
+
 function selectLevel(level) {
+	// Kilitli seviyeye tiklamak paywall'i acar
+	if (level !== 'all' && level !== 'none'
+		&& !isLevelUnlocked(level, store.state.profile.premium)) {
+		openPaywall();
+		return;
+	}
 	activeLevel = level;
 	render();
 }
 
 function render() {
 	const breakdown = levelBreakdown(store.state.words, MAX_LEVEL);
+	const locked = new Set(lockedLevels(store.state.profile.premium));
+	// Abonelik durumunu arayuze bildir
+	$('upgradeRow').classList.toggle('hidden', locked.size === 0);
 
 	if (activeSection === 'stats') {
 		// İstatistik profil seviyesi kapsamında; seviye yoksa tüm havuz.
@@ -87,7 +145,7 @@ function render() {
 		cefr: activeLevel
 	});
 
-	renderLevelBar(breakdown, activeLevel, selectLevel);
+	renderLevelBar(breakdown, activeLevel, selectLevel, locked);
 	renderLevelInfo(breakdown, activeLevel);
 	renderStats(store.getStats(isDue, wordsAtLevel()), list.length, store.state.settings.dailyGoal);
 
@@ -110,6 +168,10 @@ const dashboardHandlers = {
 	},
 	onPlacement: () => runPlacement(),
 	onPickLevel: (level) => {
+		if (!isLevelUnlocked(level, store.state.profile.premium)) {
+			openPaywall();
+			return;
+		}
 		activeLevel = level;
 		showSection('pool');
 	},
@@ -224,9 +286,21 @@ function handleStartReview() {
  *   levels verilirse yalnızca o CEFR seviyeleri; yoksa havuzdaki seçim.
  */
 async function startReviewSession({ free = false, levels = null } = {}) {
-	const pool = levels
+	let pool = levels
 		? store.state.words.filter((w) => levels.includes(w.cefr))
 		: wordsAtLevel();
+
+	// Kilitli seviyeler oturuma girmez. Kullanicinin kendi kelimeleri
+	// her zaman kalir - kendi verisi kisitlanamaz.
+	const before = pool.length;
+	pool = pool.filter((w) => w.source === 'user'
+		|| isLevelUnlocked(w.cefr, store.state.profile.premium));
+	const blocked = before - pool.length;
+
+	if (!pool.length && blocked > 0) {
+		openPaywall();
+		return;
+	}
 	// Gunluk hedef = bir oturumda tanistirilacak yeni kelime sayisi.
 	const newLimit = store.state.settings.dailyGoal;
 	const queue = buildReviewQueue(pool, { free, isDue, newLimit });
@@ -397,6 +471,7 @@ function wireEvents() {
 	$('poolDueBtn').addEventListener('click', setFilter('due'));
 	$('poolNewBtn').addEventListener('click', setFilter('new'));
 	$('poolLearnedBtn').addEventListener('click', setFilter('learned'));
+	$('upgradeBtn').addEventListener('click', openPaywall);
 
 	$('startReviewBtn').addEventListener('click', handleStartReview);
 

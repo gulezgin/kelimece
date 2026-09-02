@@ -9,6 +9,7 @@
  * Filtreleme ve sıralama bellekte yapılır — 10 bin kelimede bile birkaç MB,
  * bu yüzden IndexedDB'de indeksli sorguya gerek yok.
  */
+import { accessibleWords, grantPremium, isPremiumActive, NO_PREMIUM } from '../core/entitlements.js';
 import { applyRating } from '../core/scheduler.js';
 import { applyResult, MAX_LEVEL, scheduleNext } from '../core/srs.js';
 import { isSameDay, todayISO } from '../core/time.js';
@@ -57,7 +58,9 @@ export const DEFAULT_PROFILE = {
 	/** Bugün verilen cevap sayısı. */
 	studiedToday: 0,
 	/** Günlük hatırlatma. Varsayılan kapalı — izin istemeden açılmaz. */
-	reminder: { enabled: false, hour: 20, minute: 0 }
+	reminder: { enabled: false, hour: 20, minute: 0 },
+	/** Abonelik durumu. Satın alma yapılana kadar pasif. */
+	premium: { ...NO_PREMIUM }
 };
 
 /** @type {{words: object[], settings: object, profile: object, ready: boolean, packs: object}} */
@@ -187,7 +190,14 @@ export async function init({ packUrl } = {}) {
 		await loadIntoMemory();
 		result.repair = await runAutoRepairOnce();
 
-		state.profile = { ...DEFAULT_PROFILE, ...((await getMeta('profile')) || {}) };
+		const savedProfile = (await getMeta('profile')) || {};
+		state.profile = {
+			...DEFAULT_PROFILE,
+			...savedProfile,
+			// İç içe nesneler yüzeysel birleştirmede kaybolur
+			reminder: { ...DEFAULT_PROFILE.reminder, ...(savedProfile.reminder || {}) },
+			premium: { ...NO_PREMIUM, ...(savedProfile.premium || {}) }
+		};
 		refreshStreak();
 		state.settings = { ...DEFAULT_SETTINGS, ...((await getMeta('settings')) || {}) };
 		if (!state.settings.today) state.settings.today = todayISO();
@@ -431,7 +441,7 @@ export async function wipeAll() {
 	state.words = [];
 	byId.clear();
 	state.settings = { ...DEFAULT_SETTINGS, today: todayISO() };
-	state.profile = { ...DEFAULT_PROFILE };
+	state.profile = { ...DEFAULT_PROFILE, premium: { ...NO_PREMIUM } };
 	state.packs = {};
 	emit();
 	try {
@@ -588,6 +598,34 @@ function refreshStreak() {
 export async function savePlacement(result) {
 	state.profile.level = result.level;
 	state.profile.placedAt = new Date().toISOString();
+	emit();
+	await persistProfile();
+}
+
+/** Abonelik şu an geçerli mi? */
+export function hasPremium() {
+	return isPremiumActive(state.profile.premium);
+}
+
+/** Kullanıcının erişebildiği kelimeler (kilitliler hariç). */
+export function unlockedWords() {
+	return accessibleWords(state.words, state.profile.premium);
+}
+
+/**
+ * Satın alma sonrası aboneliği kaydeder.
+ * @param {string} product
+ */
+export async function activatePremium(product) {
+	state.profile.premium = grantPremium(product);
+	emit();
+	await persistProfile();
+	return state.profile.premium;
+}
+
+/** Aboneliği kaldırır (geri yükleme başarısızsa ya da test için). */
+export async function clearPremium() {
+	state.profile.premium = { ...NO_PREMIUM };
 	emit();
 	await persistProfile();
 }
