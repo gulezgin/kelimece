@@ -55,13 +55,6 @@
 
 	<header>
 		<h1>📚 Kelime Havuzum</h1>
-		<nav class="mainNav" role="tablist" aria-label="Ana bölümler">
-			<button id="navHome" class="navBtn active" role="tab" aria-selected="true">🏠 Ana</button>
-			<button id="navTopics" class="navBtn" role="tab" aria-selected="false">🗂️ Konular</button>
-			<button id="navDialogues" class="navBtn" role="tab" aria-selected="false">💬 Diyalog</button>
-			<button id="navStats" class="navBtn" role="tab" aria-selected="false">📊 İstatistik</button>
-			<button id="navPool" class="navBtn" role="tab" aria-selected="false">📚 Havuz</button>
-		</nav>
 		<div class="stat" role="status" aria-live="polite">
 			<span id="statTotal" class="badge">Toplam: 0</span>
 			<span id="statDue" class="badge warn">Bugün tekrar: 0</span>
@@ -80,6 +73,61 @@
 
 	<!-- İSTATİSTİK -->
 	<main id="statsView" class="homeView hidden"></main>
+
+	<!-- AYARLAR -->
+	<main id="settingsView" class="homeView hidden">
+		<div class="sectionHead">
+			<h2>⚙️ Ayarlar</h2>
+			<div class="small">Hedefin, hatırlatman ve verin.</div>
+		</div>
+
+		<div class="settingsCard" id="premiumCard"></div>
+
+		<section class="panel">
+			<h2>💾 Yedekleme</h2>
+			<div class="row">
+				<button id="exportBtn">JSON Dışa Aktar</button>
+				<label class="srOnly" for="importFile">Yedek dosyası seç</label>
+				<input id="importFile" type="file" accept="application/json">
+			</div>
+
+			<hr class="sep">
+
+			<h2>🎯 Hedef ve hatırlatma</h2>
+			<div class="row">
+				<label class="kpill" for="goalInput">Günlük yeni kelime:
+					<input id="goalInput" type="number" min="1" max="1000" value="10" style="width:90px;margin-left:8px">
+				</label>
+				<button id="resetTodayBtn" class="ghost">Sıfırla</button>
+				<button id="wipeBtn" class="bad">Sil</button>
+			</div>
+			<div class="row" style="margin-top:8px">
+				<button id="auditBtn" class="ghost">🩺 İlerleme denetimi</button>
+			</div>
+
+			<div class="row reminderRow hidden" id="reminderRow" style="margin-top:10px">
+				<label class="kpill" style="gap:6px">
+					<input id="reminderToggle" type="checkbox" style="width:auto"> 🔔 Günlük hatırlatma
+				</label>
+				<label class="kpill" for="reminderTime">Saat
+					<input id="reminderTime" type="time" value="20:00" style="width:110px;margin-left:8px">
+				</label>
+			</div>
+			<div class="small" id="reminderInfo"></div>
+
+			<hr class="sep">
+
+			<h2>📖 Kaynaklar</h2>
+			<div class="credits">
+				Örnek cümleler <a href="https://tatoeba.org" target="_blank" rel="noopener">Tatoeba</a>
+				projesinden alınmıştır
+				(<a href="https://creativecommons.org/licenses/by/2.0/fr/" target="_blank" rel="noopener">CC BY 2.0 FR</a>).
+				Kelime sıklığı verisi
+				<a href="https://github.com/hermitdave/FrequencyWords" target="_blank" rel="noopener">FrequencyWords</a>
+				(MIT) kaynaklıdır.
+			</div>
+		</section>
+	</main>
 
 	<!-- KELİME HAVUZU -->
 	<main id="poolView" class="hidden">
@@ -156,50 +204,6 @@
 				<button id="startReviewBtn" class="primary" style="margin-left:auto">Tekrar Et</button>
 			</div>
 
-			<hr class="sep">
-
-			<h2>💾 Yedekleme</h2>
-			<div class="row">
-				<button id="exportBtn">JSON Dışa Aktar</button>
-				<label class="srOnly" for="importFile">Yedek dosyası seç</label>
-				<input id="importFile" type="file" accept="application/json">
-			</div>
-
-			<hr class="sep">
-
-			<h2>⚙️ Ayarlar</h2>
-			<div class="row">
-				<label class="kpill" for="goalInput">Günlük yeni kelime:
-					<input id="goalInput" type="number" min="1" max="1000" value="10" style="width:90px;margin-left:8px">
-				</label>
-				<button id="resetTodayBtn" class="ghost">Sıfırla</button>
-				<button id="wipeBtn" class="bad">Sil</button>
-			</div>
-			<div class="row" style="margin-top:8px">
-				<button id="auditBtn" class="ghost">🩺 İlerleme denetimi</button>
-			</div>
-
-			<div class="row reminderRow hidden" id="reminderRow" style="margin-top:10px">
-				<label class="kpill" style="gap:6px">
-					<input id="reminderToggle" type="checkbox" style="width:auto"> 🔔 Günlük hatırlatma
-				</label>
-				<label class="kpill" for="reminderTime">Saat
-					<input id="reminderTime" type="time" value="20:00" style="width:110px;margin-left:8px">
-				</label>
-			</div>
-			<div class="small" id="reminderInfo"></div>
-
-			<hr class="sep">
-
-			<h2>📖 Kaynaklar</h2>
-			<div class="credits">
-				Örnek cümleler <a href="https://tatoeba.org" target="_blank" rel="noopener">Tatoeba</a>
-				projesinden alınmıştır
-				(<a href="https://creativecommons.org/licenses/by/2.0/fr/" target="_blank" rel="noopener">CC BY 2.0 FR</a>).
-				Kelime sıklığı verisi
-				<a href="https://github.com/hermitdave/FrequencyWords" target="_blank" rel="noopener">FrequencyWords</a>
-				(MIT) kaynaklıdır.
-			</div>
 		</section>
 
 		<!-- SAĞ PANEL -->
@@ -225,6 +229,31 @@
 	</footer>
 
 	<script type="module" src="/src/main.js"></script>
+	<!--
+		Alt sekme çubuğu.
+
+		Üst gezinme masaüstü alışkanlığıydı; telefonda başparmak ekranın
+		altına yetişiyor, üstüne değil. Beş sekme dar ekranda üstte
+		sığmıyordu, altta rahat sığıyor ve yerli uygulama gibi duruyor.
+	-->
+	<nav class="tabBar" role="tablist" aria-label="Ana bölümler">
+		<button id="navHome" class="tabBtn active" role="tab" aria-selected="true">
+			<span class="tabIcon">🏠</span><span class="tabLabel">Ana</span>
+		</button>
+		<button id="navTopics" class="tabBtn" role="tab" aria-selected="false">
+			<span class="tabIcon">🗂️</span><span class="tabLabel">Konular</span>
+		</button>
+		<button id="navDialogues" class="tabBtn" role="tab" aria-selected="false">
+			<span class="tabIcon">💬</span><span class="tabLabel">Diyalog</span>
+		</button>
+		<button id="navPool" class="tabBtn" role="tab" aria-selected="false">
+			<span class="tabIcon">📚</span><span class="tabLabel">Havuz</span>
+		</button>
+		<button id="navSettings" class="tabBtn" role="tab" aria-selected="false">
+			<span class="tabIcon">⚙️</span><span class="tabLabel">Ayarlar</span>
+		</button>
+	</nav>
+
 </body>
 
 </html>

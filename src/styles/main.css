@@ -2374,3 +2374,206 @@ button.dlgCard--locked {
 	letter-spacing: 4px;
 	opacity: 0.75;
 }
+
+/* ==============================================
+   ALT SEKME ÇUBUĞU
+   ============================================== */
+
+/*
+ * Sabit ve altta: telefonda başparmak ekranın altına yetişiyor.
+ * Gövdeye alttan dolgu veriliyor, yoksa çubuk son satırı örtüyor.
+ */
+.tabBar {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 40;
+	display: grid;
+	grid-template-columns: repeat(5, minmax(0, 1fr));
+	gap: 2px;
+	padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+	background: #0c1020;
+	border-top: 1px solid #222a40;
+}
+
+button.tabBtn {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 3px;
+	width: auto;
+	min-height: 0;
+	padding: 6px 2px;
+	border: 0;
+	border-radius: 12px;
+	background: transparent;
+	color: var(--muted);
+	font-size: 10px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: color var(--transition), background var(--transition);
+}
+
+button.tabBtn .tabIcon {
+	font-size: 19px;
+	line-height: 1;
+	/* Seçili değilken soluk: renk farkı tek başına yeterli kontrast
+	   vermiyor çünkü emoji kendi rengini taşıyor. */
+	filter: grayscale(1);
+	opacity: 0.55;
+	transition: filter var(--transition), opacity var(--transition);
+}
+
+button.tabBtn.active {
+	color: var(--acc);
+	background: #141c33;
+}
+
+button.tabBtn.active .tabIcon {
+	filter: none;
+	opacity: 1;
+}
+
+button.tabBtn:hover {
+	color: var(--text);
+}
+
+/* Alt çubuğun altında kalan içerik olmasın */
+body {
+	padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+}
+
+.backBtn {
+	margin-bottom: 12px;
+}
+
+/* ==============================================
+   GÜNLÜK HEDEF HALKASI
+   ============================================== */
+.goalRing {
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 18px;
+}
+
+.ringWrap {
+	position: relative;
+	width: 128px;
+	height: 128px;
+	justify-self: center;
+}
+
+.ringSvg {
+	width: 100%;
+	height: 100%;
+	/* Dolum saat 12'den başlasın */
+	transform: rotate(-90deg);
+}
+
+.ringTrack {
+	fill: none;
+	stroke: #1e2740;
+	stroke-width: 10;
+}
+
+.ringFill {
+	fill: none;
+	stroke: var(--good);
+	stroke-width: 10;
+	stroke-linecap: round;
+	transition: stroke-dasharray 0.5s ease;
+}
+
+.ringCenter {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	place-content: center;
+	text-align: center;
+}
+
+.ringValue {
+	font-size: 24px;
+	font-weight: 800;
+	letter-spacing: -0.5px;
+}
+
+.ringLabel {
+	color: var(--muted);
+	font-size: 11px;
+	margin-top: 2px;
+}
+
+.ringChip {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 7px 11px;
+	border-radius: 999px;
+	background: var(--panel);
+	border: 1px solid #263049;
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.ringChip--streak { justify-self: start; }
+.ringChip--level  { justify-self: end; color: var(--acc); }
+
+.ringChipIcon { font-size: 14px; }
+
+.homeMore {
+	margin-top: 18px;
+	display: flex;
+	justify-content: center;
+}
+
+/* ==============================================
+   AYARLAR: ABONELİK KARTI
+   ============================================== */
+.settingsCard {
+	margin-bottom: 16px;
+}
+
+button.premiumBanner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	width: 100%;
+	padding: 16px 18px;
+	text-align: left;
+	border: 0;
+	border-radius: 16px;
+	background: linear-gradient(110deg, #6f5cff 0%, #4aa8ff 55%, #3ddc97 100%);
+	color: #08111f;
+	cursor: pointer;
+}
+
+.premiumTitle {
+	font-size: 15px;
+	font-weight: 800;
+}
+
+.premiumSub {
+	font-size: 12px;
+	opacity: 0.8;
+	margin-top: 2px;
+}
+
+.premiumStar { font-size: 30px; }
+
+.premiumOn {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px 16px;
+	border-radius: 16px;
+	background: var(--panel);
+	border: 1px solid #2a3a55;
+}
+
+.premiumIcon { font-size: 24px; }

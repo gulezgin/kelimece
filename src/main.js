@@ -18,7 +18,7 @@ import * as notifications from './platform/notifications.js';
 import { setupNative } from './platform/native.js';
 import { renderDashboard } from './ui/dashboard.js';
 import { alertDialog, choiceDialog, confirmDialog, toast } from './ui/dialog.js';
-import { $, debounce } from './ui/dom.js';
+import { $, debounce, el } from './ui/dom.js';
 import * as billing from './platform/billing.js';
 import * as paywall from './ui/paywall.js';
 import { startPlacement } from './ui/placement.js';
@@ -154,12 +154,23 @@ function render() {
 	// Abonelik durumunu arayuze bildir
 	$('upgradeRow').classList.toggle('hidden', locked.size === 0);
 
+	if (activeSection === 'settings') {
+		renderPremiumCard();
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
+
 	if (activeSection === 'stats') {
 		// İstatistik profil seviyesi kapsamında; seviye yoksa tüm havuz.
 		const scope = store.state.profile.level
 			? filterWords(store.state.words, {}).filter((w) => levelsUpTo(store.state.profile.level).includes(w.cefr))
 			: store.state.words;
 		renderStatsView(scope, store.state.profile);
+		// Istatistigin kendi sekmesi yok; geri donus yolu gorunur olmali.
+		const host = $('statsView');
+		const back = el('button', { class: 'ghost backBtn', text: '← Ana sayfa' });
+		back.onclick = () => showSection('home');
+		host.insertBefore(back, host.firstChild);
 		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
 		return;
 	}
@@ -243,8 +254,43 @@ const dashboardHandlers = {
 		activeLevel = level;
 		showSection('pool');
 	},
-	onBrowse: () => showSection('pool')
+	onBrowse: () => showSection('pool'),
+	onStats: () => showSection('stats')
 };
+
+/**
+ * Ayarlar ekranindaki abonelik karti.
+ * Kilitli icerik varsa satis, yoksa tesekkur gosterir.
+ */
+function renderPremiumCard() {
+	const host = $('premiumCard');
+	if (!host) return;
+	host.textContent = '';
+
+	const premium = store.state.profile.premium;
+	const locked = lockedLevels(premium);
+
+	if (!locked.length) {
+		host.appendChild(el('div', { class: 'premiumOn' }, [
+			el('span', { class: 'premiumIcon', text: '⭐' }),
+			el('div', {}, [
+				el('div', { class: 'premiumTitle', text: 'Tüm seviyeler açık' }),
+				el('div', { class: 'small', text: 'Aboneliğin etkin. İyi çalışmalar.' })
+			])
+		]));
+		return;
+	}
+
+	const btn = el('button', { class: 'premiumBanner' }, [
+		el('div', {}, [
+			el('div', { class: 'premiumTitle', text: 'Premium özelliğin kilidini aç' }),
+			el('div', { class: 'premiumSub', text: locked.join(', ') + ' seviyeleri ve diyaloglar' })
+		]),
+		el('span', { class: 'premiumStar', text: '⭐' })
+	]);
+	btn.onclick = () => openPaywall();
+	host.appendChild(btn);
+}
 
 const dialogueHandlers = {
 	onOpen: (id) => {
@@ -593,8 +639,8 @@ function wireEvents() {
 	$('navHome').addEventListener('click', () => showSection('home'));
 	$('navTopics').addEventListener('click', () => showSection('topics'));
 	$('navDialogues').addEventListener('click', () => showSection('dialogues'));
-	$('navStats').addEventListener('click', () => showSection('stats'));
 	$('navPool').addEventListener('click', () => showSection('pool'));
+	$('navSettings').addEventListener('click', () => showSection('settings'));
 
 	$('tabCards').addEventListener('click', () => switchView('cards'));
 	$('tabTiles').addEventListener('click', () => switchView('tiles'));
@@ -646,16 +692,27 @@ function wireEvents() {
 /** Ana bölümler arasında geçiş. */
 function showSection(section) {
 	activeSection = section;
-	for (const [name, viewId, navId] of [
+	// Ucuncu sutun: hangi sekmenin yanacagi. Istatistigin kendi sekmesi
+	// yok - ana ekrandan aciliyor ve acikken "Ana" sekmesi yanik kaliyor,
+	// yoksa alt cubukta hicbir sey secili gorunmuyor ve kullanici nerede
+	// oldugunu kaybediyor.
+	const sections = [
 		['home', 'homeView', 'navHome'],
 		['topics', 'topicsView', 'navTopics'],
 		['dialogues', 'dialoguesView', 'navDialogues'],
-		['stats', 'statsView', 'navStats'],
-		['pool', 'poolView', 'navPool']
-	]) {
+		['pool', 'poolView', 'navPool'],
+		['settings', 'settingsView', 'navSettings'],
+		['stats', 'statsView', 'navHome']
+	];
+	const activeTab = (sections.find(([name]) => name === section) || [])[2];
+
+	for (const [name, viewId] of sections) {
 		$(viewId).classList.toggle('hidden', section !== name);
-		$(navId).classList.toggle('active', section === name);
-		$(navId).setAttribute('aria-selected', String(section === name));
+	}
+	for (const tab of document.querySelectorAll('.tabBtn')) {
+		const on = tab.id === activeTab;
+		tab.classList.toggle('active', on);
+		tab.setAttribute('aria-selected', String(on));
 	}
 	window.scrollTo(0, 0);
 	render();

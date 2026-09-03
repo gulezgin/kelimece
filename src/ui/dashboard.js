@@ -17,9 +17,72 @@ export function renderDashboard(overview, breakdown, handlers) {
 	if (!host) return;
 	host.textContent = '';
 
+	host.appendChild(goalRing(overview));
 	host.appendChild(heroSection(overview, handlers));
 	host.appendChild(statsRow(overview));
 	host.appendChild(levelProgress(breakdown, overview.level, handlers));
+	host.appendChild(moreRow(handlers));
+}
+
+/**
+ * Gunluk hedef halkasi: seri, ilerleme ve seviye tek bakista.
+ *
+ * Sayilar zaten alttaki kartlarda var; buradaki tekrar bilerek.
+ * Uygulamayi acan kisinin ilk gordugu sey "bugun ne kadar yaptim"
+ * olmali - listeler ve dugmeler degil.
+ *
+ * Halka SVG: CSS conic-gradient daha kisa olurdu ama yuzdeyi
+ * yumusak gecisle degistiremiyor ve WebView'de kenarlari tirtikli
+ * cikiyor.
+ */
+function goalRing(o) {
+	const goal = Math.max(1, o.dailyGoal || 1);
+	const done = Math.min(goal, o.studiedToday || 0);
+	const pct = Math.round((done / goal) * 100);
+
+	const R = 52;
+	const C = 2 * Math.PI * R;
+	const svgNS = 'http://www.w3.org/2000/svg';
+	const svg = document.createElementNS(svgNS, 'svg');
+	svg.setAttribute('viewBox', '0 0 128 128');
+	svg.setAttribute('class', 'ringSvg');
+	svg.setAttribute('aria-hidden', 'true');
+
+	for (const [cls, len] of [['ringTrack', null], ['ringFill', (pct / 100) * C]]) {
+		const c = document.createElementNS(svgNS, 'circle');
+		c.setAttribute('cx', '64');
+		c.setAttribute('cy', '64');
+		c.setAttribute('r', String(R));
+		c.setAttribute('class', cls);
+		if (len !== null) {
+			c.setAttribute('stroke-dasharray', `${len} ${C}`);
+		}
+		svg.appendChild(c);
+	}
+
+	const center = el('div', { class: 'ringCenter' }, [
+		el('div', { class: 'ringValue', text: `${done}/${goal}` }),
+		el('div', { class: 'ringLabel', text: 'bugün' })
+	]);
+
+	const streakText = o.streak > 0 ? `${o.streak} gün` : 'Seri yok';
+	return el('section', { class: 'goalRing' }, [
+		el('div', { class: 'ringChip ringChip--streak' }, [
+			el('span', { class: 'ringChipIcon', text: '🔥' }),
+			el('span', { text: streakText })
+		]),
+		el('div', { class: 'ringWrap' }, [svg, center]),
+		el('div', { class: 'ringChip ringChip--level' }, [
+			el('span', { text: o.level ? 'Seviye ' + o.level : 'Seviyesiz' })
+		])
+	]);
+}
+
+/** Ana ekranin altindaki ikincil girisler. */
+function moreRow(handlers) {
+	const statsBtn = el('button', { class: 'ghost', text: '📊 Detaylı istatistik' });
+	statsBtn.onclick = () => handlers.onStats();
+	return el('div', { class: 'homeMore' }, [statsBtn]);
 }
 
 /** Üst blok: seviye, bugünün durumu, başlat düğmesi. */
@@ -74,7 +137,6 @@ function heroSection(o, handlers) {
 
 /** Günlük hedef, seri ve genel ilerleme. */
 function statsRow(o) {
-	const goalPct = o.dailyGoal ? Math.min(100, Math.round((o.studiedToday / o.dailyGoal) * 100)) : 0;
 	const s = o.session || { total: o.due, reviews: 0, fresh: 0, freshAvailable: 0 };
 
 	// Ham "bekleyen kelime" sayısı 5000'i geçebiliyor ve yıldırıcı
@@ -84,12 +146,15 @@ function statsRow(o) {
 		? (s.reviews ? `${s.reviews} tekrar + ${s.fresh} yeni` : `${s.fresh} yeni kelime`)
 		: 'bugünlük bitti';
 
+	// Seri ve gunluk hedef YUKARIDAKI HALKADA. Burada tekrar etmek
+	// ayni sayiyi iki kez gostermek oluyordu; ekranin ust yarisi
+	// bilgi tasimadan doluyordu.
 	return el('section', { class: 'statCards' }, [
-		statCard('🔥', 'Seri', o.streak > 0 ? `${o.streak} gün` : 'Henüz yok',
-			o.longestStreak > o.streak ? `En uzun: ${o.longestStreak} gün` : ''),
-		statCard('📅', 'Bugün', `${o.studiedToday} / ${o.dailyGoal}`, `%${goalPct} tamamlandı`, goalPct),
 		statCard('📚', 'Öğrenilen', `${o.learned} / ${o.total}`, `%${o.percent}`, o.percent),
-		statCard('⏰', 'Bugünkü oturum', String(s.total), sessionNote)
+		statCard('⏰', 'Bugünkü oturum', String(s.total), sessionNote),
+		statCard('🎯', 'En uzun seri',
+			o.longestStreak > 0 ? `${o.longestStreak} gün` : 'Henüz yok',
+			o.streak > 0 && o.streak === o.longestStreak ? 'Şu an rekordasın' : '')
 	]);
 }
 
