@@ -135,17 +135,6 @@ export function normalizeDefinition(raw, { source } = {}) {
 	};
 }
 
-/** Formdan yeni kullanıcı kelimesi oluşturur. */
-export function createDefinition({ en, tr, example = '', tags = '' }) {
-	const trimmedEn = String(en || '').trim();
-	const trimmedTr = String(tr || '').trim();
-	if (!trimmedEn || !trimmedTr) return null;
-	return normalizeDefinition(
-		{ en: trimmedEn, tr: trimmedTr, example, tags, id: makeId('user', trimmedEn) },
-		{ source: 'user' }
-	);
-}
-
 // ===================== İLERLEME =====================
 
 /**

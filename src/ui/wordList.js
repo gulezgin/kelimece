@@ -28,7 +28,6 @@ export function filterWords(words, { query = '', mode = 'all', cefr = 'all', top
 	}
 
 	if (mode === 'due') list = list.filter((w) => w.level < MAX_LEVEL && isDue(w.nextReviewAt));
-	else if (mode === 'new') list = list.filter((w) => w.source === 'user' && isToday(w.addedAt));
 	else if (mode === 'learned') list = list.filter((w) => w.level >= MAX_LEVEL);
 
 	const q = foldTr(query.trim());
@@ -77,11 +76,9 @@ export function foldTr(text) {
 export function renderStats(stats, visibleCount, dailyGoal) {
 	$('statTotal').textContent = 'Toplam: ' + stats.total;
 	$('statDue').textContent = 'Bugün tekrar: ' + stats.due;
-	$('statAdded').textContent = `Bugün eklendi: ${stats.addedToday} / ${dailyGoal}`;
 	$('listInfo').textContent = visibleCount + ' sonuç';
 	$('poolCountAll').textContent = String(stats.total);
 	$('poolCountDue').textContent = String(stats.due);
-	$('poolCountNew').textContent = String(stats.addedToday);
 	$('poolCountLearned').textContent = String(stats.learned);
 }
 

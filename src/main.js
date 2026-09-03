@@ -386,61 +386,6 @@ const listHandlers = {
 	}
 };
 
-// ===================== Kelime ekleme =====================
-
-async function handleAdd() {
-	const input = {
-		en: $('en').value,
-		tr: $('tr').value,
-		example: $('example').value,
-		tags: $('tags').value
-	};
-
-	if (!input.en.trim() || !input.tr.trim()) {
-		toast('İngilizce kelime ve Türkçe anlam zorunlu.', 'warn');
-		return;
-	}
-
-	const result = await store.addWord(input);
-	if (!result.ok) {
-		if (result.reason === 'duplicate') {
-			markDuplicate(true);
-			toast('Bu kelime havuzda zaten var.', 'warn');
-		}
-		return;
-	}
-
-	const added = result.word.en;
-	clearForm();
-	toast(`"${added}" eklendi.`);
-}
-
-function clearForm() {
-	$('en').value = '';
-	$('tr').value = '';
-	$('example').value = '';
-	$('tags').value = '';
-	markDuplicate(false);
-	$('en').focus();
-}
-
-function markDuplicate(isDup) {
-	const input = $('en');
-	const hint = $('dupHint');
-	input.classList.toggle('dup', isDup);
-	hint.textContent = isDup ? 'Bu kelime zaten ekli. Aşağıdaki listede görünüyor.' : '';
-	hint.classList.toggle('hidden', !isDup);
-	hint.classList.toggle('warn', isDup);
-}
-
-/** Yazarken hem listeyi süz hem de mükerrer uyarısını göster. */
-function onEnglishInput() {
-	const value = $('en').value;
-	$('search').value = value;
-	render();
-	markDuplicate(!!value.trim() && store.hasWord(value));
-}
-
 // ===================== Tekrar =====================
 
 function handleStartReview() {
@@ -620,19 +565,6 @@ async function handleProgressAudit() {
 // ===================== Olay bağlantıları =====================
 
 function wireEvents() {
-	$('addBtn').addEventListener('click', handleAdd);
-	$('clearFormBtn').addEventListener('click', clearForm);
-
-	const enterToAdd = (e) => {
-		if (e.key === 'Enter') {
-			e.preventDefault();
-			handleAdd();
-		}
-	};
-	$('en').addEventListener('keydown', enterToAdd);
-	$('tr').addEventListener('keydown', enterToAdd);
-	$('en').addEventListener('input', debounce(onEnglishInput, 120));
-
 	$('search').addEventListener('input', debounce(render, 150));
 	$('filterDue').addEventListener('change', render);
 
@@ -642,7 +574,6 @@ function wireEvents() {
 	};
 	$('poolAllBtn').addEventListener('click', setFilter('all'));
 	$('poolDueBtn').addEventListener('click', setFilter('due'));
-	$('poolNewBtn').addEventListener('click', setFilter('new'));
 	$('poolLearnedBtn').addEventListener('click', setFilter('learned'));
 	$('upgradeBtn').addEventListener('click', openPaywall);
 
@@ -691,14 +622,9 @@ function wireEvents() {
 	});
 	$('auditBtn').addEventListener('click', handleProgressAudit);
 
-	$('resetTodayBtn').addEventListener('click', async () => {
-		await store.resetTodayCounter();
-		toast('Günlük sayaç sıfırlandı.');
-	});
-
 	$('wipeBtn').addEventListener('click', async () => {
 		const ok = await confirmDialog(
-			`Eklediğin kelimeler ve tüm ilerlemen silinecek. Bu işlem geri alınamaz.\n\n` +
+			`Tüm ilerlemen silinecek. Bu işlem geri alınamaz.\n\n` +
 				'Devam etmeden önce "JSON Dışa Aktar" ile yedek almanı öneririz.',
 			{ title: 'Tüm veriyi sil', confirmText: 'Evet, hepsini sil', danger: true }
 		);

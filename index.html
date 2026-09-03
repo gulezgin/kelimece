@@ -58,7 +58,6 @@
 		<div class="stat" role="status" aria-live="polite">
 			<span id="statTotal" class="badge">Toplam: 0</span>
 			<span id="statDue" class="badge warn">Bugün tekrar: 0</span>
-			<span id="statAdded" class="badge ok">Bugün eklendi: 0 / 10</span>
 		</div>
 	</header>
 
@@ -98,7 +97,6 @@
 				<label class="kpill" for="goalInput">Günlük yeni kelime:
 					<input id="goalInput" type="number" min="1" max="1000" value="10" style="width:90px;margin-left:8px">
 				</label>
-				<button id="resetTodayBtn" class="ghost">Sıfırla</button>
 				<button id="wipeBtn" class="bad">Sil</button>
 			</div>
 			<div class="row" style="margin-top:8px">
@@ -132,36 +130,7 @@
 	<!-- KELİME HAVUZU -->
 	<main id="poolView" class="hidden">
 		<!-- SOL PANEL -->
-		<section class="panel" aria-labelledby="addHeading">
-			<h2 id="addHeading">➕ Kelime Ekle</h2>
-
-			<div class="row">
-				<label class="srOnly" for="en">İngilizce kelime</label>
-				<input id="en" class="input" autocomplete="off" placeholder="English (ör. &quot;abandon&quot;)"
-					aria-describedby="dupHint">
-			</div>
-			<div class="row" style="margin-top:4px">
-				<div class="small hidden" id="dupHint" role="alert"></div>
-			</div>
-			<div class="row" style="margin-top:8px">
-				<label class="srOnly" for="tr">Türkçe anlam</label>
-				<input id="tr" class="input" autocomplete="off" placeholder="Türkçe anlam (ör. &quot;terk etmek&quot;)">
-			</div>
-			<div class="row" style="margin-top:8px">
-				<label class="srOnly" for="example">Örnek cümle</label>
-				<textarea id="example" rows="2" class="input" placeholder="Örnek cümle (isteğe bağlı)"></textarea>
-			</div>
-			<div class="row" style="margin-top:8px">
-				<label class="srOnly" for="tags">Etiketler</label>
-				<input id="tags" class="input" autocomplete="off" placeholder="Etiketler (virgülle ayır: verb, academic)">
-			</div>
-			<div class="row" style="margin-top:10px">
-				<button id="addBtn" class="primary">Ekle</button>
-				<button id="clearFormBtn" class="ghost">Temizle</button>
-			</div>
-
-			<hr class="sep">
-
+		<section class="panel" aria-labelledby="filterHeading">
 			<h2 id="filterHeading">🔍 Filtre / Ara</h2>
 			<div class="toolbar">
 				<label class="srOnly" for="search">Kelimelerde ara</label>
@@ -170,7 +139,6 @@
 				<select id="filterDue">
 					<option value="all">Hepsi</option>
 					<option value="due">Bugün tekrar</option>
-					<option value="new">Sadece yeni</option>
 					<option value="learned">Öğrenilmiş</option>
 				</select>
 			</div>
@@ -194,7 +162,6 @@
 			<div class="toolbar" style="margin-bottom:8px">
 				<button id="poolAllBtn" class="ghost">Tümü <span class="badge" id="poolCountAll">0</span></button>
 				<button id="poolDueBtn" class="ghost">Tekrar <span class="badge warn" id="poolCountDue">0</span></button>
-				<button id="poolNewBtn" class="ghost">Yeni <span class="badge" id="poolCountNew">0</span></button>
 				<button id="poolLearnedBtn" class="ghost">Öğrenilmiş <span class="badge ok" id="poolCountLearned">0</span></button>
 			</div>
 			<div class="toolbar" style="margin-bottom:8px">

@@ -9,7 +9,6 @@ import { describe, expect, it } from 'vitest';
 import { MAX_LEVEL } from '../src/core/srs.js';
 import { isDue } from '../src/core/time.js';
 import {
-	createDefinition,
 	createProgress,
 	makeId,
 	merge,
@@ -75,28 +74,6 @@ describe('normalizeCefr', () => {
 		expect(normalizeCefr('D1')).toBeNull();
 		expect(normalizeCefr('')).toBeNull();
 		expect(normalizeCefr(null)).toBeNull();
-	});
-});
-
-describe('createDefinition', () => {
-	it('zorunlu alanlar eksikse null döner', () => {
-		expect(createDefinition({ en: '', tr: 'anlam' })).toBeNull();
-		expect(createDefinition({ en: 'word', tr: '   ' })).toBeNull();
-	});
-
-	it('kullanıcı kelimesi olarak oluşturur', () => {
-		const d = createDefinition({ en: '  abandon ', tr: ' terk etmek ' });
-		expect(d.en).toBe('abandon');
-		expect(d.tr).toBe('terk etmek');
-		expect(d.source).toBe('user');
-		expect(d.id.startsWith('user:')).toBe(true);
-	});
-
-	it('Faz 2 alanlarını null olarak hazırlar', () => {
-		const d = createDefinition({ en: 'x', tr: 'y' });
-		expect(d.cefr).toBeNull();
-		expect(d.pos).toBeNull();
-		expect(d.ipa).toBeNull();
 	});
 });
 

@@ -14,7 +14,6 @@ import { applyRating } from '../core/scheduler.js';
 import { applyResult, MAX_LEVEL, scheduleNext } from '../core/srs.js';
 import { isSameDay, todayISO } from '../core/time.js';
 import {
-	createDefinition,
 	createProgress,
 	merge,
 	normalizeDefinition,
@@ -37,7 +36,6 @@ import { analyzeProgress, repairProgress, runMigration } from './migrate.js';
 
 export const DEFAULT_SETTINGS = {
 	dailyGoal: 10,
-	todayAdded: 0,
 	today: null
 };
 
@@ -203,7 +201,6 @@ export async function init({ packUrl } = {}) {
 		if (!state.settings.today) state.settings.today = todayISO();
 		if (!isSameDay(state.settings.today, new Date())) {
 			state.settings.today = todayISO();
-			state.settings.todayAdded = 0;
 			await persistSettings();
 		}
 	} catch (e) {
@@ -312,40 +309,8 @@ async function loadIntoMemory() {
 
 // ===================== Kelime işlemleri =====================
 
-export function hasWord(en) {
-	const key = String(en || '').trim().toLowerCase();
-	if (!key) return false;
-	return state.words.some((w) => w.en.toLowerCase() === key);
-}
-
 export function getWord(id) {
 	return byId.get(id);
-}
-
-/**
- * Yeni kullanıcı kelimesi ekler.
- * @param {{en: string, tr: string, example?: string, tags?: string}} input
- */
-export async function addWord(input) {
-	const definition = createDefinition(input);
-	if (!definition) return { ok: false, reason: 'invalid' };
-	if (hasWord(definition.en)) return { ok: false, reason: 'duplicate' };
-
-	const progress = createProgress(definition.id);
-	const record = merge(definition, progress);
-
-	state.words.unshift(record);
-	byId.set(record.id, record);
-	state.settings.todayAdded += 1;
-	emit();
-
-	try {
-		await bulkPutMulti({ [STORE_WORDS]: [definition], [STORE_PROGRESS]: [progress] });
-		await persistSettings();
-	} catch (e) {
-		reportError(e, 'kelime ekleme');
-	}
-	return { ok: true, word: record };
 }
 
 /** Bir cevabı kaydeder ve tekrar takvimini günceller. */
@@ -425,13 +390,6 @@ export async function deleteWord(id) {
 export async function setDailyGoal(value) {
 	const v = Number.parseInt(value, 10);
 	state.settings.dailyGoal = Math.max(1, Math.min(1000, Number.isFinite(v) ? v : 10));
-	emit();
-	await persistSettings();
-}
-
-export async function resetTodayCounter() {
-	state.settings.today = todayISO();
-	state.settings.todayAdded = 0;
 	emit();
 	await persistSettings();
 }
@@ -716,16 +674,11 @@ export function getStats(isDue, scope) {
 	const total = words.length;
 	let due = 0;
 	let learned = 0;
-	let addedToday = 0;
-	const now = new Date();
 
 	for (const w of words) {
 		if (w.level >= MAX_LEVEL) learned++;
 		else if (isDue(w.nextReviewAt)) due++;
-		// Sadece kullanıcının kendi eklediklerini say; paket kurulumu
-		// "bugün 1658 kelime ekledin" demek olmasın.
-		if (w.source === 'user' && isSameDay(w.addedAt, now)) addedToday++;
 	}
 
-	return { total, due, learned, addedToday, unlearned: total - learned };
+	return { total, due, learned, unlearned: total - learned };
 }
