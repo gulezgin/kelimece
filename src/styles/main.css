@@ -2577,3 +2577,155 @@ button.premiumBanner {
 }
 
 .premiumIcon { font-size: 24px; }
+
+/* ==============================================
+   DİYALOG ROL YAPMA
+   ============================================== */
+.dlgRoleBtn {
+	margin-bottom: 16px;
+}
+
+.dlgProgress {
+	color: var(--muted);
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.dlgExercise {
+	margin-top: 14px;
+	padding: 14px;
+	border: 1px solid #2b3a52;
+	border-radius: 14px;
+	background: #101830;
+}
+
+.dlgExerciseHint {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+	color: var(--muted);
+}
+
+.dlgExerciseTr {
+	margin: 6px 0 12px;
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+/* --- Kelimeleri sıraya dizme --- */
+.orderUi {
+	display: grid;
+	gap: 12px;
+}
+
+.orderSlot {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	min-height: 46px;
+	padding: 8px;
+	border-radius: 10px;
+	border: 1px dashed #33405f;
+	background: #0d1528;
+}
+
+.orderBank {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+button.orderChip {
+	width: auto;
+	min-height: 0;
+	padding: 8px 12px;
+	border-radius: 10px;
+	border: 1px solid #33405f;
+	background: #17203a;
+	color: var(--text);
+	font-size: 14px;
+	cursor: pointer;
+}
+
+button.orderChip:hover {
+	border-color: var(--acc);
+}
+
+button.orderChip--picked {
+	background: #1d2a4a;
+	border-color: var(--acc);
+}
+
+/* --- Boşluk doldurma --- */
+.blankUi {
+	display: grid;
+	gap: 12px;
+}
+
+.blankSentence {
+	font-size: 16px;
+	line-height: 2;
+	overflow-wrap: anywhere;
+}
+
+input.blankInput {
+	display: inline-block;
+	width: 130px;
+	margin: 0 4px;
+	padding: 4px 8px;
+	font-size: 15px;
+	text-align: center;
+	border-bottom: 2px solid var(--acc);
+	border-radius: 6px 6px 0 0;
+}
+
+/* --- Geri bildirim ve bitiş --- */
+.dlgFeedback {
+	margin-top: 12px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--good);
+}
+
+.dlgFeedback.bad {
+	color: var(--bad);
+}
+
+.dlgFeedbackAction {
+	margin-top: 10px;
+}
+
+.dlgFinish {
+	margin-top: 18px;
+	padding: 22px 18px;
+	text-align: center;
+	border-radius: 16px;
+	background: var(--panel);
+	border: 1px solid #2a3a55;
+}
+
+.dlgFinishIcon { font-size: 40px; }
+
+.dlgFinishTitle {
+	margin: 8px 0 6px;
+	font-size: 18px;
+	font-weight: 800;
+}
+
+.dlgFinishActions {
+	display: grid;
+	gap: 8px;
+	margin-top: 16px;
+}
+
+/*
+ * Diyalog başlığındaki düğmeler içeriği kadar yer kaplasın.
+ * Genel `button { width: 100% }` kuralı "← Çık" düğmesini satır boyu
+ * uzatıyordu ve seviye rozetini kenara sıkıştırıyordu.
+ */
+.dlgHead > button {
+	width: auto;
+	flex: none;
+}

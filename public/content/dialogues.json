@@ -1,10 +1,10 @@
 {
   "pack": {
     "id": "dialogues",
-    "version": 1,
+    "version": 2,
     "name": "Günlük Konuşma Diyalogları",
     "language": "en-tr",
-    "count": 12
+    "count": 60
   },
   "dialogues": [
     {
@@ -49,7 +49,8 @@
           "en": "Welcome! I hope you like it.",
           "tr": "Hoş geldin! Umarım beğenirsin."
         }
-      ]
+      ],
+      "topic": "tanışma"
     },
     {
       "id": "dlg:cafe",
@@ -97,6 +98,332 @@
           "s": "B",
           "en": "Here you are. Thank you.",
           "tr": "Buyurun. Teşekkürler."
+        }
+      ],
+      "topic": "yiyecek"
+    },
+    {
+      "id": "dlg:a1-market",
+      "title": "Markette",
+      "icon": "🛒",
+      "cefr": "A1",
+      "topic": "ihtiyaç",
+      "summary": "Ürün sormak ve ödemek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Hello. Can I help you?",
+          "tr": "Merhaba. Yardımcı olabilir miyim?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, where is the milk?",
+          "tr": "Evet, süt nerede?"
+        },
+        {
+          "s": "A",
+          "en": "It is next to the eggs.",
+          "tr": "Yumurtaların yanında."
+        },
+        {
+          "s": "B",
+          "en": "Thank you. I need bread too.",
+          "tr": "Teşekkürler. Ekmeğe de ihtiyacım var."
+        },
+        {
+          "s": "A",
+          "en": "The bread is over there.",
+          "tr": "Ekmek şurada."
+        },
+        {
+          "s": "B",
+          "en": "How much is everything?",
+          "tr": "Hepsi ne kadar?"
+        },
+        {
+          "s": "A",
+          "en": "That is twelve liras.",
+          "tr": "On iki lira."
+        }
+      ]
+    },
+    {
+      "id": "dlg:a1-family",
+      "title": "Ailemi tanıtıyorum",
+      "icon": "👨‍👩‍👧",
+      "cefr": "A1",
+      "topic": "aile",
+      "summary": "Aile üyelerinden bahsetmek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Is this your family?",
+          "tr": "Bu senin ailen mi?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, this is my mother.",
+          "tr": "Evet, bu benim annem."
+        },
+        {
+          "s": "A",
+          "en": "Do you have any brothers?",
+          "tr": "Hiç erkek kardeşin var mı?"
+        },
+        {
+          "s": "B",
+          "en": "I have one brother and one sister.",
+          "tr": "Bir erkek, bir kız kardeşim var."
+        },
+        {
+          "s": "A",
+          "en": "How old is your sister?",
+          "tr": "Kız kardeşin kaç yaşında?"
+        },
+        {
+          "s": "B",
+          "en": "She is ten years old.",
+          "tr": "O on yaşında."
+        }
+      ]
+    },
+    {
+      "id": "dlg:a1-time",
+      "title": "Saati sormak",
+      "icon": "🕐",
+      "cefr": "A1",
+      "topic": "zaman",
+      "summary": "Saat ve gün sormak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Excuse me, what time is it?",
+          "tr": "Affedersiniz, saat kaç?"
+        },
+        {
+          "s": "B",
+          "en": "It is half past three.",
+          "tr": "Üç buçuk."
+        },
+        {
+          "s": "A",
+          "en": "Is the shop still open?",
+          "tr": "Dükkan hâlâ açık mı?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, it closes at six.",
+          "tr": "Evet, altıda kapanıyor."
+        },
+        {
+          "s": "A",
+          "en": "Thank you very much.",
+          "tr": "Çok teşekkür ederim."
+        },
+        {
+          "s": "B",
+          "en": "You are welcome.",
+          "tr": "Rica ederim."
+        }
+      ]
+    },
+    {
+      "id": "dlg:a1-classroom",
+      "title": "Sınıfta",
+      "icon": "🏫",
+      "cefr": "A1",
+      "topic": "okul",
+      "summary": "Öğretmene soru sormak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Open your books, please.",
+          "tr": "Kitaplarınızı açın lütfen."
+        },
+        {
+          "s": "B",
+          "en": "Which page is it?",
+          "tr": "Hangi sayfa?"
+        },
+        {
+          "s": "A",
+          "en": "Page twenty, at the top.",
+          "tr": "Yirminci sayfa, en üstte."
+        },
+        {
+          "s": "B",
+          "en": "I do not have my book today.",
+          "tr": "Bugün kitabım yanımda değil."
+        },
+        {
+          "s": "A",
+          "en": "You can share with your friend.",
+          "tr": "Arkadaşınla paylaşabilirsin."
+        },
+        {
+          "s": "B",
+          "en": "Okay, thank you teacher.",
+          "tr": "Tamam, teşekkürler öğretmenim."
+        }
+      ]
+    },
+    {
+      "id": "dlg:a1-weather",
+      "title": "Hava nasıl?",
+      "icon": "🌤️",
+      "cefr": "A1",
+      "topic": "doğa",
+      "summary": "Hava durumu hakkında konuşmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "How is the weather today?",
+          "tr": "Bugün hava nasıl?"
+        },
+        {
+          "s": "B",
+          "en": "It is cold and windy.",
+          "tr": "Soğuk ve rüzgarlı."
+        },
+        {
+          "s": "A",
+          "en": "Do you have a coat?",
+          "tr": "Montun var mı?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, my coat is very warm.",
+          "tr": "Evet, montum çok sıcak tutuyor."
+        },
+        {
+          "s": "A",
+          "en": "Will it rain tomorrow?",
+          "tr": "Yarın yağmur yağacak mı?"
+        },
+        {
+          "s": "B",
+          "en": "I think it will be sunny.",
+          "tr": "Bence güneşli olacak."
+        }
+      ]
+    },
+    {
+      "id": "dlg:a1-restaurant",
+      "title": "Basit sipariş",
+      "icon": "🍕",
+      "cefr": "A1",
+      "topic": "yiyecek",
+      "summary": "Yemek söylemek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Are you ready to order?",
+          "tr": "Sipariş vermeye hazır mısınız?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, I want a pizza please.",
+          "tr": "Evet, bir pizza istiyorum lütfen."
+        },
+        {
+          "s": "A",
+          "en": "Small or large?",
+          "tr": "Küçük mü büyük mü?"
+        },
+        {
+          "s": "B",
+          "en": "A small one is enough.",
+          "tr": "Küçük olan yeter."
+        },
+        {
+          "s": "A",
+          "en": "Something to drink?",
+          "tr": "İçecek bir şey?"
+        },
+        {
+          "s": "B",
+          "en": "Just water, thank you.",
+          "tr": "Sadece su, teşekkürler."
+        }
+      ]
+    },
+    {
+      "id": "dlg:a1-colors",
+      "title": "Renkler ve eşyalar",
+      "icon": "🎨",
+      "cefr": "A1",
+      "topic": "günlük",
+      "summary": "Bir şeyi tarif etmek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Is this your bag?",
+          "tr": "Bu senin çantan mı?"
+        },
+        {
+          "s": "B",
+          "en": "No, my bag is blue.",
+          "tr": "Hayır, benim çantam mavi."
+        },
+        {
+          "s": "A",
+          "en": "What color is this one?",
+          "tr": "Bu ne renk?"
+        },
+        {
+          "s": "B",
+          "en": "It is black and very old.",
+          "tr": "Siyah ve çok eski."
+        },
+        {
+          "s": "A",
+          "en": "Whose bag is it?",
+          "tr": "Kimin çantası bu?"
+        },
+        {
+          "s": "B",
+          "en": "I think it is my brother's.",
+          "tr": "Sanırım erkek kardeşimin."
+        }
+      ]
+    },
+    {
+      "id": "dlg:a1-numbers",
+      "title": "Telefon numarası",
+      "icon": "🔢",
+      "cefr": "A1",
+      "topic": "sayılar",
+      "summary": "Numara ve adres vermek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "What is your phone number?",
+          "tr": "Telefon numaran nedir?"
+        },
+        {
+          "s": "B",
+          "en": "My number is five two one.",
+          "tr": "Numaram beş iki bir."
+        },
+        {
+          "s": "A",
+          "en": "And where do you live?",
+          "tr": "Peki nerede oturuyorsun?"
+        },
+        {
+          "s": "B",
+          "en": "I live near the big park.",
+          "tr": "Büyük parkın yanında oturuyorum."
+        },
+        {
+          "s": "A",
+          "en": "Is it far from here?",
+          "tr": "Buradan uzak mı?"
+        },
+        {
+          "s": "B",
+          "en": "No, it is very close.",
+          "tr": "Hayır, çok yakın."
         }
       ]
     },
@@ -147,7 +474,8 @@
           "en": "You're welcome. Have a good day!",
           "tr": "Rica ederim. İyi günler!"
         }
-      ]
+      ],
+      "topic": "seyahat"
     },
     {
       "id": "dlg:shopping",
@@ -196,7 +524,8 @@
           "en": "Great. Will you pay by card or in cash?",
           "tr": "Harika. Kartla mı nakit mi ödeyeceksiniz?"
         }
-      ]
+      ],
+      "topic": "alışveriş"
     },
     {
       "id": "dlg:restaurant",
@@ -245,7 +574,8 @@
           "en": "Certainly. Enjoy your meal.",
           "tr": "Tabii ki. Afiyet olsun."
         }
-      ]
+      ],
+      "topic": "yiyecek"
     },
     {
       "id": "dlg:phone",
@@ -289,7 +619,8 @@
           "en": "Thank you. We'll see you on Thursday.",
           "tr": "Teşekkürler. Perşembe görüşürüz."
         }
-      ]
+      ],
+      "topic": "iletişim"
     },
     {
       "id": "dlg:hotel",
@@ -337,6 +668,212 @@
           "s": "B",
           "en": "Before noon. Here is your key card.",
           "tr": "Öğleden önce. Buyurun anahtar kartınız."
+        }
+      ],
+      "topic": "seyahat"
+    },
+    {
+      "id": "dlg:a2-transport",
+      "title": "Otobüse binmek",
+      "icon": "🚌",
+      "cefr": "A2",
+      "topic": "ulaşım",
+      "summary": "Bilet ve durak sormak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Does this bus go to the centre?",
+          "tr": "Bu otobüs merkeze gidiyor mu?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, but you need a ticket.",
+          "tr": "Evet ama bilete ihtiyacın var."
+        },
+        {
+          "s": "A",
+          "en": "Where can I buy one?",
+          "tr": "Nereden alabilirim?"
+        },
+        {
+          "s": "B",
+          "en": "You can buy it from the driver.",
+          "tr": "Şoförden alabilirsin."
+        },
+        {
+          "s": "A",
+          "en": "How many stops is it?",
+          "tr": "Kaç durak?"
+        },
+        {
+          "s": "B",
+          "en": "About six stops, twenty minutes.",
+          "tr": "Yaklaşık altı durak, yirmi dakika."
+        }
+      ]
+    },
+    {
+      "id": "dlg:a2-invite",
+      "title": "Davet etmek",
+      "icon": "🎉",
+      "cefr": "A2",
+      "topic": "sohbet",
+      "summary": "Plan yapmak ve kabul etmek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Are you free on Saturday?",
+          "tr": "Cumartesi boş musun?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, I have no plans.",
+          "tr": "Evet, hiç planım yok."
+        },
+        {
+          "s": "A",
+          "en": "We are having dinner at eight.",
+          "tr": "Sekizde yemek yiyoruz."
+        },
+        {
+          "s": "B",
+          "en": "That sounds great, I would love to.",
+          "tr": "Kulağa harika geliyor, çok isterim."
+        },
+        {
+          "s": "A",
+          "en": "Should I pick you up?",
+          "tr": "Seni alayım mı?"
+        },
+        {
+          "s": "B",
+          "en": "No need, I will take a taxi.",
+          "tr": "Gerek yok, taksiyle gelirim."
+        }
+      ]
+    },
+    {
+      "id": "dlg:a2-directions2",
+      "title": "Kaybolmak",
+      "icon": "🗺️",
+      "cefr": "A2",
+      "topic": "seyahat",
+      "summary": "Yol tarifi almak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "You look lost. Can I help?",
+          "tr": "Kaybolmuş görünüyorsun. Yardım edeyim mi?"
+        },
+        {
+          "s": "B",
+          "en": "I am looking for the museum.",
+          "tr": "Müzeyi arıyorum."
+        },
+        {
+          "s": "A",
+          "en": "It is behind the old church.",
+          "tr": "Eski kilisenin arkasında."
+        },
+        {
+          "s": "B",
+          "en": "Can I walk there from here?",
+          "tr": "Buradan yürüyerek gidebilir miyim?"
+        },
+        {
+          "s": "A",
+          "en": "Yes, it takes ten minutes.",
+          "tr": "Evet, on dakika sürer."
+        },
+        {
+          "s": "B",
+          "en": "Thanks, you saved my day.",
+          "tr": "Sağ ol, günümü kurtardın."
+        }
+      ]
+    },
+    {
+      "id": "dlg:a2-routine",
+      "title": "Günlük rutin",
+      "icon": "⏰",
+      "cefr": "A2",
+      "topic": "günlük",
+      "summary": "Günün nasıl geçtiğini anlatmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "What time do you wake up?",
+          "tr": "Saat kaçta uyanıyorsun?"
+        },
+        {
+          "s": "B",
+          "en": "I usually get up at seven.",
+          "tr": "Genelde yedide kalkarım."
+        },
+        {
+          "s": "A",
+          "en": "Do you have breakfast at home?",
+          "tr": "Kahvaltıyı evde mi yaparsın?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, but I never eat much.",
+          "tr": "Evet ama asla çok yemem."
+        },
+        {
+          "s": "A",
+          "en": "When do you finish work?",
+          "tr": "İşin ne zaman biter?"
+        },
+        {
+          "s": "B",
+          "en": "I finish around six in the evening.",
+          "tr": "Akşam altı civarı biterim."
+        }
+      ]
+    },
+    {
+      "id": "dlg:a2-pharmacy",
+      "title": "Eczanede",
+      "icon": "💊",
+      "cefr": "A2",
+      "topic": "sağlık",
+      "summary": "İlaç istemek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Good afternoon. How can I help?",
+          "tr": "İyi günler. Nasıl yardımcı olabilirim?"
+        },
+        {
+          "s": "B",
+          "en": "I have a bad headache.",
+          "tr": "Kötü bir baş ağrım var."
+        },
+        {
+          "s": "A",
+          "en": "How long have you had it?",
+          "tr": "Ne zamandır var?"
+        },
+        {
+          "s": "B",
+          "en": "Since yesterday evening.",
+          "tr": "Dün akşamdan beri."
+        },
+        {
+          "s": "A",
+          "en": "Take these twice a day.",
+          "tr": "Bunları günde iki kez alın."
+        },
+        {
+          "s": "B",
+          "en": "Should I take them after meals?",
+          "tr": "Yemeklerden sonra mı almalıyım?"
+        },
+        {
+          "s": "A",
+          "en": "Yes, always after eating.",
+          "tr": "Evet, her zaman yemekten sonra."
         }
       ]
     },
@@ -392,7 +929,8 @@
           "en": "Twice a day, after meals, for one week.",
           "tr": "Günde iki kez, yemeklerden sonra, bir hafta boyunca."
         }
-      ]
+      ],
+      "topic": "sağlık"
     },
     {
       "id": "dlg:job",
@@ -441,7 +979,8 @@
           "en": "Yes, what does a typical week look like?",
           "tr": "Evet, tipik bir hafta nasıl geçiyor?"
         }
-      ]
+      ],
+      "topic": "iş"
     },
     {
       "id": "dlg:smalltalk",
@@ -484,6 +1023,322 @@
           "s": "A",
           "en": "Sounds great. Fingers crossed for you.",
           "tr": "Kulağa harika geliyor. Şansın açık olsun."
+        }
+      ],
+      "topic": "sohbet"
+    },
+    {
+      "id": "dlg:b1-hospital",
+      "title": "Hastanede kayıt",
+      "icon": "🏥",
+      "cefr": "B1",
+      "topic": "sağlık",
+      "summary": "Randevu ve şikayet anlatmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Do you have an appointment?",
+          "tr": "Randevunuz var mı?"
+        },
+        {
+          "s": "B",
+          "en": "No, but I need to see a doctor urgently.",
+          "tr": "Hayır ama acilen bir doktora görünmem gerekiyor."
+        },
+        {
+          "s": "A",
+          "en": "What exactly is the problem?",
+          "tr": "Sorun tam olarak nedir?"
+        },
+        {
+          "s": "B",
+          "en": "I have been feeling dizzy for two days.",
+          "tr": "İki gündür baş dönmesi yaşıyorum."
+        },
+        {
+          "s": "A",
+          "en": "Have you taken any medication?",
+          "tr": "Herhangi bir ilaç aldınız mı?"
+        },
+        {
+          "s": "B",
+          "en": "Only painkillers, but they did not help.",
+          "tr": "Sadece ağrı kesici ama işe yaramadı."
+        },
+        {
+          "s": "A",
+          "en": "Please wait, the doctor will call you.",
+          "tr": "Lütfen bekleyin, doktor sizi çağıracak."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b1-bank",
+      "title": "Bankada",
+      "icon": "🏦",
+      "cefr": "B1",
+      "topic": "para",
+      "summary": "Hesap açmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "How may I assist you today?",
+          "tr": "Bugün size nasıl yardımcı olabilirim?"
+        },
+        {
+          "s": "B",
+          "en": "I would like to open a savings account.",
+          "tr": "Bir tasarruf hesabı açmak istiyorum."
+        },
+        {
+          "s": "A",
+          "en": "Do you have your identity card with you?",
+          "tr": "Kimliğiniz yanınızda mı?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, here it is.",
+          "tr": "Evet, buyurun."
+        },
+        {
+          "s": "A",
+          "en": "Is there a monthly fee for this account?",
+          "tr": "Bu hesabın aylık ücreti var mı?"
+        },
+        {
+          "s": "B",
+          "en": "Could you explain the fees in detail?",
+          "tr": "Ücretleri ayrıntılı açıklayabilir misiniz?"
+        },
+        {
+          "s": "A",
+          "en": "Of course, there is no monthly charge.",
+          "tr": "Elbette, aylık ücret yok."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b1-rent",
+      "title": "Ev kiralamak",
+      "icon": "🔑",
+      "cefr": "B1",
+      "topic": "barınma",
+      "summary": "Daire görmek ve pazarlık",
+      "lines": [
+        {
+          "s": "A",
+          "en": "This is the living room.",
+          "tr": "Burası oturma odası."
+        },
+        {
+          "s": "B",
+          "en": "It is brighter than I expected.",
+          "tr": "Beklediğimden daha aydınlık."
+        },
+        {
+          "s": "A",
+          "en": "The rent is nine thousand a month.",
+          "tr": "Kira aylık dokuz bin."
+        },
+        {
+          "s": "B",
+          "en": "Are the bills included in that price?",
+          "tr": "Faturalar bu fiyata dahil mi?"
+        },
+        {
+          "s": "A",
+          "en": "No, you pay water and electricity.",
+          "tr": "Hayır, su ve elektriği siz ödüyorsunuz."
+        },
+        {
+          "s": "B",
+          "en": "Would you consider a lower price?",
+          "tr": "Daha düşük bir fiyatı değerlendirir misiniz?"
+        },
+        {
+          "s": "A",
+          "en": "I can discuss it with the owner.",
+          "tr": "Ev sahibiyle konuşabilirim."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b1-lost",
+      "title": "Kayıp eşya",
+      "icon": "🧳",
+      "cefr": "B1",
+      "topic": "seyahat",
+      "summary": "Bavul kaybını bildirmek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Which flight were you on?",
+          "tr": "Hangi uçuştaydınız?"
+        },
+        {
+          "s": "B",
+          "en": "I arrived from Berlin an hour ago.",
+          "tr": "Bir saat önce Berlin'den geldim."
+        },
+        {
+          "s": "A",
+          "en": "Can you describe your suitcase?",
+          "tr": "Bavulunuzu tarif edebilir misiniz?"
+        },
+        {
+          "s": "B",
+          "en": "It is a large grey one with wheels.",
+          "tr": "Tekerlekli, büyük gri bir bavul."
+        },
+        {
+          "s": "A",
+          "en": "Was there anything valuable inside?",
+          "tr": "İçinde değerli bir şey var mıydı?"
+        },
+        {
+          "s": "B",
+          "en": "Mostly clothes and some documents.",
+          "tr": "Çoğunlukla kıyafet ve birkaç belge."
+        },
+        {
+          "s": "A",
+          "en": "We will contact you as soon as possible.",
+          "tr": "En kısa sürede sizinle iletişime geçeceğiz."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b1-support",
+      "title": "Teknik destek",
+      "icon": "🛠️",
+      "cefr": "B1",
+      "topic": "teknoloji",
+      "summary": "Arıza bildirmek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Technical support, how can I help?",
+          "tr": "Teknik destek, nasıl yardımcı olabilirim?"
+        },
+        {
+          "s": "B",
+          "en": "My internet keeps disconnecting.",
+          "tr": "İnternetim sürekli kesiliyor."
+        },
+        {
+          "s": "A",
+          "en": "When did the problem start?",
+          "tr": "Sorun ne zaman başladı?"
+        },
+        {
+          "s": "B",
+          "en": "It started right after the storm.",
+          "tr": "Fırtınadan hemen sonra başladı."
+        },
+        {
+          "s": "A",
+          "en": "Have you restarted the router?",
+          "tr": "Modemi yeniden başlattınız mı?"
+        },
+        {
+          "s": "B",
+          "en": "I tried that several times already.",
+          "tr": "Bunu zaten birkaç kez denedim."
+        },
+        {
+          "s": "A",
+          "en": "Then we will send a technician.",
+          "tr": "O zaman bir teknisyen göndereceğiz."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b1-hobbies",
+      "title": "Hobiler üzerine",
+      "icon": "🎸",
+      "cefr": "B1",
+      "topic": "sohbet",
+      "summary": "İlgi alanlarını paylaşmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "What do you do in your free time?",
+          "tr": "Boş zamanında ne yaparsın?"
+        },
+        {
+          "s": "B",
+          "en": "I have been learning the guitar recently.",
+          "tr": "Son zamanlarda gitar öğreniyorum."
+        },
+        {
+          "s": "A",
+          "en": "How often do you practise?",
+          "tr": "Ne sıklıkla çalışıyorsun?"
+        },
+        {
+          "s": "B",
+          "en": "Almost every evening for an hour.",
+          "tr": "Neredeyse her akşam bir saat."
+        },
+        {
+          "s": "A",
+          "en": "Is it difficult to learn?",
+          "tr": "Öğrenmesi zor mu?"
+        },
+        {
+          "s": "B",
+          "en": "The beginning was harder than I thought.",
+          "tr": "Başlangıç düşündüğümden zordu."
+        },
+        {
+          "s": "A",
+          "en": "You should keep going then.",
+          "tr": "O zaman devam etmelisin."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b1-complaint",
+      "title": "Otelde şikayet",
+      "icon": "🛎️",
+      "cefr": "B1",
+      "topic": "seyahat",
+      "summary": "Sorun bildirmek ve çözüm istemek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Good evening. Is everything all right?",
+          "tr": "İyi akşamlar. Her şey yolunda mı?"
+        },
+        {
+          "s": "B",
+          "en": "Actually, the heating in my room is not working.",
+          "tr": "Aslında odamdaki ısıtma çalışmıyor."
+        },
+        {
+          "s": "A",
+          "en": "I am very sorry to hear that.",
+          "tr": "Bunu duyduğuma çok üzüldüm."
+        },
+        {
+          "s": "B",
+          "en": "I reported it this morning as well.",
+          "tr": "Bu sabah da bildirmiştim."
+        },
+        {
+          "s": "A",
+          "en": "Let me check what happened.",
+          "tr": "Ne olduğuna bir bakayım."
+        },
+        {
+          "s": "B",
+          "en": "I would rather change rooms if possible.",
+          "tr": "Mümkünse oda değiştirmeyi tercih ederim."
+        },
+        {
+          "s": "A",
+          "en": "Of course, I will arrange that immediately.",
+          "tr": "Elbette, hemen ayarlayacağım."
         }
       ]
     },
@@ -529,7 +1384,8 @@
           "en": "That's fine, as long as it goes back to my card.",
           "tr": "Kartıma geri döndüğü sürece sorun değil."
         }
-      ]
+      ],
+      "topic": "alışveriş"
     },
     {
       "id": "dlg:meeting",
@@ -572,6 +1428,1137 @@
           "s": "A",
           "en": "Let's put it to the team and decide by Friday.",
           "tr": "Ekibe soralım ve cumaya kadar karar verelim."
+        }
+      ],
+      "topic": "iş"
+    },
+    {
+      "id": "dlg:b2-meeting2",
+      "title": "Bütçe toplantısı",
+      "icon": "📊",
+      "cefr": "B2",
+      "topic": "iş",
+      "summary": "Rakamları savunmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "These costs seem far too high.",
+          "tr": "Bu maliyetler fazlasıyla yüksek görünüyor."
+        },
+        {
+          "s": "B",
+          "en": "They reflect the extra staff we hired.",
+          "tr": "İşe aldığımız ek personeli yansıtıyorlar."
+        },
+        {
+          "s": "A",
+          "en": "Could we reduce them next quarter?",
+          "tr": "Gelecek çeyrekte azaltabilir miyiz?"
+        },
+        {
+          "s": "B",
+          "en": "Only if we slow down the project.",
+          "tr": "Ancak projeyi yavaşlatırsak."
+        },
+        {
+          "s": "A",
+          "en": "That is not an option right now.",
+          "tr": "Bu şu an bir seçenek değil."
+        },
+        {
+          "s": "B",
+          "en": "Then the budget has to stay as it is.",
+          "tr": "O halde bütçe olduğu gibi kalmalı."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b2-negotiate",
+      "title": "Fiyat müzakeresi",
+      "icon": "🤝",
+      "cefr": "B2",
+      "topic": "iş",
+      "summary": "Anlaşmaya varmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Our final offer is quite firm.",
+          "tr": "Son teklifimiz oldukça kesin."
+        },
+        {
+          "s": "B",
+          "en": "I appreciate that, but it is below our limit.",
+          "tr": "Anlıyorum ama bu bizim sınırımızın altında."
+        },
+        {
+          "s": "A",
+          "en": "What figure did you have in mind?",
+          "tr": "Aklınızdaki rakam neydi?"
+        },
+        {
+          "s": "B",
+          "en": "We were hoping for ten percent more.",
+          "tr": "Yüzde on daha fazlasını umuyorduk."
+        },
+        {
+          "s": "A",
+          "en": "That would be difficult to justify.",
+          "tr": "Bunu gerekçelendirmek zor olurdu."
+        },
+        {
+          "s": "B",
+          "en": "Perhaps we could meet in the middle.",
+          "tr": "Belki ortada buluşabiliriz."
+        },
+        {
+          "s": "A",
+          "en": "Let me take that back to my team.",
+          "tr": "Bunu ekibime götüreyim."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b2-culture",
+      "title": "Kültür farkı",
+      "icon": "🌍",
+      "cefr": "B2",
+      "topic": "toplum",
+      "summary": "Alışkanlıkları karşılaştırmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Was the move difficult for you?",
+          "tr": "Taşınmak senin için zor oldu mu?"
+        },
+        {
+          "s": "B",
+          "en": "The language was easier than the customs.",
+          "tr": "Dil, geleneklerden daha kolaydı."
+        },
+        {
+          "s": "A",
+          "en": "What surprised you the most?",
+          "tr": "Seni en çok ne şaşırttı?"
+        },
+        {
+          "s": "B",
+          "en": "How early people have dinner here.",
+          "tr": "Buradakilerin akşam yemeğini ne kadar erken yemesi."
+        },
+        {
+          "s": "A",
+          "en": "Do you miss anything from home?",
+          "tr": "Memleketinden özlediğin bir şey var mı?"
+        },
+        {
+          "s": "B",
+          "en": "Mostly the way neighbours visit each other.",
+          "tr": "Çoğunlukla komşuların birbirini ziyaret edişini."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b2-insurance",
+      "title": "Sigorta işlemi",
+      "icon": "📋",
+      "cefr": "B2",
+      "topic": "resmi",
+      "summary": "Hasar bildirimi",
+      "lines": [
+        {
+          "s": "A",
+          "en": "When did the accident take place?",
+          "tr": "Kaza ne zaman gerçekleşti?"
+        },
+        {
+          "s": "B",
+          "en": "Last Tuesday, shortly after midday.",
+          "tr": "Geçen salı, öğleden hemen sonra."
+        },
+        {
+          "s": "A",
+          "en": "Was anyone injured?",
+          "tr": "Yaralanan oldu mu?"
+        },
+        {
+          "s": "B",
+          "en": "Fortunately nobody was hurt at all.",
+          "tr": "Neyse ki kimse yaralanmadı."
+        },
+        {
+          "s": "A",
+          "en": "Do you have a police report?",
+          "tr": "Polis raporunuz var mı?"
+        },
+        {
+          "s": "B",
+          "en": "Yes, I submitted it online yesterday.",
+          "tr": "Evet, dün internetten gönderdim."
+        },
+        {
+          "s": "A",
+          "en": "Then your claim will be processed shortly.",
+          "tr": "O halde talebiniz kısa sürede işleme alınacak."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b2-news",
+      "title": "Haber yorumu",
+      "icon": "📰",
+      "cefr": "B2",
+      "topic": "medya",
+      "summary": "Bir habere tepki vermek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Did you read about the new law?",
+          "tr": "Yeni yasayı okudun mu?"
+        },
+        {
+          "s": "B",
+          "en": "I did, though the coverage seemed biased.",
+          "tr": "Okudum, gerçi haberler taraflı görünüyordu."
+        },
+        {
+          "s": "A",
+          "en": "In what way exactly?",
+          "tr": "Tam olarak ne bakımdan?"
+        },
+        {
+          "s": "B",
+          "en": "They only quoted people who supported it.",
+          "tr": "Sadece destekleyenlerden alıntı yaptılar."
+        },
+        {
+          "s": "A",
+          "en": "That is a fair criticism.",
+          "tr": "Bu haklı bir eleştiri."
+        },
+        {
+          "s": "B",
+          "en": "A second source would have helped.",
+          "tr": "İkinci bir kaynak faydalı olurdu."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b2-career",
+      "title": "Kariyer planı",
+      "icon": "📈",
+      "cefr": "B2",
+      "topic": "iş",
+      "summary": "Gelecek hedeflerini anlatmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Where do you see yourself in five years?",
+          "tr": "Kendini beş yıl sonra nerede görüyorsun?"
+        },
+        {
+          "s": "B",
+          "en": "Leading a small team of my own.",
+          "tr": "Kendi küçük ekibimi yönetirken."
+        },
+        {
+          "s": "A",
+          "en": "What skills are you missing for that?",
+          "tr": "Bunun için hangi becerilerin eksik?"
+        },
+        {
+          "s": "B",
+          "en": "Mainly experience in managing conflict.",
+          "tr": "Esas olarak çatışma yönetimi deneyimi."
+        },
+        {
+          "s": "A",
+          "en": "How do you plan to gain it?",
+          "tr": "Bunu nasıl kazanmayı planlıyorsun?"
+        },
+        {
+          "s": "B",
+          "en": "By taking on more responsibility gradually.",
+          "tr": "Kademeli olarak daha fazla sorumluluk alarak."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b2-property",
+      "title": "Emlak görüşmesi",
+      "icon": "🏘️",
+      "cefr": "B2",
+      "topic": "barınma",
+      "summary": "Yatırım değerlendirmek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "The area is developing very quickly.",
+          "tr": "Bölge çok hızlı gelişiyor."
+        },
+        {
+          "s": "B",
+          "en": "That is exactly what worries me.",
+          "tr": "Beni endişelendiren tam da bu."
+        },
+        {
+          "s": "A",
+          "en": "Why would growth be a concern?",
+          "tr": "Büyüme neden endişe kaynağı olsun?"
+        },
+        {
+          "s": "B",
+          "en": "Prices may fall once the boom ends.",
+          "tr": "Patlama bitince fiyatlar düşebilir."
+        },
+        {
+          "s": "A",
+          "en": "Historically that has not happened here.",
+          "tr": "Tarihsel olarak burada böyle olmadı."
+        },
+        {
+          "s": "B",
+          "en": "Past performance guarantees nothing.",
+          "tr": "Geçmiş performans hiçbir şeyi garanti etmez."
+        }
+      ]
+    },
+    {
+      "id": "dlg:b2-presentation",
+      "title": "Sunum sonrası",
+      "icon": "🎤",
+      "cefr": "B2",
+      "topic": "iş",
+      "summary": "Soruları yanıtlamak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Your figures were impressive.",
+          "tr": "Rakamlarınız etkileyiciydi."
+        },
+        {
+          "s": "B",
+          "en": "Thank you, they took months to gather.",
+          "tr": "Teşekkürler, toplamak aylar aldı."
+        },
+        {
+          "s": "A",
+          "en": "How reliable is the sample size?",
+          "tr": "Örneklem büyüklüğü ne kadar güvenilir?"
+        },
+        {
+          "s": "B",
+          "en": "It covers roughly a third of our users.",
+          "tr": "Kullanıcılarımızın kabaca üçte birini kapsıyor."
+        },
+        {
+          "s": "A",
+          "en": "Would a larger sample change the result?",
+          "tr": "Daha büyük bir örneklem sonucu değiştirir miydi?"
+        },
+        {
+          "s": "B",
+          "en": "The trend would almost certainly remain.",
+          "tr": "Eğilim neredeyse kesinlikle aynı kalırdı."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c1-academic",
+      "title": "Akademik tartışma",
+      "icon": "🎓",
+      "cefr": "C1",
+      "topic": "akademik",
+      "summary": "Bir tezi savunmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Your conclusion rests on a narrow dataset.",
+          "tr": "Sonucunuz dar bir veri kümesine dayanıyor."
+        },
+        {
+          "s": "B",
+          "en": "Narrow, perhaps, but deliberately selected.",
+          "tr": "Dar olabilir ama bilinçli olarak seçilmiş."
+        },
+        {
+          "s": "A",
+          "en": "On what grounds did you exclude the rest?",
+          "tr": "Geri kalanını hangi gerekçeyle dışladınız?"
+        },
+        {
+          "s": "B",
+          "en": "The excluded cases lacked comparable measurements.",
+          "tr": "Dışlanan vakalarda karşılaştırılabilir ölçüm yoktu."
+        },
+        {
+          "s": "A",
+          "en": "That risks confirming what you expected.",
+          "tr": "Bu, beklediğinizi doğrulama riski taşıyor."
+        },
+        {
+          "s": "B",
+          "en": "I addressed that with a blind review stage.",
+          "tr": "Bunu kör inceleme aşamasıyla ele aldım."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c1-legal",
+      "title": "Hukuki danışma",
+      "icon": "⚖️",
+      "cefr": "C1",
+      "topic": "hukuk",
+      "summary": "Sözleşme maddesi tartışmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "This clause exposes you to liability.",
+          "tr": "Bu madde sizi sorumluluğa açık bırakıyor."
+        },
+        {
+          "s": "B",
+          "en": "Could we limit it to gross negligence?",
+          "tr": "Bunu ağır ihmalle sınırlayabilir miyiz?"
+        },
+        {
+          "s": "A",
+          "en": "The other party is unlikely to accept.",
+          "tr": "Karşı tarafın kabul etmesi olası değil."
+        },
+        {
+          "s": "B",
+          "en": "Then a cap on damages might work.",
+          "tr": "O halde tazminat üst sınırı işe yarayabilir."
+        },
+        {
+          "s": "A",
+          "en": "That is a more realistic position.",
+          "tr": "Bu daha gerçekçi bir pozisyon."
+        },
+        {
+          "s": "B",
+          "en": "Draft it and I will review the wording.",
+          "tr": "Taslağı hazırlayın, ifadeyi gözden geçireyim."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c1-environment",
+      "title": "Çevre politikası",
+      "icon": "🌱",
+      "cefr": "C1",
+      "topic": "çevre",
+      "summary": "Öncelikleri tartışmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Industry always claims the cost is unbearable.",
+          "tr": "Sanayi her zaman maliyetin katlanılmaz olduğunu iddia eder."
+        },
+        {
+          "s": "B",
+          "en": "Some of those claims are not unfounded.",
+          "tr": "Bu iddiaların bazıları temelsiz değil."
+        },
+        {
+          "s": "A",
+          "en": "Are you defending the polluters?",
+          "tr": "Kirletenleri mi savunuyorsunuz?"
+        },
+        {
+          "s": "B",
+          "en": "I am arguing for a realistic timetable.",
+          "tr": "Gerçekçi bir takvim için argüman sunuyorum."
+        },
+        {
+          "s": "A",
+          "en": "Delay has consequences of its own.",
+          "tr": "Gecikmenin de kendi sonuçları var."
+        },
+        {
+          "s": "B",
+          "en": "So does a policy nobody can follow.",
+          "tr": "Kimsenin uyamayacağı bir politikanın da öyle."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c1-ethics",
+      "title": "Teknoloji etiği",
+      "icon": "🤖",
+      "cefr": "C1",
+      "topic": "teknoloji",
+      "summary": "Veri kullanımını sorgulamak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Users consented to the terms.",
+          "tr": "Kullanıcılar şartları kabul etti."
+        },
+        {
+          "s": "B",
+          "en": "Consent buried in forty pages is questionable.",
+          "tr": "Kırk sayfaya gömülmüş rıza tartışmalıdır."
+        },
+        {
+          "s": "A",
+          "en": "That is the industry standard, though.",
+          "tr": "Yine de sektör standardı bu."
+        },
+        {
+          "s": "B",
+          "en": "A common practice is not automatically ethical.",
+          "tr": "Yaygın bir uygulama kendiliğinden etik olmaz."
+        },
+        {
+          "s": "A",
+          "en": "What would you propose instead?",
+          "tr": "Bunun yerine ne önerirsiniz?"
+        },
+        {
+          "s": "B",
+          "en": "Plain summaries and genuinely revocable permissions.",
+          "tr": "Sade özetler ve gerçekten geri alınabilir izinler."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c1-crisis",
+      "title": "Kriz yönetimi",
+      "icon": "🚨",
+      "cefr": "C1",
+      "topic": "iş",
+      "summary": "Açıklama stratejisi",
+      "lines": [
+        {
+          "s": "A",
+          "en": "The press will publish within hours.",
+          "tr": "Basın birkaç saat içinde yayımlayacak."
+        },
+        {
+          "s": "B",
+          "en": "Then we should speak before they do.",
+          "tr": "O halde onlardan önce konuşmalıyız."
+        },
+        {
+          "s": "A",
+          "en": "Admitting fault could invite lawsuits.",
+          "tr": "Hata kabul etmek davaları davet edebilir."
+        },
+        {
+          "s": "B",
+          "en": "Concealing it would cost us far more.",
+          "tr": "Gizlemek bize çok daha pahalıya patlar."
+        },
+        {
+          "s": "A",
+          "en": "Legal will resist that approach.",
+          "tr": "Hukuk bu yaklaşıma direnecektir."
+        },
+        {
+          "s": "B",
+          "en": "Then let them shape the wording, not the decision.",
+          "tr": "O halde kararı değil, ifadeyi onlar şekillendirsin."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c1-investment",
+      "title": "Yatırım görüşmesi",
+      "icon": "💰",
+      "cefr": "C1",
+      "topic": "para",
+      "summary": "Risk değerlendirmek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "The projected return looks remarkable.",
+          "tr": "Öngörülen getiri dikkat çekici görünüyor."
+        },
+        {
+          "s": "B",
+          "en": "Remarkable returns usually carry hidden risk.",
+          "tr": "Dikkat çekici getiriler genelde gizli risk taşır."
+        },
+        {
+          "s": "A",
+          "en": "Our model accounts for volatility.",
+          "tr": "Modelimiz oynaklığı hesaba katıyor."
+        },
+        {
+          "s": "B",
+          "en": "Models rarely anticipate structural shocks.",
+          "tr": "Modeller yapısal şokları nadiren öngörür."
+        },
+        {
+          "s": "A",
+          "en": "So you would advise against it?",
+          "tr": "Yani karşı mı tavsiye edersiniz?"
+        },
+        {
+          "s": "B",
+          "en": "I would advise a considerably smaller position.",
+          "tr": "Belirgin biçimde daha küçük bir pozisyon tavsiye ederim."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c1-media",
+      "title": "Medya eleştirisi",
+      "icon": "📺",
+      "cefr": "C1",
+      "topic": "medya",
+      "summary": "Bir yayını değerlendirmek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "The documentary was widely praised.",
+          "tr": "Belgesel geniş çapta övüldü."
+        },
+        {
+          "s": "B",
+          "en": "Praise and accuracy are not the same thing.",
+          "tr": "Övgü ve doğruluk aynı şey değil."
+        },
+        {
+          "s": "A",
+          "en": "You found it misleading?",
+          "tr": "Yanıltıcı mı buldunuz?"
+        },
+        {
+          "s": "B",
+          "en": "It omitted every inconvenient counterexample.",
+          "tr": "Rahatsız edici her karşı örneği atladı."
+        },
+        {
+          "s": "A",
+          "en": "Perhaps for the sake of a clear narrative.",
+          "tr": "Belki net bir anlatı uğruna."
+        },
+        {
+          "s": "B",
+          "en": "Clarity bought with omission is propaganda.",
+          "tr": "Eksiltmeyle satın alınan netlik propagandadır."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c1-philosophy",
+      "title": "Felsefi sohbet",
+      "icon": "💭",
+      "cefr": "C1",
+      "topic": "sohbet",
+      "summary": "Soyut bir fikri tartışmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Do you believe people genuinely change?",
+          "tr": "İnsanların gerçekten değiştiğine inanır mısınız?"
+        },
+        {
+          "s": "B",
+          "en": "Circumstances change; character bends slowly.",
+          "tr": "Koşullar değişir; karakter yavaş bükülür."
+        },
+        {
+          "s": "A",
+          "en": "That sounds rather pessimistic.",
+          "tr": "Bu oldukça karamsar geliyor."
+        },
+        {
+          "s": "B",
+          "en": "I would call it patient rather than pessimistic.",
+          "tr": "Ben buna karamsar değil, sabırlı derim."
+        },
+        {
+          "s": "A",
+          "en": "What would convince you otherwise?",
+          "tr": "Sizi aksine ne ikna ederdi?"
+        },
+        {
+          "s": "B",
+          "en": "Consistent behaviour over many difficult years.",
+          "tr": "Zorlu yıllar boyunca tutarlı davranış."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c1-politics",
+      "title": "Siyaset üzerine",
+      "icon": "🏛️",
+      "cefr": "C1",
+      "topic": "toplum",
+      "summary": "Bir politikayı sorgulamak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "The reform passed with a comfortable majority.",
+          "tr": "Reform rahat bir çoğunlukla geçti."
+        },
+        {
+          "s": "B",
+          "en": "A majority does not guarantee a good law.",
+          "tr": "Çoğunluk iyi bir yasayı garanti etmez."
+        },
+        {
+          "s": "A",
+          "en": "Should the minority simply be ignored?",
+          "tr": "Azınlık öylece göz ardı mı edilmeli?"
+        },
+        {
+          "s": "B",
+          "en": "On the contrary, that is precisely my point.",
+          "tr": "Aksine, demek istediğim tam olarak bu."
+        },
+        {
+          "s": "A",
+          "en": "Then how would you proceed?",
+          "tr": "O halde nasıl ilerlerdiniz?"
+        },
+        {
+          "s": "B",
+          "en": "With a longer consultation and clearer safeguards.",
+          "tr": "Daha uzun bir istişare ve daha net güvencelerle."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c1-interview",
+      "title": "Uzman röportajı",
+      "icon": "🎙️",
+      "cefr": "C1",
+      "topic": "medya",
+      "summary": "Zor soruları yanıtlamak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Critics say your findings were rushed.",
+          "tr": "Eleştirmenler bulgularınızın aceleye getirildiğini söylüyor."
+        },
+        {
+          "s": "B",
+          "en": "The timeline was short but the method was not compromised.",
+          "tr": "Takvim kısaydı ama yöntemden ödün verilmedi."
+        },
+        {
+          "s": "A",
+          "en": "Can you demonstrate that?",
+          "tr": "Bunu gösterebilir misiniz?"
+        },
+        {
+          "s": "B",
+          "en": "Every step is documented and independently reproducible.",
+          "tr": "Her adım belgelenmiş ve bağımsız olarak yinelenebilir."
+        },
+        {
+          "s": "A",
+          "en": "Has anyone reproduced it yet?",
+          "tr": "Henüz yineleyen oldu mu?"
+        },
+        {
+          "s": "B",
+          "en": "Two laboratories are working on it now.",
+          "tr": "Şu anda iki laboratuvar üzerinde çalışıyor."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c2-nuance",
+      "title": "İma ve nüans",
+      "icon": "🎭",
+      "cefr": "C2",
+      "topic": "sohbet",
+      "summary": "Söylenmeyeni anlamak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "He said the proposal was interesting.",
+          "tr": "Teklifin ilginç olduğunu söyledi."
+        },
+        {
+          "s": "B",
+          "en": "Coming from him, that is faint praise indeed.",
+          "tr": "Ondan gelince bu, ancak yarım ağız bir övgü olur."
+        },
+        {
+          "s": "A",
+          "en": "You read a great deal into one word.",
+          "tr": "Tek bir kelimeden çok şey çıkarıyorsunuz."
+        },
+        {
+          "s": "B",
+          "en": "With him the omissions carry the meaning.",
+          "tr": "Onda anlamı söylenmeyenler taşır."
+        },
+        {
+          "s": "A",
+          "en": "So he intends to reject it?",
+          "tr": "Yani reddetmeye mi niyetli?"
+        },
+        {
+          "s": "B",
+          "en": "He intends to let it quietly expire.",
+          "tr": "Sessizce sönmesine izin vermeye niyetli."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c2-diplomacy",
+      "title": "Diplomatik görüşme",
+      "icon": "🕊️",
+      "cefr": "C2",
+      "topic": "toplum",
+      "summary": "Uzlaşı aramak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Our position on this remains unchanged.",
+          "tr": "Bu konudaki tutumumuz değişmedi."
+        },
+        {
+          "s": "B",
+          "en": "Then perhaps we should reframe the question entirely.",
+          "tr": "O halde belki soruyu tümüyle yeniden çerçevelemeliyiz."
+        },
+        {
+          "s": "A",
+          "en": "Reframing rarely resolves substance.",
+          "tr": "Yeniden çerçeveleme esası nadiren çözer."
+        },
+        {
+          "s": "B",
+          "en": "It can, however, reveal where the substance actually lies.",
+          "tr": "Yine de esasın gerçekte nerede olduğunu açığa çıkarabilir."
+        },
+        {
+          "s": "A",
+          "en": "That is an elegant way of stalling.",
+          "tr": "Bu, oyalamanın zarif bir yolu."
+        },
+        {
+          "s": "B",
+          "en": "I would rather stall than sign something unworkable.",
+          "tr": "Uygulanamaz bir şeyi imzalamaktansa oyalanmayı yeğlerim."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c2-literature",
+      "title": "Edebiyat tartışması",
+      "icon": "📖",
+      "cefr": "C2",
+      "topic": "sanat",
+      "summary": "Bir romanı yorumlamak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "The ending struck me as unearned.",
+          "tr": "Son bana hak edilmemiş gibi geldi."
+        },
+        {
+          "s": "B",
+          "en": "Unearned, or deliberately withheld?",
+          "tr": "Hak edilmemiş mi, yoksa bilinçli olarak esirgenmiş mi?"
+        },
+        {
+          "s": "A",
+          "en": "Is there a meaningful difference?",
+          "tr": "Anlamlı bir fark var mı?"
+        },
+        {
+          "s": "B",
+          "en": "One is a failure of craft, the other a choice.",
+          "tr": "Biri zanaat kusuru, diğeri bir tercih."
+        },
+        {
+          "s": "A",
+          "en": "And which do you take it to be?",
+          "tr": "Peki siz hangisi sayıyorsunuz?"
+        },
+        {
+          "s": "B",
+          "en": "A choice, given how carefully everything else is built.",
+          "tr": "Bir tercih, geri kalanın ne kadar özenle kurulduğuna bakılırsa."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c2-science",
+      "title": "Bilimsel tartışma",
+      "icon": "🔬",
+      "cefr": "C2",
+      "topic": "bilim",
+      "summary": "Bir bulguyu sorgulamak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "The correlation is undeniably strong.",
+          "tr": "Korelasyon tartışmasız güçlü."
+        },
+        {
+          "s": "B",
+          "en": "Strength of correlation says nothing about direction.",
+          "tr": "Korelasyonun gücü yön hakkında hiçbir şey söylemez."
+        },
+        {
+          "s": "A",
+          "en": "We controlled for the obvious confounders.",
+          "tr": "Bariz karıştırıcıları kontrol ettik."
+        },
+        {
+          "s": "B",
+          "en": "The obvious ones are seldom the dangerous ones.",
+          "tr": "Bariz olanlar nadiren tehlikeli olanlardır."
+        },
+        {
+          "s": "A",
+          "en": "What would satisfy you?",
+          "tr": "Sizi ne tatmin ederdi?"
+        },
+        {
+          "s": "B",
+          "en": "A prospective study with a preregistered hypothesis.",
+          "tr": "Önceden kaydedilmiş hipotezle ileriye dönük bir çalışma."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c2-idioms",
+      "title": "Deyimlerle konuşmak",
+      "icon": "🗯️",
+      "cefr": "C2",
+      "topic": "sohbet",
+      "summary": "Günlük deyimleri kullanmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "They dropped the project overnight.",
+          "tr": "Projeyi bir gecede bıraktılar."
+        },
+        {
+          "s": "B",
+          "en": "I saw that coming a mile off.",
+          "tr": "Bunu çok uzaktan görmüştüm."
+        },
+        {
+          "s": "A",
+          "en": "Nobody else seemed to.",
+          "tr": "Başka kimse görmüşe benzemiyordu."
+        },
+        {
+          "s": "B",
+          "en": "They were clutching at straws from the start.",
+          "tr": "Başından beri çaresizce tutunacak dal arıyorlardı."
+        },
+        {
+          "s": "A",
+          "en": "Will they try again next year?",
+          "tr": "Gelecek yıl tekrar denerler mi?"
+        },
+        {
+          "s": "B",
+          "en": "Once bitten, twice shy, I would imagine.",
+          "tr": "Sanırım sütten ağzı yanan yoğurdu üfleyerek yer."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c2-satire",
+      "title": "İnce iğneleme",
+      "icon": "😏",
+      "cefr": "C2",
+      "topic": "sohbet",
+      "summary": "Kibarca eleştirmek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "He described the plan as ambitious.",
+          "tr": "Planı hırslı olarak nitelendirdi."
+        },
+        {
+          "s": "B",
+          "en": "Ambitious is what one calls a plan one expects to fail.",
+          "tr": "Hırslı, başarısız olmasını beklediğin plana verilen addır."
+        },
+        {
+          "s": "A",
+          "en": "That is unusually blunt of you.",
+          "tr": "Bu senden alışılmadık derecede açık sözlü."
+        },
+        {
+          "s": "B",
+          "en": "Only because tact has already been tried.",
+          "tr": "Yalnızca nezaket daha önce denendiği için."
+        },
+        {
+          "s": "A",
+          "en": "And what came of it?",
+          "tr": "Peki sonuç ne oldu?"
+        },
+        {
+          "s": "B",
+          "en": "Six months and a very expensive silence.",
+          "tr": "Altı ay ve çok pahalı bir sessizlik."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c2-ethics",
+      "title": "Etik ikilem",
+      "icon": "⚖️",
+      "cefr": "C2",
+      "topic": "felsefe",
+      "summary": "Zor bir kararı savunmak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "You knowingly withheld the information.",
+          "tr": "Bilgiyi bilerek sakladınız."
+        },
+        {
+          "s": "B",
+          "en": "I withheld it until it could be verified.",
+          "tr": "Doğrulanabilene kadar sakladım."
+        },
+        {
+          "s": "A",
+          "en": "Others might call that convenient timing.",
+          "tr": "Başkaları buna işine gelen zamanlama diyebilir."
+        },
+        {
+          "s": "B",
+          "en": "Premature disclosure would have harmed innocent people.",
+          "tr": "Erken açıklama masum insanlara zarar verirdi."
+        },
+        {
+          "s": "A",
+          "en": "Who granted you that judgement?",
+          "tr": "Bu yargıyı size kim verdi?"
+        },
+        {
+          "s": "B",
+          "en": "Nobody. That is precisely what made it difficult.",
+          "tr": "Kimse. Zor olan tam olarak buydu."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c2-rhetoric",
+      "title": "İkna ve retorik",
+      "icon": "🗣️",
+      "cefr": "C2",
+      "topic": "iş",
+      "summary": "Bir fikri kabul ettirmek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "The board will not accept another delay.",
+          "tr": "Yönetim kurulu bir gecikmeyi daha kabul etmez."
+        },
+        {
+          "s": "B",
+          "en": "Then let us not present it as a delay.",
+          "tr": "O halde bunu gecikme olarak sunmayalım."
+        },
+        {
+          "s": "A",
+          "en": "You want to disguise the truth?",
+          "tr": "Gerçeği gizlemek mi istiyorsunuz?"
+        },
+        {
+          "s": "B",
+          "en": "I want to describe it in terms they can act on.",
+          "tr": "Onu, harekete geçebilecekleri terimlerle anlatmak istiyorum."
+        },
+        {
+          "s": "A",
+          "en": "That is a fine line to walk.",
+          "tr": "Bu, ince bir çizgide yürümek demek."
+        },
+        {
+          "s": "B",
+          "en": "Every honest persuasion walks it.",
+          "tr": "Her dürüst ikna o çizgide yürür."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c2-defence",
+      "title": "Tez savunması",
+      "icon": "🎓",
+      "cefr": "C2",
+      "topic": "akademik",
+      "summary": "Yönteme yapılan itirazı karşılamak",
+      "lines": [
+        {
+          "s": "A",
+          "en": "Your framework borrows heavily from earlier work.",
+          "tr": "Çerçeveniz önceki çalışmalardan fazlasıyla ödünç alıyor."
+        },
+        {
+          "s": "B",
+          "en": "It builds on it, and says so explicitly.",
+          "tr": "Onun üzerine inşa ediyor ve bunu açıkça belirtiyor."
+        },
+        {
+          "s": "A",
+          "en": "Where then is the original contribution?",
+          "tr": "Peki özgün katkı nerede?"
+        },
+        {
+          "s": "B",
+          "en": "In applying it to a domain nobody had tested.",
+          "tr": "Kimsenin sınamadığı bir alana uygulamakta."
+        },
+        {
+          "s": "A",
+          "en": "Some would consider that incremental.",
+          "tr": "Kimileri bunu kademeli sayardı."
+        },
+        {
+          "s": "B",
+          "en": "Most durable knowledge is built incrementally.",
+          "tr": "En kalıcı bilgi kademeli olarak kurulur."
+        }
+      ]
+    },
+    {
+      "id": "dlg:c2-misunderstanding",
+      "title": "Yanlış anlaşılma",
+      "icon": "🌀",
+      "cefr": "C2",
+      "topic": "sohbet",
+      "summary": "Bir gerilimi çözmek",
+      "lines": [
+        {
+          "s": "A",
+          "en": "I felt you dismissed me in front of everyone.",
+          "tr": "Herkesin önünde beni önemsemediğini hissettim."
+        },
+        {
+          "s": "B",
+          "en": "That was never my intention, and I regret how it landed.",
+          "tr": "Bu asla niyetim değildi ve nasıl algılandığına üzülüyorum."
+        },
+        {
+          "s": "A",
+          "en": "Intention does not undo the effect.",
+          "tr": "Niyet etkiyi ortadan kaldırmaz."
+        },
+        {
+          "s": "B",
+          "en": "You are right, and I should have corrected it immediately.",
+          "tr": "Haklısın ve bunu hemen düzeltmeliydim."
+        },
+        {
+          "s": "A",
+          "en": "What will be different next time?",
+          "tr": "Bir dahakine ne farklı olacak?"
+        },
+        {
+          "s": "B",
+          "en": "I will raise disagreements privately, not in the room.",
+          "tr": "İtirazlarımı odada değil, özel olarak dile getireceğim."
         }
       ]
     }

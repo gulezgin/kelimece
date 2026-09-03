@@ -127,3 +127,37 @@ describe('wordsInLine', () => {
 		expect(wordsInLine(null, index)).toEqual([]);
 	});
 });
+
+describe('rol yapma için içerik sözleşmesi', () => {
+	const SEVIYELER = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
+	it('her seviyede 10 diyalog var', () => {
+		const sayim = {};
+		for (const d of PACK.dialogues) sayim[d.cefr] = (sayim[d.cefr] || 0) + 1;
+		for (const s of SEVIYELER) expect(sayim[s], s).toBe(10);
+	});
+
+	it('her diyalog A ile başlar', () => {
+		// Kullanici B'yi oynuyor: A ile baslamayan diyalogda kullanici
+		// cevap verecegi replikten once konusmus olurdu.
+		for (const d of PACK.dialogues) {
+			expect(d.lines[0].s, d.id).toBe('A');
+		}
+	});
+
+	it('her diyalogda en az 3 kullanıcı repliği var', () => {
+		// Alistirma tipleri uclu donuyor; 3'ten az replikte kullanici
+		// uc turden bazilarini hic gormez.
+		for (const d of PACK.dialogues) {
+			const b = d.lines.filter((l) => l.s === 'B').length;
+			expect(b, d.id).toBeGreaterThanOrEqual(3);
+		}
+	});
+
+	it('konu etiketi var', () => {
+		for (const d of PACK.dialogues) {
+			expect(typeof d.topic, d.id).toBe('string');
+			expect(d.topic.length, d.id).toBeGreaterThan(0);
+		}
+	});
+});

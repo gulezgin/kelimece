@@ -11,6 +11,7 @@ import { levelsUpTo } from './core/placement.js';
 import { renderTopicChip, renderTopics } from './ui/topics.js';
 import { findDialogue, loadDialogues } from './core/dialogues.js';
 import { renderDialogue, renderDialogueList } from './ui/dialogues.js';
+import { startPractice, stopPractice } from './ui/dialoguePractice.js';
 import { buildReviewQueue, countQueue, MAX_LEVEL } from './core/srs.js';
 import { isDue } from './core/time.js';
 import * as store from './data/store.js';
@@ -58,6 +59,8 @@ function wordsAtLevel() {
 /** Yuklenen diyaloglar ve acik olanin kimligi. */
 let dialogues = [];
 let openDialogueId = null;
+/** Rol yapma acikken diyalog kimligi; null = okuma gorunumu. */
+let practiceDialogueId = null;
 
 /**
  * Diyalogda kelimeye dokunulabilmesi icin havuz dizini.
@@ -176,6 +179,8 @@ function render() {
 	}
 
 	if (activeSection === 'dialogues') {
+		// Rol yapma kendi cizimini yonetiyor; render onu ezmemeli.
+		if (practiceDialogueId) return;
 		const open = openDialogueId ? findDialogue(dialogues, openDialogueId) : null;
 		if (open) {
 			renderDialogue(open, dialogueHandlers, getWordIndex());
@@ -304,6 +309,20 @@ const dialogueHandlers = {
 		render();
 	},
 	onLocked: () => openPaywall(),
+	onPractice: (id) => {
+		const d = findDialogue(dialogues, id);
+		if (!d) return;
+		practiceDialogueId = id;
+		window.scrollTo(0, 0);
+		startPractice(d, dialogues, {
+			onExit: () => {
+				stopPractice();
+				practiceDialogueId = null;
+				window.scrollTo(0, 0);
+				render();
+			}
+		});
+	},
 	/** Diyalogda kelimeye dokunmak anlamini gosteriyor. */
 	onWord: (word) => {
 		const parts = [word.tr];
@@ -691,6 +710,15 @@ function wireEvents() {
 
 /** Ana bölümler arasında geçiş. */
 function showSection(section) {
+	// Sekmeye basmak rol yapmadan cikar.
+	//
+	// Cikmazsa render() "rol yapma kendi cizimini yonetiyor" diye erken
+	// donuyor ve gidilen ekran BOS kaliyordu - kullanici uygulamayi
+	// kirilmis saniyor.
+	if (practiceDialogueId) {
+		stopPractice();
+		practiceDialogueId = null;
+	}
 	activeSection = section;
 	// Ucuncu sutun: hangi sekmenin yanacagi. Istatistigin kendi sekmesi
 	// yok - ana ekrandan aciliyor ve acikken "Ana" sekmesi yanik kaliyor,

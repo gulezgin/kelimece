@@ -80,6 +80,14 @@ export function renderDialogue(dialogue, handlers, wordIndex) {
 		el('div', { class: 'small', text: dialogue.summary || '' })
 	]));
 
+	// Rol yapma: okumak konusmayi ogretmiyor, uretmek ogretiyor.
+	const roleBtn = el('button', {
+		class: 'primary dlgRoleBtn',
+		text: '🎭 Bu diyalogu konus'
+	});
+	roleBtn.onclick = () => handlers.onPractice(dialogue.id);
+	host.appendChild(roleBtn);
+
 	const canSpeak = hasEnglishVoice();
 	const list = el('div', { class: 'dlgLineList' });
 
