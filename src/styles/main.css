@@ -135,9 +135,6 @@ footer {
 	button {
 		font-size: 16px;
 	}
-	.klist {
-		grid-template-columns: 1fr;
-	}
 	.grid2 {
 		grid-template-columns: 1fr;
 	}
@@ -324,10 +321,23 @@ button:disabled {
 /* ==============================================
    WORDS LIST - CARDS VIEW
    ============================================== */
+/*
+ * Sutun sayisi genislige gore kendi ayarlaniyor; sabit sutun ve medya
+ * sorgusu YOK.
+ *
+ * Onceki hali `repeat(3, 1fr)` idi ve mobil icin bir medya sorgusunda
+ * `1fr` ile eziliyordu - ama o kural dosyada DAHA ONCE geldigi icin
+ * temel kural kazaniyordu. Sonuc: 375px ekranda 3 sutun, her kart
+ * 100px genisliginde ve 847px yuksekliginde bir serit oluyordu.
+ *
+ * min(260px, 100%): kap 260px'ten darsa sutun kabi tasmasin.
+ * 260px, kartin icerigi (kelime + rozetler + ornek cumle + dugmeler)
+ * sarmalanmadan sigdigi en dar olcu.
+ */
 .klist {
 	display: grid;
 	gap: 10px;
-	grid-template-columns: repeat(3, 1fr);
+	grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
 }
 
 .item {
