@@ -18,7 +18,8 @@ import * as store from './data/store.js';
 import * as notifications from './platform/notifications.js';
 import { setupNative } from './platform/native.js';
 import { renderDashboard } from './ui/dashboard.js';
-import { alertDialog, choiceDialog, confirmDialog, toast } from './ui/dialog.js';
+import { alertDialog, choiceDialog, confirmDialog, formDialog, toast } from './ui/dialog.js';
+import { hasAccount, initials, localId, NO_ACCOUNT, normalizeAccount } from './core/account.js';
 import { $, debounce, el } from './ui/dom.js';
 import * as billing from './platform/billing.js';
 import * as paywall from './ui/paywall.js';
@@ -158,7 +159,7 @@ function render() {
 	$('upgradeRow').classList.toggle('hidden', locked.size === 0);
 
 	if (activeSection === 'settings') {
-		renderPremiumCard();
+		renderProfileCard();
 		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
 		return;
 	}
@@ -264,37 +265,79 @@ const dashboardHandlers = {
 };
 
 /**
- * Ayarlar ekranindaki abonelik karti.
- * Kilitli icerik varsa satis, yoksa tesekkur gosterir.
+ * Ayarlar ekranindaki profil karti.
+ *
+ * Bu bir HESAP DEGIL: sunucu yok, bilgiler cihazda duruyor. Kart bunu
+ * acikca yaziyor - kullanicinin verisinin bulutta durdugunu sanmasi,
+ * telefonunu kaybettiginde ilerlemesini kaybetmesi demek.
  */
-function renderPremiumCard() {
-	const host = $('premiumCard');
+function renderProfileCard() {
+	const host = $('profileCard');
 	if (!host) return;
 	host.textContent = '';
 
-	const premium = store.state.profile.premium;
-	const locked = lockedLevels(premium);
+	const account = store.state.profile.account || NO_ACCOUNT;
+	const kurulu = hasAccount(account);
 
-	if (!locked.length) {
-		host.appendChild(el('div', { class: 'premiumOn' }, [
-			el('span', { class: 'premiumIcon', text: '⭐' }),
-			el('div', {}, [
-				el('div', { class: 'premiumTitle', text: 'Tüm seviyeler açık' }),
-				el('div', { class: 'small', text: 'Aboneliğin etkin. İyi çalışmalar.' })
-			])
-		]));
-		return;
-	}
+	const avatar = el('div', { class: 'avatar', text: kurulu ? initials(account) : '?' });
 
-	const btn = el('button', { class: 'premiumBanner' }, [
-		el('div', {}, [
-			el('div', { class: 'premiumTitle', text: 'Premium özelliğin kilidini aç' }),
-			el('div', { class: 'premiumSub', text: locked.join(', ') + ' seviyeleri ve diyaloglar' })
-		]),
-		el('span', { class: 'premiumStar', text: '⭐' })
+	const duzenle = el('button', {
+		class: 'iconBtn profileEdit',
+		text: kurulu ? '✏️' : '＋'
+	});
+	duzenle.setAttribute('aria-label', kurulu ? 'Profili düzenle' : 'Profil oluştur');
+	duzenle.onclick = () => editProfile();
+
+	const bilgi = el('div', { class: 'profileInfo' }, [
+		el('div', { class: 'profileName', text: kurulu ? account.name : 'Profil oluştur' }),
+		el('div', {
+			class: 'profileSub',
+			text: kurulu ? account.email : 'Adını ve e-postanı ekle'
+		}),
+		kurulu ? el('span', { class: 'profileId', text: 'ID ' + localId(account) }) : null
 	]);
-	btn.onclick = () => openPaywall();
-	host.appendChild(btn);
+
+	const kart = el('div', { class: 'profileCard' }, [avatar, bilgi, duzenle]);
+	kart.onclick = (e) => {
+		if (e.target === duzenle) return;
+		editProfile();
+	};
+	host.appendChild(kart);
+
+	host.appendChild(el('div', {
+		class: 'small profileNote',
+		text: 'Bu profil yalnızca bu cihazda saklanır. Uygulamanın sunucusu yok, ' +
+			'bu yüzden başka bir cihazdan giriş yapılamaz.'
+	}));
+}
+
+/** Profil oluşturma / düzenleme akışı. */
+async function editProfile() {
+	const mevcut = store.state.profile.account || NO_ACCOUNT;
+	const values = await formDialog({
+		title: hasAccount(mevcut) ? 'Profili düzenle' : 'Profil oluştur',
+		message: 'Bu bilgiler yalnızca cihazında saklanır.',
+		fields: [
+			{ name: 'name', label: 'Ad', value: mevcut.name, placeholder: 'Adın', maxLength: 40 },
+			{ name: 'email', label: 'E-posta', type: 'email', value: mevcut.email,
+				placeholder: 'ornek@eposta.com' }
+		],
+		submitText: 'Kaydet',
+		validate: (v) => {
+			const r = normalizeAccount(v);
+			if (r.ok) return null;
+			if (r.reason === 'name') return 'Ad boş olamaz.';
+			if (r.reason === 'name-long') return 'Ad en fazla 40 karakter olabilir.';
+			return 'E-posta adresi geçerli görünmüyor.';
+		}
+	});
+	if (!values) return;
+
+	const r = normalizeAccount(values);
+	if (!r.ok) return;
+	await store.saveAccount(r.account);
+	toast('Profil kaydedildi.');
+	render();
 }
 
 const dialogueHandlers = {

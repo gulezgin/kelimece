@@ -171,3 +171,88 @@ export function toast(message, type = 'ok') {
 	setTimeout(() => node.classList.add('toast--out'), 2600);
 	setTimeout(() => node.remove(), 3000);
 }
+
+/**
+ * Metin alanlı diyalog. Kaydedince alan değerlerini, iptal edince
+ * null döner.
+ *
+ * Doğrulama çağırana bırakılıyor (`validate`): geçerlilik kuralı
+ * alanın kendisine değil kullanıldığı yere ait — aynı e-posta alanı
+ * başka bir yerde isteğe bağlı olabilir.
+ *
+ * @param {{title?: string, message?: string, fields: object[],
+ *   submitText?: string, cancelText?: string,
+ *   validate?: (values: object) => string|null}} options
+ * @returns {Promise<object|null>}
+ */
+export function formDialog({
+	title = '',
+	message = '',
+	fields = [],
+	submitText = 'Kaydet',
+	cancelText = 'Vazgeç',
+	validate = null
+} = {}) {
+	return new Promise((resolve) => {
+		const inputs = {};
+		const body = el('div', { class: 'dialogForm' });
+
+		for (const f of fields) {
+			const input = el('input', {
+				class: 'input',
+				attrs: {
+					type: f.type || 'text',
+					value: f.value || '',
+					placeholder: f.placeholder || '',
+					autocomplete: f.autocomplete || 'off',
+					autocapitalize: f.type === 'email' ? 'off' : 'sentences',
+					autocorrect: 'off',
+					spellcheck: 'false',
+					maxlength: String(f.maxLength || 80)
+				}
+			});
+			inputs[f.name] = input;
+			body.appendChild(el('label', { class: 'dialogField' }, [
+				el('span', { class: 'dialogFieldLabel', text: f.label }),
+				input
+			]));
+		}
+
+		const hata = el('div', { class: 'dialogError hidden' });
+		body.appendChild(hata);
+
+		const cancelBtn = el('button', { class: 'ghost', text: cancelText });
+		const submitBtn = el('button', { class: 'primary', text: submitText });
+
+		const overlay = buildOverlay({ title, message, buttons: [cancelBtn, submitBtn] });
+		// Mesaj ile dugmeler arasina alanlari yerlestir
+		overlay.querySelector('.dialogActions').before(body);
+
+		const close = present(overlay, resolve, null);
+		cancelBtn.onclick = () => close(null);
+
+		const submit = () => {
+			const values = {};
+			for (const name of Object.keys(inputs)) values[name] = inputs[name].value;
+			const mesaj = validate ? validate(values) : null;
+			if (mesaj) {
+				hata.textContent = mesaj;
+				hata.classList.remove('hidden');
+				return;
+			}
+			close(values);
+		};
+		submitBtn.onclick = submit;
+		for (const name of Object.keys(inputs)) {
+			inputs[name].addEventListener('keydown', (e) => {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					submit();
+				}
+			});
+		}
+
+		const ilk = fields[0] && inputs[fields[0].name];
+		if (ilk) setTimeout(() => ilk.focus(), 30);
+	});
+}

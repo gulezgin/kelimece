@@ -9,6 +9,7 @@
  * Filtreleme ve sıralama bellekte yapılır — 10 bin kelimede bile birkaç MB,
  * bu yüzden IndexedDB'de indeksli sorguya gerek yok.
  */
+import { NO_ACCOUNT } from '../core/account.js';
 import { accessibleWords, grantPremium, isPremiumActive, NO_PREMIUM } from '../core/entitlements.js';
 import { applyRating } from '../core/scheduler.js';
 import { applyResult, MAX_LEVEL, scheduleNext } from '../core/srs.js';
@@ -58,7 +59,12 @@ export const DEFAULT_PROFILE = {
 	/** Günlük hatırlatma. Varsayılan kapalı — izin istemeden açılmaz. */
 	reminder: { enabled: false, hour: 20, minute: 0 },
 	/** Abonelik durumu. Satın alma yapılana kadar pasif. */
-	premium: { ...NO_PREMIUM }
+	premium: { ...NO_PREMIUM },
+	/**
+	 * Yerel profil (ad, e-posta). Sunucu yok — bu bilgiler cihazda
+	 * kalır ve yedek görevi görmez.
+	 */
+	account: { ...NO_ACCOUNT }
 };
 
 /** @type {{words: object[], settings: object, profile: object, ready: boolean, packs: object}} */
@@ -194,7 +200,8 @@ export async function init({ packUrl } = {}) {
 			...savedProfile,
 			// İç içe nesneler yüzeysel birleştirmede kaybolur
 			reminder: { ...DEFAULT_PROFILE.reminder, ...(savedProfile.reminder || {}) },
-			premium: { ...NO_PREMIUM, ...(savedProfile.premium || {}) }
+			premium: { ...NO_PREMIUM, ...(savedProfile.premium || {}) },
+			account: { ...NO_ACCOUNT, ...(savedProfile.account || {}) }
 		};
 		refreshStreak();
 		state.settings = { ...DEFAULT_SETTINGS, ...((await getMeta('settings')) || {}) };
@@ -399,7 +406,11 @@ export async function wipeAll() {
 	state.words = [];
 	byId.clear();
 	state.settings = { ...DEFAULT_SETTINGS, today: todayISO() };
-	state.profile = { ...DEFAULT_PROFILE, premium: { ...NO_PREMIUM } };
+	state.profile = {
+		...DEFAULT_PROFILE,
+		premium: { ...NO_PREMIUM },
+		account: { ...NO_ACCOUNT }
+	};
 	state.packs = {};
 	emit();
 	try {
@@ -556,6 +567,30 @@ function refreshStreak() {
 export async function savePlacement(result) {
 	state.profile.level = result.level;
 	state.profile.placedAt = new Date().toISOString();
+	emit();
+	await persistProfile();
+}
+
+/**
+ * Yerel profili kaydeder.
+ * createdAt yalnizca ilk kayitta yaziliyor: goruntu kimligi ondan
+ * turetiliyor ve her duzenlemede degismemeli.
+ */
+export async function saveAccount(account) {
+	const onceki = state.profile.account || NO_ACCOUNT;
+	state.profile.account = {
+		...onceki,
+		...account,
+		createdAt: onceki.createdAt || new Date().toISOString()
+	};
+	emit();
+	await persistProfile();
+	return state.profile.account;
+}
+
+/** Yerel profili siler. */
+export async function clearAccount() {
+	state.profile.account = { ...NO_ACCOUNT };
 	emit();
 	await persistProfile();
 }

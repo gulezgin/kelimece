@@ -2537,51 +2537,12 @@ body {
 }
 
 /* ==============================================
-   AYARLAR: ABONELİK KARTI
+   AYARLAR: PROFİL KARTI
    ============================================== */
 .settingsCard {
 	margin-bottom: 16px;
 }
 
-button.premiumBanner {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 12px;
-	width: 100%;
-	padding: 16px 18px;
-	text-align: left;
-	border: 0;
-	border-radius: 16px;
-	background: linear-gradient(110deg, #6f5cff 0%, #4aa8ff 55%, #3ddc97 100%);
-	color: #08111f;
-	cursor: pointer;
-}
-
-.premiumTitle {
-	font-size: 15px;
-	font-weight: 800;
-}
-
-.premiumSub {
-	font-size: 12px;
-	opacity: 0.8;
-	margin-top: 2px;
-}
-
-.premiumStar { font-size: 30px; }
-
-.premiumOn {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	padding: 14px 16px;
-	border-radius: 16px;
-	background: var(--panel);
-	border: 1px solid #2a3a55;
-}
-
-.premiumIcon { font-size: 24px; }
 
 /* ==============================================
    DİYALOG ROL YAPMA
@@ -2733,4 +2694,103 @@ input.blankInput {
 .dlgHead > button {
 	width: auto;
 	flex: none;
+}
+
+/* ==============================================
+   PROFİL KARTI
+   ============================================== */
+.profileCard {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 14px;
+	padding: 16px;
+	border-radius: 16px;
+	background: var(--panel);
+	border: 1px solid #2a3a55;
+	cursor: pointer;
+}
+
+.profileCard:hover {
+	border-color: var(--acc);
+}
+
+.avatar {
+	width: 52px;
+	height: 52px;
+	display: grid;
+	place-items: center;
+	border-radius: 50%;
+	font-size: 19px;
+	font-weight: 800;
+	color: #08111f;
+	background: linear-gradient(135deg, #6ad2ff, #3ddc97);
+}
+
+.profileInfo {
+	min-width: 0;
+}
+
+.profileName {
+	font-size: 16px;
+	font-weight: 700;
+	/* Uzun adlar karti bozmasin */
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.profileSub {
+	color: var(--muted);
+	font-size: 13px;
+	margin-top: 2px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.profileId {
+	display: inline-block;
+	margin-top: 6px;
+	padding: 2px 8px;
+	border-radius: 6px;
+	background: #1b2438;
+	color: var(--muted);
+	font-size: 11px;
+	letter-spacing: 0.4px;
+}
+
+button.profileEdit {
+	width: auto;
+	min-height: 0;
+	font-size: 17px;
+}
+
+.profileNote {
+	margin-top: 10px;
+	line-height: 1.6;
+}
+
+/* Diyalog içi form alanları */
+.dialogForm {
+	display: grid;
+	gap: 12px;
+	margin: 14px 0 4px;
+}
+
+.dialogField {
+	display: grid;
+	gap: 5px;
+}
+
+.dialogFieldLabel {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--muted);
+}
+
+.dialogError {
+	color: var(--bad);
+	font-size: 13px;
+	font-weight: 600;
 }
