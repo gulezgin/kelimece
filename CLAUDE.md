@@ -177,8 +177,41 @@ seviyede en az bir diyalog var mı) denetler.
   yüklenmeden boyanabilsin ve yerel açılış ekranıyla arasında geçiş
   görünmesin diye. `main.js` veri hazır olunca kaldırır.
 
+## Bulut eşitleme (Firebase)
+
+İstemci tarafı hazır ama **yapılandırma boş**:
+`src/platform/firebase-config.js`. Doldurulana kadar uygulama tamamen
+yerel çalışır, Ayarlar'daki bulut bölümü görünmez ve Firebase SDK'sı
+pakete girmez (dinamik import; Rollup boş yapılandırmayı statik olarak
+çözüp import'u eliyor). Kurulum adımları `FIREBASE.md`.
+
+**Birleştirme "son yazan kazanır" DEĞİL.** İki cihazda çalışan bir
+kullanıcının ilerlemesi yanlış birleştirilirse tekrar takvimi sessizce
+bozulur ve bu ancak geri dönüşü olmayan bir noktada fark edilir. Kural
+tek yönlü bir gerçeğe dayanıyor: çalışma geri alınamaz — daha çok
+çalışılmış kayıt kazanır, ne zaman yazıldığından bağımsız olarak.
+`src/core/sync.js` saf ve ağdan bağımsız; değiştirmeden önce
+`test/sync.test.js`'i oku.
+
+Yalnızca **ilerlemesi olan** kayıtlar gönderilir (`isWorthSyncing`).
+Paket 5276 kayıt kuruyor; hepsini göndermek kullanıcı başına ~1 MB
+demek ve bilgi taşımıyor.
+
+## Yerel profil vs hesap
+
+İki ayrı şey ve karıştırılmamalı:
+
+- `src/core/account.js` — **yerel profil** (ad, e-posta). Cihazda durur,
+  sunucuya gitmez, yedek görevi görmez.
+- `src/platform/cloud.js` — **gerçek hesap** (Firebase). Yapılandırma
+  varsa çalışır.
+
+Arayüz yerel profilin yedek olmadığını açıkça yazıyor; bunu gizlemek
+kullanıcının verisinin bulutta durduğunu sanmasına yol açar.
+
 ## İlgili belgeler
 
+- `FIREBASE.md` — Firebase kurulumu, güvenlik kuralları, Play yükümlülükleri
 - `ANDROID.md` — Android projesi, imzalama, Play Console, sorun giderme
 - `store-listing.md`, `privacy-policy.md` — mağaza yayını için hazır metinler
 - `README.md` — kullanıcıya dönük tanıtım (bazı bölümleri 1.0 dönemine ait

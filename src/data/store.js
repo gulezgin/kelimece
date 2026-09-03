@@ -10,6 +10,7 @@
  * bu yüzden IndexedDB'de indeksli sorguya gerek yok.
  */
 import { NO_ACCOUNT } from '../core/account.js';
+import { isWorthSyncing } from '../core/sync.js';
 import { accessibleWords, grantPremium, isPremiumActive, NO_PREMIUM } from '../core/entitlements.js';
 import { applyRating } from '../core/scheduler.js';
 import { applyResult, MAX_LEVEL, scheduleNext } from '../core/srs.js';
@@ -532,6 +533,68 @@ export async function applyRepair(mode) {
 		reportError(e, 'ilerleme onarımı');
 	}
 	return { changed };
+}
+
+// ===================== Bulut eşitleme =====================
+
+/**
+ * Buluta gönderilecek ilerleme kayıtları.
+ * Dokunulmamış kayıtlar elenir: paket 5276 kayıt kuruyor ve hepsini
+ * göndermek kullanıcı başına ~1 MB demek, üstelik bilgi taşımıyor.
+ */
+export function progressForSync() {
+	return state.words.map(toProgress).filter(isWorthSyncing);
+}
+
+/**
+ * Buluttan gelen ilerlemeyi yerele uygular.
+ *
+ * Yalnızca ilerleme alanları yazılır; tanım (anlam, örnek cümle,
+ * seviye) içerik paketine ait ve bulutta tutulmuyor.
+ */
+export async function applySyncedProgress(records) {
+	const updates = [];
+	for (const r of records || []) {
+		if (!r || !r.wordId) continue;
+		const mevcut = byId.get(r.wordId);
+		if (!mevcut) continue;
+		const birlesik = {
+			...mevcut,
+			level: r.level,
+			nextReviewAt: r.nextReviewAt,
+			history: r.history,
+			learnedManually: !!r.learnedManually,
+			ease: r.ease,
+			interval: r.interval,
+			reps: r.reps,
+			lapses: r.lapses
+		};
+		replaceInMemory(birlesik);
+		updates.push(toProgress(birlesik));
+	}
+	if (!updates.length) return { applied: 0 };
+
+	emit();
+	try {
+		await bulkPut(STORE_PROGRESS, updates);
+	} catch (e) {
+		reportError(e, 'bulut eşitleme');
+	}
+	return { applied: updates.length };
+}
+
+/** Profilin eşitlenecek bölümünü verir (hesap bilgisi hariç). */
+export function profileForSync() {
+	const { level, placedAt, streak, longestStreak, lastStudyDate, studiedToday } = state.profile;
+	return { level, placedAt, streak, longestStreak, lastStudyDate, studiedToday };
+}
+
+/** Buluttan gelen profil alanlarını uygular. */
+export async function applySyncedProfile(profile) {
+	if (!profile) return;
+	state.profile = { ...state.profile, ...profile };
+	emit();
+	await persistProfile();
 }
 
 // ===================== Profil ve çalışma alışkanlığı =====================

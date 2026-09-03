@@ -2794,3 +2794,30 @@ button.profileEdit {
 	font-size: 13px;
 	font-weight: 600;
 }
+
+/* ==============================================
+   BULUT HESABI
+   ============================================== */
+.cloudBox {
+	padding: 16px;
+	border-radius: 16px;
+	background: var(--panel);
+	border: 1px solid #2a3a55;
+}
+
+.cloudTitle {
+	font-size: 15px;
+	font-weight: 700;
+	margin-bottom: 6px;
+	/* Uzun e-posta adresleri kutuyu tasirmasin */
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.cloudActions {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+	gap: 8px;
+	margin-top: 12px;
+}

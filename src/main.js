@@ -19,7 +19,19 @@ import * as notifications from './platform/notifications.js';
 import { setupNative } from './platform/native.js';
 import { renderDashboard } from './ui/dashboard.js';
 import { alertDialog, choiceDialog, confirmDialog, formDialog, toast } from './ui/dialog.js';
-import { hasAccount, initials, localId, NO_ACCOUNT, normalizeAccount } from './core/account.js';
+import { hasAccount, initials, isValidEmail, localId, NO_ACCOUNT, normalizeAccount } from './core/account.js';
+import { mergeProfile, mergeProgressLists } from './core/sync.js';
+import {
+	currentUser,
+	deleteAccount as cloudDeleteAccount,
+	fetchAll as cloudFetchAll,
+	isAvailable as isCloudAvailable,
+	pushChanges as cloudPush,
+	signIn as cloudSignIn,
+	signOut as cloudSignOut,
+	signUp as cloudSignUp
+} from './platform/cloud.js';
+import { renderCloudPanel } from './ui/cloudPanel.js';
 import { $, debounce, el } from './ui/dom.js';
 import * as billing from './platform/billing.js';
 import * as paywall from './ui/paywall.js';
@@ -160,6 +172,7 @@ function render() {
 
 	if (activeSection === 'settings') {
 		renderProfileCard();
+		renderCloudPanel(cloud, cloudHandlers);
 		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
 		return;
 	}
@@ -605,6 +618,165 @@ async function handleProgressAudit() {
 	toast(`${result.changed} kelimenin ilerlemesi güncellendi.`);
 }
 
+
+// ===================== Bulut hesabi =====================
+
+/** Bulut durumu. available=false ise bolum hic gorunmez. */
+let cloud = { available: false, user: null, syncing: false, lastSync: null };
+
+async function initCloud() {
+	cloud.available = await isCloudAvailable();
+	if (!cloud.available) return;
+	cloud.user = await currentUser();
+	if (activeSection === 'settings') render();
+	// Girisliyse acilista sessizce esitle: kullanicinin dugmeye
+	// basmayi hatirlamasi gerekmemeli.
+	if (cloud.user) syncNow({ sessiz: true });
+}
+
+const cloudHandlers = {
+	onSignIn: () => authFlow('in'),
+	onSignUp: () => authFlow('up'),
+	onSync: () => syncNow({ sessiz: false }),
+	onSignOut: async () => {
+		const ok = await confirmDialog(
+			'Cikis yapilacak. Cihazdaki ilerlemen silinmez, buluta gonderilmeyen degisiklikler bekler.',
+			{ title: 'Cikis', confirmText: 'Cikis yap' }
+		);
+		if (!ok) return;
+		await cloudSignOut();
+		cloud.user = null;
+		toast('Cikis yapildi.');
+		render();
+	},
+	onDelete: () => deleteCloudAccount()
+};
+
+/** Giris / kayit akisi. */
+async function authFlow(mode) {
+	const kayit = mode === 'up';
+	const alanlar = [
+		{ name: 'email', label: 'E-posta', type: 'email', placeholder: 'ornek@eposta.com' },
+		{ name: 'password', label: 'Parola', type: 'password', placeholder: 'En az 6 karakter' }
+	];
+	if (kayit) alanlar.unshift({ name: 'name', label: 'Ad', placeholder: 'Adin', maxLength: 40 });
+
+	const v = await formDialog({
+		title: kayit ? 'Hesap ac' : 'Giris yap',
+		message: kayit
+			? 'Ilerlemen buluta yedeklenir ve baska cihazdan devam edebilirsin.'
+			: 'Hesabinla giris yap.',
+		fields: alanlar,
+		submitText: kayit ? 'Hesap ac' : 'Giris yap',
+		validate: (val) => {
+			if (kayit && !String(val.name || '').trim()) return 'Ad bos olamaz.';
+			if (!isValidEmail(val.email)) return 'E-posta adresi gecerli gorunmuyor.';
+			if (String(val.password || '').length < 6) return 'Parola en az 6 karakter olmali.';
+			return null;
+		}
+	});
+	if (!v) return;
+
+	const sonuc = kayit
+		? await cloudSignUp(v.email, v.password, v.name)
+		: await cloudSignIn(v.email, v.password);
+
+	if (!sonuc.ok) {
+		await alertDialog(authHatasi(sonuc.reason), { title: 'Olmadi' });
+		return;
+	}
+	cloud.user = sonuc.user;
+	// Kayit sirasinda girilen ad yerel profile de yazilir; kullanici
+	// ayni bilgiyi iki kez girmesin.
+	if (kayit && v.name) await store.saveAccount({ name: v.name, email: v.email });
+	toast(kayit ? 'Hesap acildi.' : 'Giris yapildi.');
+	render();
+	syncNow({ sessiz: false });
+}
+
+function authHatasi(reason) {
+	if (reason === 'email-in-use') return 'Bu e-posta ile zaten bir hesap var. Giris yapmayi dene.';
+	if (reason === 'invalid-email') return 'E-posta adresi gecerli gorunmuyor.';
+	if (reason === 'weak-password') return 'Parola cok zayif. En az 6 karakter secmelisin.';
+	if (reason === 'bad-credentials') return 'E-posta ya da parola hatali.';
+	if (reason === 'too-many') return 'Cok fazla deneme yapildi. Biraz bekleyip tekrar dene.';
+	if (reason === 'network') return 'Internet baglantisi kurulamadi.';
+	return 'Islem tamamlanamadi.';
+}
+
+
+/**
+ * Buluta yaz, buluttan oku, birlestir.
+ *
+ * Once OKUYOR sonra yaziyor. Ters sirada, baska cihazda yapilan
+ * calisma bu cihazin eski verisiyle ezilirdi.
+ */
+async function syncNow({ sessiz }) {
+	if (!cloud.user || cloud.syncing) return;
+	cloud.syncing = true;
+	if (activeSection === 'settings') render();
+
+	try {
+		const uzak = await cloudFetchAll();
+		if (!uzak.ok) {
+			if (!sessiz) await alertDialog(authHatasi(uzak.reason), { title: 'Esitlenemedi' });
+			return;
+		}
+
+		const yerel = store.progressForSync();
+		const sonuc = mergeProgressLists(yerel, uzak.progress || []);
+		const profil = mergeProfile(store.profileForSync(), uzak.profile);
+
+		if (sonuc.toApply.length) await store.applySyncedProgress(sonuc.toApply);
+		await store.applySyncedProfile(profil);
+
+		const yaz = await cloudPush(profil, sonuc.toUpload);
+		if (!yaz.ok) {
+			if (!sessiz) await alertDialog(authHatasi(yaz.reason), { title: 'Gonderilemedi' });
+			return;
+		}
+
+		cloud.lastSync = new Date().toISOString();
+		if (!sessiz) {
+			const s2 = sonuc.stats;
+			toast(`Esitlendi: ${s2.gonderilecek} gonderildi, ${s2.uygulanacak} alindi.`);
+		}
+	} finally {
+		cloud.syncing = false;
+		render();
+	}
+}
+
+/**
+ * Hesabi ve bulut verisini siler.
+ * Play, hesap acan uygulamalarda uygulama ici hesap silmeyi zorunlu
+ * tutuyor.
+ */
+async function deleteCloudAccount() {
+	const ok = await confirmDialog(
+		'Hesabın ve buluttaki tüm verin kalıcı olarak silinecek.'
+			+ String.fromCharCode(10, 10)
+			+ 'Cihazındaki ilerlemen SİLİNMEZ; sadece bulut kaydın gider.',
+		{ title: 'Hesabi sil', confirmText: 'Sil', danger: true }
+	);
+	if (!ok) return;
+
+	const sonuc = await cloudDeleteAccount();
+	if (!sonuc.ok) {
+		await alertDialog(
+			sonuc.reason === 'reauth'
+				? 'Guvenlik icin once cikis yapip tekrar giris yapmalisin, sonra silebilirsin.'
+				: authHatasi(sonuc.reason),
+			{ title: 'Silinemedi' }
+		);
+		return;
+	}
+	cloud.user = null;
+	cloud.lastSync = null;
+	toast('Hesap silindi.');
+	render();
+}
+
 // ===================== Olay bağlantıları =====================
 
 function wireEvents() {
@@ -817,6 +989,9 @@ async function boot() {
 
 	// Veri hazir; giris ekrani artik gidebilir.
 	hideLaunchScreen();
+
+	// Bulut da acilisi bekletmesin; yapilandirma yoksa hicbir sey yapmaz.
+	initCloud();
 
 	// Diyaloglar acilisi bekletmesin: arka planda yuklenip geldiginde
 	// ekran tazeleniyor. Yuklenemezse liste bos kalir, uygulama calisir.
