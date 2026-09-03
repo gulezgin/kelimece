@@ -172,3 +172,41 @@ describe('boşlukta noktalama', () => {
 		expect(ex.sentence.after.startsWith('.')).toBe(true);
 	});
 });
+
+describe('yanıltıcı çeşitliliği', () => {
+	const cok = [
+		dlg('a', 'A1', [
+			{ s: 'A', en: 'Hi.', tr: 'Selam.' },
+			{ s: 'B', en: 'A large coffee, please.', tr: 'Büyük kahve lütfen.' }
+		]),
+		dlg('b', 'A1', [{ s: 'B', en: 'See you tomorrow.', tr: 'Yarın görüşürüz.' }]),
+		dlg('c', 'A1', [{ s: 'B', en: 'It is very cold today.', tr: 'Bugün çok soğuk.' }]),
+		dlg('d', 'A2', [{ s: 'B', en: 'I take the bus every morning.', tr: 'Her sabah otobüse binerim.' }]),
+		dlg('e', 'C2', [{ s: 'B', en: 'That would be a considerable oversimplification of the matter.', tr: '...' }])
+	];
+
+	it('oturumda kullanılmış cümle tekrar gelmez', () => {
+		// Ayni cumlenin iki kez cikmasi soruyu ucuz gosteriyor.
+		const kullanilmis = new Set([normalize('See you tomorrow.')]);
+		const d = collectDistractors(cok[0], cok, 3, () => 0, { exclude: kullanilmis, answer: 'A large coffee, please.' });
+		expect(d.some((t) => /See you tomorrow/.test(t))).toBe(false);
+	});
+
+	it('komşu seviyeden de şık alabilir', () => {
+		// Tek seviyede ~30 replik var; havuz cok kucuk kaliyordu.
+		const d = collectDistractors(cok[0], cok, 4, () => 0, { answer: 'A large coffee, please.' });
+		expect(d.length).toBeGreaterThan(2);
+	});
+
+	it('uzunluğu cevaba çok uzak şık tercih edilmez', () => {
+		// Uc kelimelik cevabin yaninda on kelimelik sik, soruyu
+		// icerige bakmadan ele veriyor.
+		const d = collectDistractors(cok[0], cok, 2, () => 0, { answer: 'Hi there.' });
+		expect(d.some((t) => /oversimplification/.test(t))).toBe(false);
+	});
+
+	it('aday kalmazsa boş döner, çökmez', () => {
+		const tek = [cok[0]];
+		expect(collectDistractors(cok[0], tek, 2, () => 0, { answer: 'x' })).toEqual([]);
+	});
+});

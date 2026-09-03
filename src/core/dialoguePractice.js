@@ -97,49 +97,88 @@ export function pickBlank(sentence) {
 	return best;
 }
 
+/** CEFR sirasi: komsu seviye hesabi icin. */
+const CEFR_ORDER = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
+/** Kelime sayisi. Uzunluk bandi bunun uzerinden hesaplaniyor. */
+function wordCount(text) {
+	return String(text || '').trim().split(/\s+/).filter(Boolean).length;
+}
+
 /**
- * Aynı seviyedeki BAŞKA diyalogların kullanıcı repliklerinden
- * yanıltıcı üretir.
+ * Başka diyalogların kullanıcı repliklerinden yanıltıcı üretir.
  *
  * Elle yanıltıcı yazmak 60 diyalogda yüzlerce cümle demek olurdu.
  * Başka diyalogdan gelen replik dilbilgisi olarak kusursuz ama
- * bağlama uymuyor — sorulan tam olarak bu: bağlamı anlamak.
- * Seviye eşleştirmesi önemli; A1 sorusuna C1 cümlesi koymak soruyu
- * uzunluğundan ele verirdi.
+ * bağlama uymuyor — sorulan tam olarak bu.
+ *
+ * Üç şey çeşitliliği ve soru kalitesini belirliyor:
+ *
+ *  1. KOMŞU SEVİYELER de havuza giriyor. Tek seviyede yalnızca ~30
+ *     replik var ve bir turda ~22 çekim yapılıyor; aynı cümleler
+ *     dönüp duruyordu. Komşu seviye havuzu ikiye katlıyor.
+ *  2. `exclude` ile oturumda ZATEN KULLANILMIŞ cümleler eleniyor.
+ *     İstatistiksel dağılım dengeli olsa bile aynı cümlenin tek
+ *     oturumda iki kez çıkması fark ediliyor ve ucuz gösteriyor.
+ *  3. UZUNLUK BANDI: cevaptan çok kısa ya da çok uzun şık soruyu
+ *     içeriğe bakmadan ele veriyor. Üç kelimelik cevabın yanında
+ *     on kelimelik şık, şık değil süs olur.
  */
-export function collectDistractors(dialogue, allDialogues, count, random = Math.random) {
+export function collectDistractors(dialogue, allDialogues, count, random = Math.random, options = {}) {
+	const exclude = options.exclude instanceof Set ? options.exclude : new Set();
+	const answer = options.answer || '';
 	const own = new Set(((dialogue && dialogue.lines) || []).map((l) => normalize(l.en)));
-	const pool = [];
-	for (const d of allDialogues || []) {
-		if (!d || d.id === (dialogue && dialogue.id)) continue;
-		if (d.cefr !== (dialogue && dialogue.cefr)) continue;
-		for (const line of d.lines || []) {
-			if (line.s !== 'B') continue;
-			const key = normalize(line.en);
-			if (!key || own.has(key)) continue;
-			pool.push(line.en);
-		}
+	const level = dialogue && dialogue.cefr;
+	const li = CEFR_ORDER.indexOf(level);
+
+	/** Seviye uzakligi: 0 ayni, 1 komsu, 2+ uzak. */
+	function distance(other) {
+		const oi = CEFR_ORDER.indexOf(other);
+		if (li < 0 || oi < 0) return 0;
+		return Math.abs(li - oi);
 	}
-	// Ayni seviyede yeterli malzeme yoksa seviye kisitini gevset:
-	// eksik sikli bir soru, hic soru olmamasindan iyidir.
-	if (pool.length < count) {
+
+	/**
+	 * @param {number} maxUzaklik Kabul edilen en fazla seviye uzakligi
+	 */
+	function topla(maxUzaklik) {
+		const out = [];
+		const seen = new Set();
 		for (const d of allDialogues || []) {
 			if (!d || d.id === (dialogue && dialogue.id)) continue;
+			const uzaklik = distance(d.cefr);
+			if (uzaklik > maxUzaklik) continue;
 			for (const line of d.lines || []) {
 				if (line.s !== 'B') continue;
 				const key = normalize(line.en);
-				if (!key || own.has(key) || pool.includes(line.en)) continue;
-				pool.push(line.en);
+				if (!key || own.has(key) || seen.has(key) || exclude.has(key)) continue;
+				seen.add(key);
+				out.push({
+					text: line.en,
+					uzaklik,
+					fark: Math.abs(wordCount(line.en) - wordCount(answer))
+				});
 			}
 		}
+		return out;
 	}
-	const seen = new Set();
-	return shuffle(pool, random).filter((t) => {
-		const k = normalize(t);
-		if (seen.has(k)) return false;
-		seen.add(k);
-		return true;
-	}).slice(0, count);
+
+	// Komsu seviyeler yeterli; degilse tum seviyeler. Sikki eksik bir
+	// soru, sorunun kendisini bozar - son care olarak uzaklik onemsiz.
+	let candidates = topla(1);
+	if (candidates.length < count) candidates = topla(CEFR_ORDER.length);
+
+	if (!candidates.length) return [];
+
+	// Once uzunlugu yakin ve seviyesi ayni olanlar. Yeterli aday
+	// kalmazsa bant genisliyor: eksik sikli bir soru, hic soru
+	// olmamasindan iyidir.
+	const BAND = Math.max(3, Math.ceil(wordCount(answer) * 0.6));
+	let havuz = candidates.filter((c) => c.uzaklik === 0 && c.fark <= BAND);
+	if (havuz.length < count * 2) havuz = candidates.filter((c) => c.fark <= BAND);
+	if (havuz.length < count) havuz = candidates;
+
+	return shuffle(havuz, random).slice(0, count).map((c) => c.text);
 }
 
 /**
@@ -156,7 +195,15 @@ export function buildStep(dialogue, step, options = {}) {
 	const base = { index: step.index, mode: step.mode, answer: line.en, tr: line.tr };
 
 	if (step.mode === MODES.CHOICE) {
-		const distractors = collectDistractors(dialogue, options.allDialogues || [], optionCount - 1, random);
+		// exclude ve answer iletiliyor: biri oturumda tekrari onluyor,
+		// digeri uzunlugu cevaba yakin siklar seciyor.
+		const distractors = collectDistractors(
+			dialogue,
+			options.allDialogues || [],
+			optionCount - 1,
+			random,
+			{ exclude: options.exclude, answer: line.en }
+		);
 		const options_ = shuffle([line.en, ...distractors], random);
 		return {
 			...base,

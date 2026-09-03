@@ -12,6 +12,7 @@ import {
 	checkChoice,
 	checkOrder,
 	MODES,
+	normalize,
 	practiceSteps
 } from '../core/dialoguePractice.js';
 import { hasEnglishVoice, speak } from '../core/speech.js';
@@ -39,7 +40,10 @@ export function startPractice(dialogue, allDialogues, handlers) {
 		tries: 0,
 		correct: 0,
 		revealed: 0,
-		picked: []
+		picked: [],
+		// Oturumda kullanilmis yanilticilar. Ayni cumlenin iki kez
+		// cikmasi fark ediliyor ve soruyu ucuz gosteriyor.
+		usedDistractors: new Set()
 	};
 	draw();
 }
@@ -134,8 +138,16 @@ function finishBox() {
 
 /** Sıradaki replik için alıştırma kutusu. */
 function exerciseBox(step) {
-	const ex = buildStep(state.dialogue, step, { allDialogues: state.allDialogues });
+	const ex = buildStep(state.dialogue, step, {
+		allDialogues: state.allDialogues,
+		exclude: state.usedDistractors
+	});
 	state.exercise = ex;
+
+	// Kullanilanlari isaretle ki sonraki sorularda tekrar cikmasinlar
+	for (const o of ex.options || []) {
+		if (o !== ex.answer) state.usedDistractors.add(normalize(o));
+	}
 
 	const box = el('div', { class: 'dlgExercise' }, [
 		el('div', { class: 'dlgExerciseHint', text: ex.instruction }),
