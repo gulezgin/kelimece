@@ -1,0 +1,637 @@
+{
+  "version": 1,
+  "exams": [
+    {
+      "id": "ielts",
+      "name": "IELTS Academic",
+      "icon": "🇬🇧",
+      "summary": "Britanya, Avustralya ve Kanada üniversiteleri; göç başvuruları",
+      "scale": "0–9 bant",
+      "format": [
+        {
+          "part": "Listening",
+          "time": "30 dk + 10 dk aktarım",
+          "detail": "4 bölüm, 40 soru. Ses BİR kez çalınır."
+        },
+        {
+          "part": "Reading",
+          "time": "60 dk",
+          "detail": "3 akademik metin, 40 soru. Ayrı aktarım süresi yok."
+        },
+        {
+          "part": "Writing",
+          "time": "60 dk",
+          "detail": "Task 1: grafik/şema betimleme (150+ kelime, ~20 dk). Task 2: deneme (250+ kelime, ~40 dk)."
+        },
+        {
+          "part": "Speaking",
+          "time": "11–14 dk",
+          "detail": "Bölüm 1: tanışma. Bölüm 2: 1 dk hazırlık + 2 dk konuşma. Bölüm 3: tartışma."
+        }
+      ],
+      "tips": [
+        "Task 2, Task 1'in iki katı puan getiriyor; süreyi ona göre böl.",
+        "Writing'de kelime sınırının ALTINA düşmek doğrudan puan kırdırır, üstüne çıkmak kırdırmaz.",
+        "Speaking Bölüm 2'de 2 dakikayı doldurmak beklenir; erken bitirmek düşük puan sebebidir.",
+        "Listening'de ses bir kez çalınır; soruları önden okumak için verilen boşluğu kullan.",
+        "Yanlış cevap ceza getirmiyor — boş bırakma."
+      ]
+    },
+    {
+      "id": "toefl",
+      "name": "TOEFL iBT",
+      "icon": "🇺🇸",
+      "summary": "Amerika üniversiteleri; bilgisayarda yapılır",
+      "scale": "0–120 puan",
+      "format": [
+        {
+          "part": "Reading",
+          "time": "35 dk",
+          "detail": "2 akademik metin, 20 soru."
+        },
+        {
+          "part": "Listening",
+          "time": "36 dk",
+          "detail": "Dersler ve kampüs konuşmaları. Not almaya izin var."
+        },
+        {
+          "part": "Speaking",
+          "time": "16 dk",
+          "detail": "4 görev. Hepsi mikrofona konuşarak; hazırlık süresi 15–30 sn."
+        },
+        {
+          "part": "Writing",
+          "time": "29 dk",
+          "detail": "Integrated (okuma+dinleme özeti, 20 dk) ve Academic Discussion (10 dk)."
+        }
+      ],
+      "tips": [
+        "Speaking'de hazırlık süresi çok kısa; kalıpları ezberlemek yerine bir iskelet ezberle.",
+        "Integrated Writing kendi görüşünü sormaz — okuduğunu ve dinlediğini KARŞILAŞTIR.",
+        "Not alma serbest; dinlerken yapı çıkarmak cevabın yarısı.",
+        "Bilgisayarda yazılıyor: klavyede İngilizce yazma hızın puanını doğrudan etkiler.",
+        "Her bölüm 30 üzerinden; zayıf bölümü yükseltmek güçlüyü parlatmaktan daha çok kazandırır."
+      ]
+    }
+  ],
+  "writing": [
+    {
+      "id": "x-ielts-t1",
+      "exam": "ielts",
+      "kind": "task",
+      "level": "B2",
+      "icon": "📊",
+      "title": "IELTS Task 1 — Grafik betimleme",
+      "summary": "Veriyi yorumlamadan özetle",
+      "prompt": "Bir şehirdeki üç ulaşım türünün (otobüs, metro, bisiklet) 2010–2024 arasındaki yolcu sayısı: otobüs 40 milyondan 28 milyona düştü, metro 15 milyondan 34 milyona çıktı, bisiklet 2 milyondan 9 milyona çıktı. Bu veriyi betimle: ana eğilimleri seç, karşılaştır ve rakamlarla destekle.",
+      "minWords": 150,
+      "maxWords": 220,
+      "teach": {
+        "title": "Task 1'in tek kuralı: yorum yok",
+        "points": [
+          "Görüş bildirme, sebep arama, tahmin yapma — üçü de puan kırdırır",
+          "Girişte soruyu KENDİ kelimelerinle tekrarla, kopyalama",
+          "Bir 'overview' cümlesi şart: en belirgin iki eğilim",
+          "Her rakamı yazma; en büyük, en küçük ve dönüm noktalarını seç",
+          "Değişim dili çeşitlendir: rose, climbed, fell, dropped, levelled off"
+        ]
+      },
+      "phrases": [
+        {
+          "en": "The chart shows ...",
+          "tr": "Grafik ...'i gösteriyor."
+        },
+        {
+          "en": "Overall, the most striking trend is ...",
+          "tr": "Genel olarak en çarpıcı eğilim ..."
+        },
+        {
+          "en": "The figure rose sharply from X to Y.",
+          "tr": "Rakam X'ten Y'ye keskin biçimde yükseldi."
+        },
+        {
+          "en": "By contrast, bus use declined steadily.",
+          "tr": "Buna karşılık otobüs kullanımı düzenli olarak azaldı."
+        },
+        {
+          "en": "This figure more than doubled over the period.",
+          "tr": "Bu rakam dönem boyunca iki katından fazla arttı."
+        }
+      ],
+      "require": [
+        {
+          "label": "Genel bakış cümlesi var",
+          "any": [
+            "overall",
+            "in general",
+            "the most striking",
+            "the clearest trend"
+          ]
+        },
+        {
+          "label": "Rakam kullandın",
+          "any": [
+            "million",
+            "2010",
+            "2024",
+            "40",
+            "34",
+            "28"
+          ]
+        },
+        {
+          "label": "Karşılaştırma yaptın",
+          "any": [
+            "by contrast",
+            "whereas",
+            "while",
+            "compared",
+            "however",
+            "on the other hand"
+          ]
+        },
+        {
+          "label": "Değişim fiili kullandın",
+          "any": [
+            "rose",
+            "fell",
+            "increased",
+            "decreased",
+            "declined",
+            "climbed",
+            "dropped",
+            "grew"
+          ]
+        }
+      ],
+      "model": "The chart shows how many passengers used three forms of transport in one city between 2010 and 2024. Overall, the most striking trend is the reversal between buses and the metro: the bus, which began as by far the most used option, ended the period below the metro, while cycling grew from a negligible base.\n\nIn 2010 buses carried 40 million passengers, more than twice the 15 million recorded by the metro. Bus numbers then declined steadily and stood at 28 million by 2024, a fall of roughly a third. The metro moved in the opposite direction, climbing to 34 million and overtaking the bus before the end of the period.\n\nCycling remained the smallest category throughout, but it grew the fastest in relative terms, rising from 2 million to 9 million. By contrast with the other two modes, its figures stayed under ten million in every year shown, so it remained a minor part of the overall picture despite the rapid growth."
+    },
+    {
+      "id": "x-ielts-t2",
+      "exam": "ielts",
+      "kind": "task",
+      "level": "C1",
+      "icon": "✒️",
+      "title": "IELTS Task 2 — Deneme",
+      "summary": "İki görüşü tartış ve kendi görüşünü ver",
+      "prompt": "Bazıları üniversite eğitiminin devlet tarafından ücretsiz sağlanması gerektiğini düşünüyor. Bazıları ise öğrencilerin kendi ödemesi gerektiğini savunuyor. Her iki görüşü de tartış ve kendi görüşünü belirt.",
+      "minWords": 250,
+      "maxWords": 380,
+      "teach": {
+        "title": "Task 2'de puan getiren yapı",
+        "points": [
+          "Soruyu tam cevapla: 'her iki görüş VE kendi görüşün' üçünü de yaz",
+          "Dört paragraf: giriş, birinci görüş, ikinci görüş, sonuç",
+          "Her gövde paragrafında bir konu cümlesi + gerekçe + örnek",
+          "Kendi görüşünü girişte de sonuçta da açıkça söyle",
+          "Ezber cümle kalıpları puan getirmiyor; değerlendirme özgün dile bakıyor"
+        ]
+      },
+      "phrases": [
+        {
+          "en": "It is sometimes argued that ...",
+          "tr": "Bazen ... öne sürülür."
+        },
+        {
+          "en": "Those who support this view point out that ...",
+          "tr": "Bu görüşü savunanlar ...'e dikkat çeker."
+        },
+        {
+          "en": "There is, however, a strong counter-argument.",
+          "tr": "Ancak güçlü bir karşı argüman var."
+        },
+        {
+          "en": "On balance, I would argue that ...",
+          "tr": "Her şey tartılınca, ... derim."
+        }
+      ],
+      "require": [
+        {
+          "label": "Birinci görüşü sundun",
+          "any": [
+            "those who",
+            "supporters",
+            "some people argue",
+            "it is argued",
+            "one view"
+          ]
+        },
+        {
+          "label": "Karşı görüşü sundun",
+          "any": [
+            "however",
+            "on the other hand",
+            "others",
+            "critics",
+            "by contrast"
+          ]
+        },
+        {
+          "label": "Kendi görüşünü belirttin",
+          "any": [
+            "in my view",
+            "i believe",
+            "i would argue",
+            "on balance",
+            "my own view"
+          ]
+        },
+        {
+          "label": "Örnek verdin",
+          "any": [
+            "for example",
+            "for instance",
+            "such as",
+            "in germany",
+            "in turkey"
+          ]
+        }
+      ],
+      "model": "It is sometimes argued that higher education should be funded entirely by the state, while others maintain that students themselves should bear the cost. Both positions rest on serious arguments, but on balance I believe a largely publicly funded system, with a modest contribution from graduates, serves a country best.\n\nThose who support free tuition point out that access to university should depend on ability rather than family income. Where fees are high, capable students from poorer households often choose shorter or cheaper courses, or avoid university altogether. Countries such as Germany, which abolished undergraduate fees, argue that the resulting graduates repay the investment many times over through higher taxes and greater productivity.\n\nThere is, however, a strong counter-argument. University education brings a large private benefit: graduates typically earn considerably more over a lifetime than those who do not attend. Asking a factory worker who never went to university to fund, through general taxation, the degree of a future lawyer strikes many people as unfair. Fees also create pressure on institutions to teach well, because students who pay expect value.\n\nA further consideration is who benefits beyond the graduate. A country with more doctors, engineers and teachers is better off whether or not those individuals earn well, and a purely private model treats education as a consumer purchase rather than as infrastructure. This is why even strongly market oriented economies subsidise medical training, and it is an argument neither camp can ignore.\n\nIn my view the strongest system combines both principles. Tuition should be free at the point of use, so that no capable student is deterred, but graduates whose income later exceeds a clear threshold should repay part of the cost. This preserves access while ensuring that those who gain most from the system also contribute to it."
+    },
+    {
+      "id": "x-toefl-int",
+      "exam": "toefl",
+      "kind": "task",
+      "level": "C1",
+      "icon": "🔗",
+      "title": "TOEFL Integrated Writing",
+      "summary": "Okuduğunla dinlediğini karşılaştır",
+      "prompt": "OKUMA: Bir makale, şirketlerin haftada dört gün çalışmaya geçmesinin verimliliği artırdığını savunuyor; üç gerekçe veriyor: dinlenmiş çalışan daha az hata yapar, gereksiz toplantılar azalır, iyi çalışanlar şirkette kalır.\n\nDİNLEME: Bir profesör bu üç gerekçeye de itiraz ediyor: hata azalması yalnızca ilk aylarda görülmüş, kalıcı değil; kısalan toplantılar işi asenkron mesajlaşmaya kaydırıp mesai dışına taşımış; çalışanların kalması ise kısmen deneyin geçici olmasından kaynaklanmış.\n\nDinlemedeki noktaların okumadaki iddialara nasıl karşı çıktığını özetle. Kendi görüşünü YAZMA.",
+      "minWords": 150,
+      "maxWords": 250,
+      "teach": {
+        "title": "Integrated Writing'in tuzağı",
+        "points": [
+          "Kendi görüşünü sormuyor; sorarsan puan düşer",
+          "Her paragrafta bir okuma iddiası + ona karşı gelen dinleme noktası",
+          "Okuma metnindeki cümleleri kopyalama, kendi kelimelerinle yaz",
+          "Aktarım fiilleri kullan: the lecturer argues, she casts doubt on, he counters",
+          "Dinlemeyi doğru sayıp okumayı yanlış sayma — sadece karşıtlığı anlat"
+        ]
+      },
+      "phrases": [
+        {
+          "en": "The lecturer casts doubt on the claim that ...",
+          "tr": "Konuşmacı ... iddiasını sorguluyor."
+        },
+        {
+          "en": "She counters this by noting that ...",
+          "tr": "Buna ...'e dikkat çekerek karşı çıkıyor."
+        },
+        {
+          "en": "According to the reading, ...",
+          "tr": "Okumaya göre, ..."
+        },
+        {
+          "en": "In contrast, the lecture points out that ...",
+          "tr": "Buna karşılık ders ...'e işaret ediyor."
+        }
+      ],
+      "require": [
+        {
+          "label": "Okumaya atıf yaptın",
+          "any": [
+            "the reading",
+            "the passage",
+            "the article",
+            "according to the reading"
+          ]
+        },
+        {
+          "label": "Dinlemeye atıf yaptın",
+          "any": [
+            "the lecturer",
+            "the lecture",
+            "the professor",
+            "the speaker"
+          ]
+        },
+        {
+          "label": "Karşıtlık kurdun",
+          "any": [
+            "however",
+            "in contrast",
+            "counters",
+            "casts doubt",
+            "challenges",
+            "disputes"
+          ]
+        },
+        {
+          "label": "Üç noktayı da ele aldın",
+          "any": [
+            "meetings",
+            "errors",
+            "mistakes",
+            "retention",
+            "stay"
+          ]
+        }
+      ],
+      "model": "The reading argues that a four day week raises productivity, and gives three reasons. The lecturer disputes each of them.\n\nAccording to the reading, rested employees make fewer errors. The lecturer casts doubt on this by noting that the drop in mistakes appeared only during the first months of the trials. Once the novelty faded, error rates returned to their earlier level, which suggests the improvement came from attention to a new arrangement rather than from the shorter week itself.\n\nThe passage also claims that unnecessary meetings disappear. The lecturer counters this by pointing out that the work did not vanish with the meetings. It moved into asynchronous messages that employees answered in the evening, so the total time spent on coordination stayed roughly the same and simply became harder to see.\n\nFinally, the reading states that good staff are more likely to stay. In contrast, the lecture argues that retention during these trials was partly an artefact of their temporary nature: employees stayed because the arrangement might end, and the effect cannot be assumed to last once the four day week becomes permanent."
+    }
+  ],
+  "speaking": [
+    {
+      "id": "s-ielts-p2-place",
+      "exam": "ielts",
+      "part": "Bölüm 2 — Cue card",
+      "icon": "🗺️",
+      "title": "Sevdiğin bir yer",
+      "prepSeconds": 60,
+      "talkSeconds": 120,
+      "cue": "Describe a place you like to spend time in.",
+      "points": [
+        "where it is",
+        "how often you go there",
+        "what you do there",
+        "and explain why you like it"
+      ],
+      "hints": [
+        "Hazırlık dakikasında cümle değil ANAHTAR KELİME yaz.",
+        "Dört maddeyi sırayla takip et; sonuncusu en uzun olsun.",
+        "İki dakikayı doldur: erken bitmek düşük puan sebebi."
+      ]
+    },
+    {
+      "id": "s-ielts-p2-skill",
+      "exam": "ielts",
+      "part": "Bölüm 2 — Cue card",
+      "icon": "🛠️",
+      "title": "Öğrendiğin bir beceri",
+      "prepSeconds": 60,
+      "talkSeconds": 120,
+      "cue": "Describe a skill you learned that was difficult at first.",
+      "points": [
+        "what the skill is",
+        "when and why you started learning it",
+        "what made it difficult",
+        "and explain how you feel about it now"
+      ],
+      "hints": [
+        "Zorluğu somutlaştır: 'it was hard' yerine ne olduğunu anlat.",
+        "Geçmiş ve şimdiki zaman arasında geçiş yap; sınav bunu ölçüyor."
+      ]
+    },
+    {
+      "id": "s-ielts-p3-tech",
+      "exam": "ielts",
+      "part": "Bölüm 3 — Tartışma",
+      "icon": "🧠",
+      "title": "Teknoloji ve öğrenme",
+      "prepSeconds": 15,
+      "talkSeconds": 60,
+      "cue": "Do you think technology has made learning easier or just faster?",
+      "points": [
+        "give your position in one sentence",
+        "give one reason with an example",
+        "acknowledge the opposite view",
+        "close with a qualified conclusion"
+      ],
+      "hints": [
+        "Bölüm 3 soyut düşünme ölçüyor; kişisel hikâye yerine genelleme yap.",
+        "Kesin ifadeden kaçın: 'tends to', 'in most cases' puan getirir."
+      ]
+    },
+    {
+      "id": "s-toefl-q1",
+      "exam": "toefl",
+      "part": "Görev 1 — Bağımsız",
+      "icon": "🎙️",
+      "title": "Tercih sorusu",
+      "prepSeconds": 15,
+      "talkSeconds": 45,
+      "cue": "Some students prefer to study alone; others prefer group study. Which do you prefer and why?",
+      "points": [
+        "state your preference immediately",
+        "give two reasons",
+        "support each with one detail",
+        "no conclusion needed — time is short"
+      ],
+      "hints": [
+        "45 saniyede sonuç cümlesine yer yok; iki gerekçeyi tamamla, yeter.",
+        "İlk cümlede tercihini söyle; gecikirse cevabın yarısı gider.",
+        "Hazırlık 15 saniye: iskelet çıkar, cümle yazma."
+      ]
+    },
+    {
+      "id": "s-toefl-q2",
+      "exam": "toefl",
+      "part": "Görev 2 — Kampüs",
+      "icon": "🏫",
+      "title": "Duyuruya tepki",
+      "prepSeconds": 30,
+      "talkSeconds": 60,
+      "cue": "The university announced that the library will close at 9 p.m. instead of midnight. A student disagrees. Summarise the announcement and the student's opinion with their reasons.",
+      "points": [
+        "one sentence on the announcement",
+        "the student's position",
+        "their first reason",
+        "their second reason"
+      ],
+      "hints": [
+        "Kendi görüşün sorulmuyor; öğrencinin görüşünü aktar.",
+        "Süre dar: duyuruya en fazla iki cümle ayır."
+      ]
+    }
+  ],
+  "vocabulary": [
+    {
+      "id": "v-academic-verbs",
+      "exam": "both",
+      "title": "Akademik fiiller",
+      "icon": "⚙️",
+      "summary": "Yazma ve konuşmada en çok işe yarayanlar",
+      "words": [
+        {
+          "en": "analyse",
+          "tr": "çözümlemek"
+        },
+        {
+          "en": "assess",
+          "tr": "değerlendirmek"
+        },
+        {
+          "en": "demonstrate",
+          "tr": "göstermek, kanıtlamak"
+        },
+        {
+          "en": "emphasise",
+          "tr": "vurgulamak"
+        },
+        {
+          "en": "establish",
+          "tr": "kurmak, ortaya koymak"
+        },
+        {
+          "en": "illustrate",
+          "tr": "örneklemek"
+        },
+        {
+          "en": "indicate",
+          "tr": "işaret etmek"
+        },
+        {
+          "en": "interpret",
+          "tr": "yorumlamak"
+        },
+        {
+          "en": "justify",
+          "tr": "gerekçelendirmek"
+        },
+        {
+          "en": "outline",
+          "tr": "ana hatlarıyla anlatmak"
+        }
+      ]
+    },
+    {
+      "id": "v-trend",
+      "exam": "ielts",
+      "title": "Eğilim ve değişim",
+      "icon": "📈",
+      "summary": "Task 1 için gereken sözcükler",
+      "words": [
+        {
+          "en": "fluctuate",
+          "tr": "dalgalanmak"
+        },
+        {
+          "en": "peak",
+          "tr": "zirve yapmak"
+        },
+        {
+          "en": "plummet",
+          "tr": "dibe vurmak"
+        },
+        {
+          "en": "soar",
+          "tr": "fırlamak"
+        },
+        {
+          "en": "level off",
+          "tr": "sabitlenmek"
+        },
+        {
+          "en": "steadily",
+          "tr": "istikrarlı biçimde"
+        },
+        {
+          "en": "sharply",
+          "tr": "keskin biçimde"
+        },
+        {
+          "en": "marginally",
+          "tr": "çok az"
+        },
+        {
+          "en": "respectively",
+          "tr": "sırasıyla"
+        },
+        {
+          "en": "overall",
+          "tr": "genel olarak"
+        }
+      ]
+    },
+    {
+      "id": "v-argument",
+      "exam": "both",
+      "title": "Tartışma dili",
+      "icon": "⚖️",
+      "summary": "Deneme ve konuşma için",
+      "words": [
+        {
+          "en": "advocate",
+          "tr": "savunmak"
+        },
+        {
+          "en": "undermine",
+          "tr": "zayıflatmak"
+        },
+        {
+          "en": "compelling",
+          "tr": "inandırıcı"
+        },
+        {
+          "en": "flawed",
+          "tr": "kusurlu"
+        },
+        {
+          "en": "plausible",
+          "tr": "makul"
+        },
+        {
+          "en": "arguably",
+          "tr": "tartışmasız denemez ama"
+        },
+        {
+          "en": "nevertheless",
+          "tr": "yine de"
+        },
+        {
+          "en": "consequently",
+          "tr": "sonuç olarak"
+        },
+        {
+          "en": "furthermore",
+          "tr": "üstelik"
+        },
+        {
+          "en": "albeit",
+          "tr": "her ne kadar"
+        }
+      ]
+    },
+    {
+      "id": "v-campus",
+      "exam": "toefl",
+      "title": "Kampüs sözlüğü",
+      "icon": "🎒",
+      "summary": "Listening ve Speaking görevleri için",
+      "words": [
+        {
+          "en": "assignment",
+          "tr": "ödev"
+        },
+        {
+          "en": "deadline",
+          "tr": "son teslim tarihi"
+        },
+        {
+          "en": "faculty",
+          "tr": "öğretim kadrosu"
+        },
+        {
+          "en": "lecture",
+          "tr": "ders, konferans"
+        },
+        {
+          "en": "seminar",
+          "tr": "seminer"
+        },
+        {
+          "en": "syllabus",
+          "tr": "ders izlencesi"
+        },
+        {
+          "en": "tuition",
+          "tr": "öğrenim ücreti"
+        },
+        {
+          "en": "dormitory",
+          "tr": "yurt"
+        },
+        {
+          "en": "enrol",
+          "tr": "kayıt olmak"
+        },
+        {
+          "en": "curriculum",
+          "tr": "müfredat"
+        }
+      ]
+    }
+  ]
+}

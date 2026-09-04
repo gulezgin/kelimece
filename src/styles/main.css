@@ -3384,3 +3384,38 @@ button.exOption--bad { border-color: var(--bad); }
 .badge2Icon { font-size: 1.7rem; line-height: 1.1; }
 .badge2Name { font-weight: 600; font-size: 0.88rem; overflow-wrap: anywhere; }
 .badge2Desc { font-size: 0.76rem; opacity: 0.75; overflow-wrap: anywhere; }
+
+/* ---------- Sınav modu ---------- */
+
+.examParts { display: grid; gap: 0.6rem; }
+.examPart {
+	padding: 0.5rem 0.6rem;
+	border-radius: 8px;
+	background: var(--surface2, rgba(255, 255, 255, 0.04));
+}
+.examPartHead {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 0.2rem;
+}
+.examPartName { font-weight: 600; }
+
+.examCue { display: grid; gap: 0.5rem; }
+.examCueText {
+	font-size: 1.08rem;
+	font-weight: 600;
+	line-height: 1.45;
+}
+
+.examTimer { display: grid; gap: 0.3rem; justify-items: center; text-align: center; }
+.examClock {
+	font-size: 2.6rem;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	line-height: 1.1;
+}
+
+.examAudio { width: 100%; margin-top: 0.6rem; }

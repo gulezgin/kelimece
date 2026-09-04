@@ -18,10 +18,13 @@ import { findText, loadTexts } from './core/reading.js';
 import { findTask, loadTasks, taskSummaries } from './core/writing.js';
 import { buildRound, loadPairs, pairsByLevel, unlockedPairs } from './core/antonyms.js';
 import { createList, deleteList, findList, listCountFor, listSummaries, renameList, toggleWord, wordsInList } from './core/lists.js';
+import { examContent, examSummaries, findSpeakingTask, findVocabSet, isExamTaskUnlocked, loadExams, speakingPhases } from './core/exam.js';
+import * as recorder from './platform/recorder.js';
 import { renderComprehension, renderReadingList, renderText } from './ui/reading.js';
 import { renderCheck, renderTask, renderTaskList } from './ui/writing.js';
 import { renderAntonymList, renderAntonymRound } from './ui/antonyms.js';
 import { renderListDetail, renderLists } from './ui/lists.js';
+import { renderExam, renderExamList, renderSpeakingTask, renderVocabSet, updateClock } from './ui/exam.js';
 import { isStruggling } from './core/stats.js';
 import { availableAccents, setAccent, setRate, speak } from './core/speech.js';
 import { XP } from './core/xp.js';
@@ -259,8 +262,14 @@ function render() {
 		return;
 	}
 
-	if (activeSection === 'writing' || activeSection === 'email') {
+	if (activeSection === 'writing' || activeSection === 'email' || activeSection === 'examWriting') {
 		renderWritingSection(activeSection);
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
+
+	if (activeSection === 'exam') {
+		renderExamSection();
 		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
 		return;
 	}
@@ -361,6 +370,7 @@ const READING_URL = import.meta.env.BASE_URL + 'content/reading.json';
 const WRITING_URL = import.meta.env.BASE_URL + 'content/writing.json';
 const EMAIL_URL = import.meta.env.BASE_URL + 'content/email.json';
 const ANTONYMS_URL = import.meta.env.BASE_URL + 'content/antonyms.json';
+const EXAM_URL = import.meta.env.BASE_URL + 'content/exam.json';
 let texts = [];
 let openTextId = null;
 let comprehensionOpen = false;
@@ -374,6 +384,13 @@ let antonymPairs = [];
 /** Zit anlamli turu: sorular ve ilerleme birlikte. */
 let antonymRun = null;
 let openListId = null;
+let examPack = null;
+let openExamId = null;
+let openSpeakingId = null;
+let openVocabId = null;
+/** Konusma gorevi sayaci ve kaydi. */
+let speakingRun = null;
+let speakingTimer = null;
 
 /** Ogren ekranindaki moduller. */
 function learnModules() {
@@ -384,7 +401,8 @@ function learnModules() {
 		{ id: 'writing', icon: '✍️', title: 'Yazma', note: writingTasks.length + ' görev', ready: writingTasks.length > 0 },
 		{ id: 'email', icon: '📧', title: 'E-posta', note: emailTasks.length + ' görev', ready: emailTasks.length > 0 },
 		{ id: 'antonyms', icon: '↔️', title: 'Zıt anlamlılar', note: antonymPairs.length + ' çift', ready: antonymPairs.length > 0 },
-		{ id: 'lists', icon: '📋', title: 'Listelerim', note: (store.state.profile.lists || []).length + ' liste', ready: true }
+		{ id: 'lists', icon: '📋', title: 'Listelerim', note: (store.state.profile.lists || []).length + ' liste', ready: true },
+		{ id: 'exam', icon: '🎓', title: 'Sınav modu', note: 'IELTS · TOEFL', ready: !!examPack }
 	];
 }
 
@@ -397,7 +415,8 @@ const learnHandlers = {
 			openTaskId = null; checkOpen = false; showSection(id); return;
 		}
 		if (id === 'antonyms') { antonymRun = null; showSection('antonyms'); return; }
-		if (id === 'lists') { openListId = null; showSection('lists'); }
+		if (id === 'lists') { openListId = null; showSection('lists'); return; }
+		if (id === 'exam') { resetExamState(); showSection('exam'); }
 	}
 };
 
@@ -421,6 +440,17 @@ const readingHandlers = {
  * acardi.
  */
 function writingSectionConfig(section) {
+	if (section === 'examWriting') {
+		// Sinav yazma gorevleri ayni motoru kullaniyor; liste sinav
+		// icerigi paketinden geliyor.
+		return {
+			host: 'examWritingView',
+			tasks: (examPack && examPack.writing) || [],
+			title: '🎓 Sınav yazma görevi',
+			subtitle: 'Gerçek sınav formatı. Puan verilmiyor; örnek cevapla karşılaştır.',
+			back: 'exam'
+		};
+	}
 	return section === 'email'
 		? {
 			host: 'emailView',
@@ -445,6 +475,10 @@ function renderWritingSection(section) {
 		renderCheck(cfg.host, acik, (prof.drafts || {})[acik.id] || '', writingHandlers);
 	} else if (acik) {
 		renderTask(cfg.host, acik, (prof.drafts || {})[acik.id] || '', writingHandlers);
+	} else if (section === 'examWriting') {
+		// Sinav modunda gorev listesi sinav ekraninda; buraya dogrudan
+		// gorevle giriliyor. Gorev yoksa sinava geri don.
+		showSection('exam');
 	} else {
 		renderTaskList(cfg.host, cfg.title, cfg.subtitle,
 			taskSummaries(cfg.tasks, prof.premium, prof.tasksDone || []), writingHandlers);
@@ -452,7 +486,7 @@ function renderWritingSection(section) {
 }
 
 const writingHandlers = {
-	onBack: () => showSection('learn'),
+	onBack: () => showSection(writingSectionConfig(activeSection).back || 'learn'),
 	onBackToList: () => { openTaskId = null; checkOpen = false; window.scrollTo(0, 0); render(); },
 	onBackToTask: (id) => { openTaskId = id; checkOpen = false; window.scrollTo(0, 0); render(); },
 	onOpen: (id) => { openTaskId = id; checkOpen = false; window.scrollTo(0, 0); render(); },
@@ -533,6 +567,189 @@ async function openListPicker(wordId) {
 	await store.saveLists(toggleWord(lists, secim, wordId));
 	toast(vardi ? 'Listeden çıkarıldı.' : 'Listeye eklendi.');
 }
+
+/** Sinav modu durumunu bastan kurar. */
+function resetExamState() {
+	stopSpeakingTimer();
+	if (speakingRun && speakingRun.audioUrl) recorder.release(speakingRun.audioUrl);
+	if (recorder.isRecording()) recorder.cancel();
+	openExamId = null;
+	openSpeakingId = null;
+	openVocabId = null;
+	speakingRun = null;
+}
+
+function stopSpeakingTimer() {
+	if (speakingTimer) {
+		clearInterval(speakingTimer);
+		speakingTimer = null;
+	}
+	if (speakingRun) speakingRun.running = false;
+}
+
+function renderExamSection() {
+	if (!examPack) return;
+
+	if (openSpeakingId) {
+		const gorev = findSpeakingTask(examPack, openSpeakingId);
+		if (gorev) {
+			renderSpeakingTask(gorev, speakingRun, {
+				...examHandlers,
+				recordSupported: recorder.isSupported()
+			});
+			return;
+		}
+	}
+	if (openVocabId) {
+		const set = findVocabSet(examPack, openVocabId);
+		if (set) { renderVocabSet(set, examHandlers); return; }
+	}
+	if (openExamId) {
+		const icerik = examContent(examPack, openExamId);
+		if (icerik) {
+			const premium = store.state.profile.premium;
+			const kilitli = new Set(icerik.writing
+				.filter((w) => !isExamTaskUnlocked(w, premium))
+				.map((w) => w.id));
+			renderExam(icerik, kilitli, examHandlers);
+			return;
+		}
+	}
+	renderExamList(examSummaries(examPack), examHandlers);
+}
+
+/**
+ * Konusma sayaci.
+ *
+ * Her saniyede yalnizca saat metni guncelleniyor, tum ekran degil:
+ * saniyede bir yeniden cizmek kayit dugmesinin odagini ve ses
+ * oynaticisinin konumunu kaybettiriyordu.
+ */
+function startSpeakingTimer() {
+	stopSpeakingTimer();
+	if (!speakingRun) return;
+	speakingRun.running = true;
+	speakingRun.started = true;
+	speakingTimer = setInterval(() => {
+		if (!speakingRun) { stopSpeakingTimer(); return; }
+		speakingRun.left--;
+		if (speakingRun.left > 0) { updateClock(speakingRun.left); return; }
+
+		const gorev = findSpeakingTask(examPack, openSpeakingId);
+		const asamalar = speakingPhases(gorev);
+		if (speakingRun.phase < asamalar.length - 1) {
+			speakingRun.phase++;
+			speakingRun.left = asamalar[speakingRun.phase].seconds;
+			// Asama degisimi duyuruluyor: kullanici ekrana bakmadan
+			// konusmaya baslamasi gerektigini bilmeli.
+			toast(asamalar[speakingRun.phase].label + ' başladı');
+			render();
+			return;
+		}
+		stopSpeakingTimer();
+		toast('Süre doldu.');
+		render();
+	}, 1000);
+	render();
+}
+
+function newSpeakingRun(task) {
+	const asamalar = speakingPhases(task);
+	return {
+		phase: 0,
+		left: asamalar.length ? asamalar[0].seconds : 0,
+		running: false,
+		/** Bir kez baslatildi mi; dugme "Baslat" mi "Devam" mi yazacak. */
+		started: false,
+		recording: false,
+		audioUrl: null,
+		audioSeconds: 0,
+		recordError: ''
+	};
+}
+
+const examHandlers = {
+	onBack: () => { resetExamState(); showSection('learn'); },
+	onBackToExams: () => { resetExamState(); window.scrollTo(0, 0); render(); },
+	onBackToExam: () => {
+		stopSpeakingTimer();
+		if (speakingRun && speakingRun.audioUrl) recorder.release(speakingRun.audioUrl);
+		if (recorder.isRecording()) recorder.cancel();
+		openSpeakingId = null;
+		openVocabId = null;
+		speakingRun = null;
+		window.scrollTo(0, 0);
+		render();
+	},
+	onOpenExam: (id) => { openExamId = id; window.scrollTo(0, 0); render(); },
+	onOpenWriting: (id) => {
+		// Sinav yazma gorevleri normal yazma motorunu kullaniyor;
+		// ayri bir kontrol yazmak iki kod yolunun zamanla ayrismasi
+		// demek olurdu.
+		openTaskId = id;
+		checkOpen = false;
+		window.scrollTo(0, 0);
+		showSection('examWriting');
+	},
+	onOpenSpeaking: (id) => {
+		openSpeakingId = id;
+		speakingRun = newSpeakingRun(findSpeakingTask(examPack, id));
+		window.scrollTo(0, 0);
+		render();
+	},
+	onOpenVocab: (id) => { openVocabId = id; window.scrollTo(0, 0); render(); },
+	onLocked: () => openPaywall(),
+	onSpeak: (metin) => speak(metin),
+	onStart: () => startSpeakingTimer(),
+	onPause: () => { stopSpeakingTimer(); render(); },
+	onReset: () => {
+		stopSpeakingTimer();
+		speakingRun = newSpeakingRun(findSpeakingTask(examPack, openSpeakingId));
+		render();
+	},
+	onStartRecord: async () => {
+		if (!speakingRun) return;
+		if (speakingRun.audioUrl) {
+			recorder.release(speakingRun.audioUrl);
+			speakingRun.audioUrl = null;
+		}
+		const r = await recorder.start();
+		speakingRun.recording = r.ok;
+		speakingRun.recordError = r.ok ? '' : recorder.errorText(r.reason);
+		render();
+	},
+	onStopRecord: async () => {
+		if (!speakingRun) return;
+		const r = await recorder.stop();
+		speakingRun.recording = false;
+		if (r.ok) {
+			speakingRun.audioUrl = r.url;
+			speakingRun.audioSeconds = r.seconds;
+			speakingRun.recordError = '';
+		} else {
+			speakingRun.recordError = recorder.errorText(r.reason);
+		}
+		render();
+	},
+	onAddToList: async (setId) => {
+		const set = findVocabSet(examPack, setId);
+		if (!set) return;
+		// Kelimeler havuzdaki KIMLIKLE eslesiyor; havuzda olmayan
+		// atlaniyor. Liste tanim kopyalamiyor.
+		const sozluk = new Map(store.state.words.map((w) => [String(w.en).toLowerCase(), w.id]));
+		const ids = set.words.map((w) => sozluk.get(String(w.en).toLowerCase())).filter(Boolean);
+		if (!ids.length) {
+			toast('Bu setteki kelimeler havuzda bulunamadı.', 'warn');
+			return;
+		}
+		const sonuc = createList(store.state.profile.lists, set.title);
+		if (!sonuc.ok) { toast(sonuc.error, 'bad'); return; }
+		let lists = sonuc.lists;
+		for (const id of ids) lists = toggleWord(lists, sonuc.id, id);
+		await store.saveLists(lists);
+		toast(`${ids.length} kelime "${set.title}" listesine eklendi.`);
+	}
+};
 
 const myListHandlers = {
 	onBack: () => showSection('learn'),
@@ -1417,8 +1634,10 @@ function showSection(section) {
 		['reading', 'readingView', 'navLearn'],
 		['writing', 'writingView', 'navLearn'],
 		['email', 'emailView', 'navLearn'],
+		['examWriting', 'examWritingView', 'navLearn'],
 		['antonyms', 'antonymsView', 'navLearn'],
 		['lists', 'listsView', 'navLearn'],
+		['exam', 'examView', 'navLearn'],
 		['topics', 'topicsView', 'navLearn'],
 		['dialogues', 'dialoguesView', 'navDialogues'],
 		['pool', 'poolView', 'navPool'],
@@ -1572,6 +1791,11 @@ async function boot() {
 	loadTasks(EMAIL_URL).then((list) => {
 		emailTasks = list;
 		if (activeSection === 'learn' || activeSection === 'email') render();
+	});
+
+	loadExams(EXAM_URL).then((pack) => {
+		examPack = pack;
+		if (activeSection === 'learn' || activeSection === 'exam') render();
 	});
 
 	loadPairs(ANTONYMS_URL).then((list) => {
