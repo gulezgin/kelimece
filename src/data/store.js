@@ -84,6 +84,13 @@ export const DEFAULT_PROFILE = {
 	/** Tamamlanmış yazma ve e-posta görevleri. */
 	tasksDone: [],
 	/**
+	 * Kişisel kelime listeleri: [{ id, name, wordIds[], createdAt }].
+	 *
+	 * Yalnızca kimlik tutuyor, tanım kopyalamıyor — paket güncellenince
+	 * listedeki kelime de düzelsin diye.
+	 */
+	lists: [],
+	/**
 	 * Yazma taslakları: { [gorevId]: metin }.
 	 *
 	 * Profilde duruyor çünkü kullanıcı 150 kelime yazıp sekme
@@ -232,6 +239,7 @@ export async function init({ packUrl } = {}) {
 			lessonsDone: savedProfile.lessonsDone || [],
 			textsDone: savedProfile.textsDone || [],
 			tasksDone: savedProfile.tasksDone || [],
+			lists: Array.isArray(savedProfile.lists) ? savedProfile.lists : [],
 			drafts: { ...(savedProfile.drafts || {}) }
 		};
 		refreshStreak();
@@ -753,6 +761,18 @@ export async function saveDraft(taskId, metin) {
 	const d = state.profile.drafts || (state.profile.drafts = {});
 	if (d[taskId] === metin) return;
 	d[taskId] = metin;
+	await persistProfile();
+}
+
+/**
+ * Kişisel listeleri yazar.
+ *
+ * `core/lists.js` saf: yeni bir dizi döndürüyor, yerinde değiştirmiyor.
+ * Burada yalnızca atama ve kalıcılaştırma var.
+ */
+export async function saveLists(lists) {
+	state.profile.lists = Array.isArray(lists) ? lists : [];
+	emit();
 	await persistProfile();
 }
 

@@ -3257,3 +3257,40 @@ button.exOption--bad { border-color: var(--bad); }
 .antPrompt { display: grid; gap: 0.15rem; margin: 0.5rem 0 0.8rem; }
 .antPromptEn { font-size: 1.6rem; font-weight: 700; }
 .antPromptTr { font-size: 0.92rem; opacity: 0.75; }
+
+/* ---------- Kişisel listeler ---------- */
+
+.listCard {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto auto;
+	gap: 0.5rem;
+	align-items: center;
+	padding: 0.6rem 0.7rem;
+}
+.listCardMain {
+	display: grid;
+	gap: 0.15rem;
+	text-align: left;
+	background: none;
+	border: none;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+	min-width: 0;
+}
+.listName { font-weight: 600; font-size: 1.02rem; overflow-wrap: anywhere; }
+.listCardBtn { flex: none; padding: 0.35rem 0.7rem; }
+
+.listRow {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto auto auto;
+	gap: 0.5rem;
+	align-items: center;
+	padding: 0.4rem 0;
+	border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+}
+.listRow:first-child { border-top: none; }
+.listRowText { display: grid; gap: 0.05rem; min-width: 0; }
+.listRowBtn { flex: none; padding: 0.25rem 0.55rem; }
+
+.listBtn--on { color: var(--accent, #4f8cff); font-weight: 600; }

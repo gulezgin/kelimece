@@ -118,7 +118,7 @@ export function renderList(list, handlers) {
 
 	if (!list.length) {
 		container.appendChild(
-			el('div', { class: 'small', text: 'Hiç sonuç yok. Filtreleri temizlemeyi veya yeni kelime eklemeyi deneyin.' })
+			el('div', { class: 'small', text: 'Hiç sonuç yok. Filtreleri temizlemeyi deneyin.' })
 		);
 		return;
 	}
@@ -161,7 +161,7 @@ export function renderList(list, handlers) {
 	}
 }
 
-function wordCard(w, { onKnown, onForgot, onLearn, onDelete, onTagClick }) {
+function wordCard(w, { onKnown, onForgot, onLearn, onDelete, onTagClick, onAddToList, listCount }) {
 	const learned = w.level >= MAX_LEVEL;
 	const due = isDue(w.nextReviewAt);
 
@@ -221,7 +221,18 @@ function wordCard(w, { onKnown, onForgot, onLearn, onDelete, onTagClick }) {
 	const delBtn = el('button', { class: 'ghost', text: 'Sil' });
 	delBtn.onclick = () => onDelete(w.id, w.en);
 
-	const actions = el('div', { class: 'actions' }, [knowBtn, failBtn]);
+	// Kac listede oldugu dugmenin uzerinde yaziyor; aksi halde
+	// kullanici ekleyip eklemedigini kartta goremiyor ve ayni kelimeyi
+	// tekrar tekrar aciyor.
+	const kacListe = listCount ? listCount(w.id) : 0;
+	const listBtn = el('button', {
+		class: 'ghost' + (kacListe ? ' listBtn--on' : ''),
+		text: kacListe ? `📋 ${kacListe}` : '📋',
+		title: 'Listelerime ekle'
+	});
+	listBtn.onclick = () => onAddToList(w.id);
+
+	const actions = el('div', { class: 'actions' }, [knowBtn, failBtn, listBtn]);
 	if (!learned) actions.appendChild(learnBtn);
 	actions.appendChild(delBtn);
 	card.appendChild(actions);

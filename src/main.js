@@ -17,9 +17,11 @@ import { renderLearn } from './ui/learn.js';
 import { findText, loadTexts } from './core/reading.js';
 import { findTask, loadTasks, taskSummaries } from './core/writing.js';
 import { buildRound, loadPairs, pairsByLevel, unlockedPairs } from './core/antonyms.js';
+import { createList, deleteList, findList, listCountFor, listSummaries, renameList, toggleWord, wordsInList } from './core/lists.js';
 import { renderComprehension, renderReadingList, renderText } from './ui/reading.js';
 import { renderCheck, renderTask, renderTaskList } from './ui/writing.js';
 import { renderAntonymList, renderAntonymRound } from './ui/antonyms.js';
+import { renderListDetail, renderLists } from './ui/lists.js';
 import { isStruggling } from './core/stats.js';
 import { setRate, speak } from './core/speech.js';
 import { renderTopicChip, renderTopics } from './ui/topics.js';
@@ -256,6 +258,15 @@ function render() {
 		return;
 	}
 
+	if (activeSection === 'lists') {
+		const lists = store.state.profile.lists || [];
+		const acik = openListId ? findList(lists, openListId) : null;
+		if (acik) renderListDetail(acik, wordsInList(store.state.words, acik), myListHandlers);
+		else renderLists(listSummaries(lists, store.state.words), myListHandlers);
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
+
 	if (activeSection === 'antonyms') {
 		const prof = store.state.profile;
 		if (antonymRun) {
@@ -355,6 +366,7 @@ let checkOpen = false;
 let antonymPairs = [];
 /** Zit anlamli turu: sorular ve ilerleme birlikte. */
 let antonymRun = null;
+let openListId = null;
 
 /** Ogren ekranindaki moduller. */
 function learnModules() {
@@ -364,7 +376,8 @@ function learnModules() {
 		{ id: 'reading', icon: '📖', title: 'Okuma', note: texts.length + ' parça', ready: texts.length > 0 },
 		{ id: 'writing', icon: '✍️', title: 'Yazma', note: writingTasks.length + ' görev', ready: writingTasks.length > 0 },
 		{ id: 'email', icon: '📧', title: 'E-posta', note: emailTasks.length + ' görev', ready: emailTasks.length > 0 },
-		{ id: 'antonyms', icon: '↔️', title: 'Zıt anlamlılar', note: antonymPairs.length + ' çift', ready: antonymPairs.length > 0 }
+		{ id: 'antonyms', icon: '↔️', title: 'Zıt anlamlılar', note: antonymPairs.length + ' çift', ready: antonymPairs.length > 0 },
+		{ id: 'lists', icon: '📋', title: 'Listelerim', note: (store.state.profile.lists || []).length + ' liste', ready: true }
 	];
 }
 
@@ -376,7 +389,8 @@ const learnHandlers = {
 		if (id === 'writing' || id === 'email') {
 			openTaskId = null; checkOpen = false; showSection(id); return;
 		}
-		if (id === 'antonyms') { antonymRun = null; showSection('antonyms'); }
+		if (id === 'antonyms') { antonymRun = null; showSection('antonyms'); return; }
+		if (id === 'lists') { openListId = null; showSection('lists'); }
 	}
 };
 
@@ -458,6 +472,104 @@ function startAntonymRound() {
 	window.scrollTo(0, 0);
 	render();
 }
+
+/** Yeni liste kurar; istege bagli olarak bir kelimeyi de ekler. */
+async function promptNewList(wordId = null) {
+	const cevap = await formDialog({
+		title: 'Yeni liste',
+		message: 'Havuzdaki kelimeleri bu listede toplayabilirsin.',
+		fields: [{ name: 'name', label: 'Liste adı', placeholder: 'Örn. Sınav kelimeleri', maxLength: 40 }],
+		submitText: 'Kur',
+		validate: (v) => (v.name && v.name.trim() ? null : 'Liste adı boş olamaz.')
+	});
+	if (!cevap) return null;
+
+	const sonuc = createList(store.state.profile.lists, cevap.name);
+	if (!sonuc.ok) {
+		toast(sonuc.error, 'bad');
+		return null;
+	}
+	const lists = wordId ? toggleWord(sonuc.lists, sonuc.id, wordId) : sonuc.lists;
+	await store.saveLists(lists);
+	toast(wordId ? 'Liste kuruldu, kelime eklendi.' : 'Liste kuruldu.');
+	return sonuc.id;
+}
+
+/**
+ * Kelimeyi listeye ekleme/cikarma penceresi.
+ *
+ * Tek secimli: bir kelime cogu zaman tek listeye giriyor ve `choiceDialog`
+ * zaten test edilmis. Cok secimli bir pencere icin ayri bir makine
+ * kurmak bu kazanci hak etmiyor.
+ */
+async function openListPicker(wordId) {
+	const lists = store.state.profile.lists || [];
+	const kelime = store.getWord(wordId);
+	const secim = await choiceDialog(kelime ? kelime.en : '', {
+		title: 'Listelerime ekle',
+		options: [
+			...lists.map((l) => ({
+				value: l.id,
+				label: ((l.wordIds || []).includes(wordId) ? '✓ ' : '') + l.name,
+				description: (l.wordIds || []).includes(wordId)
+					? 'Listede — çıkarmak için dokun'
+					: (l.wordIds || []).length + ' kelime'
+			})),
+			{ value: '__new', label: '➕ Yeni liste kur', description: 'Kur ve bu kelimeyi ekle' }
+		]
+	});
+	if (!secim) return;
+	if (secim === '__new') { await promptNewList(wordId); return; }
+
+	const vardi = (lists.find((l) => l.id === secim)?.wordIds || []).includes(wordId);
+	await store.saveLists(toggleWord(lists, secim, wordId));
+	toast(vardi ? 'Listeden çıkarıldı.' : 'Listeye eklendi.');
+}
+
+const myListHandlers = {
+	onBack: () => showSection('learn'),
+	onBackToLists: () => { openListId = null; window.scrollTo(0, 0); render(); },
+	onOpen: (id) => { openListId = id; window.scrollTo(0, 0); render(); },
+	onCreate: () => promptNewList(),
+	onToggle: async (listId, wordId) => {
+		await store.saveLists(toggleWord(store.state.profile.lists, listId, wordId));
+	},
+	onSpeak: (metin) => speak(metin),
+	onStudy: (id) => startReviewSession({ free: true, listId: id }),
+	onManage: async (id) => {
+		const liste = findList(store.state.profile.lists, id);
+		if (!liste) return;
+		const secim = await choiceDialog(liste.name, {
+			title: 'Liste',
+			options: [
+				{ value: 'rename', label: 'Yeniden adlandır' },
+				{ value: 'delete', label: 'Listeyi sil', description: 'Kelimeler silinmez, yalnızca liste kalkar', danger: true }
+			]
+		});
+		if (secim === 'rename') {
+			const cevap = await formDialog({
+				title: 'Yeniden adlandır',
+				fields: [{ name: 'name', label: 'Liste adı', value: liste.name, maxLength: 40 }],
+				submitText: 'Kaydet',
+				validate: (v) => (v.name && v.name.trim() ? null : 'Liste adı boş olamaz.')
+			});
+			if (!cevap) return;
+			const r = renameList(store.state.profile.lists, id, cevap.name);
+			if (!r.ok) { toast(r.error, 'bad'); return; }
+			await store.saveLists(r.lists);
+			toast('Ad değiştirildi.');
+		} else if (secim === 'delete') {
+			const onay = await confirmDialog(
+				`"${liste.name}" listesi silinsin mi? Kelimeler havuzda kalır.`,
+				{ title: 'Listeyi sil', confirmText: 'Sil', danger: true }
+			);
+			if (!onay) return;
+			await store.saveLists(deleteList(store.state.profile.lists, id));
+			if (openListId === id) openListId = null;
+			toast('Liste silindi.');
+		}
+	}
+};
 
 const antonymHandlers = {
 	onBack: () => showSection('learn'),
@@ -738,7 +850,9 @@ const listHandlers = {
 	onTagClick: (tag) => {
 		$('search').value = tag;
 		render();
-	}
+	},
+	onAddToList: (id) => openListPicker(id),
+	listCount: (id) => listCountFor(store.state.profile.lists, id)
 };
 
 // ===================== Tekrar =====================
@@ -749,24 +863,31 @@ function handleStartReview() {
 
 /**
  * Tekrar oturumunu başlatır.
- * @param {{free?: boolean, levels?: string[]|null}} options
+ * @param {{free?: boolean, levels?: string[]|null, topic?: string|null,
+ *   hard?: boolean, listId?: string|null}} options
  *   levels verilirse yalnızca o CEFR seviyeleri; yoksa havuzdaki seçim.
  */
-async function startReviewSession({ free = false, levels = null, topic = null, hard = false } = {}) {
-	// Zorlanilanlar ve konu secimi seviye kapsamini gecersiz kilar:
-	// kullanici "zorlandiklarim" dedigi anda istedigi sey onlar.
-	let pool = hard
-		? store.state.words.filter(isStruggling)
-		: topic
-			? store.state.words.filter((w) => w.topic === topic)
-			: levels
-				? store.state.words.filter((w) => levels.includes(w.cefr))
-				: wordsAtLevel();
+async function startReviewSession({ free = false, levels = null, topic = null, hard = false, listId = null } = {}) {
+	// Zorlanilanlar, konu ve kisisel liste secimi seviye kapsamini
+	// gecersiz kilar: kullanici "zorlandiklarim" ya da bir liste
+	// dedigi anda istedigi sey onlar.
+	const liste = listId ? findList(store.state.profile.lists, listId) : null;
+	let pool = liste
+		? wordsInList(store.state.words, liste)
+		: hard
+			? store.state.words.filter(isStruggling)
+			: topic
+				? store.state.words.filter((w) => w.topic === topic)
+				: levels
+					? store.state.words.filter((w) => levels.includes(w.cefr))
+					: wordsAtLevel();
 
 	// Zorlanilan kelimelerde SERBEST tekrar sart: bunlarin cogunun
 	// tekrar zamani gelmemis olabilir ama zorlanildigi icin
 	// calisilmak isteniyor.
-	if (hard) free = true;
+	// Kisisel listede de serbest tekrar sart: kullanici o listeyi
+	// bilerek secti, tekrar zamani gelmemis olmasi engel degil.
+	if (hard || liste) free = true;
 
 	// Kilitli seviyeler oturuma girmez. Kullanicinin kendi kelimeleri
 	// her zaman kalir - kendi verisi kisitlanamaz.
@@ -779,12 +900,20 @@ async function startReviewSession({ free = false, levels = null, topic = null, h
 		openPaywall();
 		return;
 	}
+	// Bir kismi kilitliyse sessizce dusurmek kafa karistiriyor:
+	// liste "2 kelime" derken oturum 1 kelimeyle basliyor ve kullanici
+	// bunu hata saniyor.
+	if (blocked > 0) {
+		toast(`${blocked} kelime abonelik gerektirdiği için oturuma girmedi.`, 'warn');
+	}
 	// Gunluk hedef = bir oturumda tanistirilacak yeni kelime sayisi.
 	const newLimit = store.state.settings.dailyGoal;
 	const queue = buildReviewQueue(pool, { free, isDue, newLimit });
 
 	if (!queue.length) {
-		const scopeLabel = hard
+		const scopeLabel = liste
+			? ' ("' + liste.name + '" listesinde)'
+			: hard
 			? ' (zorlandiklarin arasinda)'
 			: topic
 			? ' (' + topic + ' konusunda)'
@@ -1191,6 +1320,7 @@ function showSection(section) {
 		['writing', 'writingView', 'navLearn'],
 		['email', 'emailView', 'navLearn'],
 		['antonyms', 'antonymsView', 'navLearn'],
+		['lists', 'listsView', 'navLearn'],
 		['topics', 'topicsView', 'navLearn'],
 		['dialogues', 'dialoguesView', 'navDialogues'],
 		['pool', 'poolView', 'navPool'],
