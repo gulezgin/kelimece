@@ -3471,3 +3471,5 @@ button.exOption--bad { border-color: var(--bad); }
 	color: #fff;
 	overflow-wrap: anywhere;
 }
+
+.speakRecord { display: grid; gap: 0.35rem; margin: 0.5rem 0; }

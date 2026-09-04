@@ -84,7 +84,7 @@ export function renderDialogue(dialogue, handlers, wordIndex) {
 	// Rol yapma: okumak konusmayi ogretmiyor, uretmek ogretiyor.
 	const roleBtn = el('button', {
 		class: 'primary dlgRoleBtn',
-		text: '🎭 Bu diyalogu konus'
+		text: '🎭 Bu diyaloğu konuş'
 	});
 	roleBtn.onclick = () => handlers.onPractice(dialogue.id);
 	host.appendChild(roleBtn);

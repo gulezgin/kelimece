@@ -18,6 +18,7 @@ import {
 import { compareUtterance, isPass } from '../core/speaking.js';
 import { hasEnglishVoice, speak } from '../core/speech.js';
 import { errorText, isSupported as micSupported, listenOnce } from '../platform/speech-input.js';
+import * as recorder from '../platform/recorder.js';
 import { $, el } from './dom.js';
 
 /** Cevap gösterilmeden önceki deneme hakkı. */
@@ -49,6 +50,8 @@ export function startPractice(dialogue, allDialogues, handlers, options = {}) {
 		allowSpeak: !!options.allowSpeak,
 		/** `onDone` bir kez cagrilsin diye. */
 		reported: false,
+		/** Son kaydin adresi; ekran degisince serbest birakiliyor. */
+		recordUrl: null,
 		/**
 		 * Konusma adimlarinda tutturulamayan kelimeler.
 		 * Tek bir puan "neyi duzeltmeliyim" sorusunu cevaplamiyor;
@@ -63,6 +66,10 @@ export function startPractice(dialogue, allDialogues, handlers, options = {}) {
 
 /** Alıştırma ekranı kapatılırken çağrılır. */
 export function stopPractice() {
+	// Mikrofon ve kayit adresi birakilmazsa: kayit isigi yanik kalir
+	// ve her cikista bellekte bir ses kopyasi birikir.
+	if (recorder.isRecording()) recorder.cancel();
+	if (state && state.recordUrl) recorder.release(state.recordUrl);
 	state = null;
 }
 
@@ -348,9 +355,53 @@ function speakUi(ex) {
 		}
 	};
 
+	const eylemler = el('div', { class: 'speakActions' }, [dinle, mikrofon]);
+	const kayitAlani = el('div', { class: 'speakRecord' });
+
+	// Kayit, TANIMADAN ayri bir sey ve ayri bir islevi var: taniyici
+	// "hangi kelimeyi tutturamadigini" soyluyor, kayit "nasil
+	// duyuldugunu" duyuruyor. Ikisi de telaffuz puani vermiyor.
+	if (recorder.isSupported()) {
+		const kayit = el('button', { class: 'ghost', text: '⏺ Kaydet' });
+		kayit.onclick = async () => {
+			if (recorder.isRecording()) {
+				const r = await recorder.stop();
+				kayit.textContent = '⏺ Kaydet';
+				kayit.className = 'ghost';
+				kayitAlani.textContent = '';
+				if (!r.ok) {
+					kayitAlani.appendChild(el('div', { class: 'small', text: recorder.errorText(r.reason) }));
+					return;
+				}
+				// Onceki kaydin adresi birakiliyor; birakilmazsa her
+				// denemede bellekte bir kopya kaliyor.
+				if (state.recordUrl) recorder.release(state.recordUrl);
+				state.recordUrl = r.url;
+				const oynatici = document.createElement('audio');
+				oynatici.controls = true;
+				oynatici.src = r.url;
+				oynatici.className = 'examAudio';
+				kayitAlani.appendChild(oynatici);
+				kayitAlani.appendChild(el('div', { class: 'small', text:
+					'Kendi kaydını dinle. Kayıt cihazdan çıkmıyor.' }));
+				return;
+			}
+			const r = await recorder.start();
+			if (!r.ok) {
+				kayitAlani.textContent = '';
+				kayitAlani.appendChild(el('div', { class: 'small', text: recorder.errorText(r.reason) }));
+				return;
+			}
+			kayit.textContent = '⏹ Bitir';
+			kayit.className = 'bad';
+		};
+		eylemler.appendChild(kayit);
+	}
+
 	return el('div', { class: 'speakUi' }, [
 		el('div', { class: 'speakTarget', text: ex.say }),
-		el('div', { class: 'speakActions' }, [dinle, mikrofon]),
+		eylemler,
+		kayitAlani,
 		sonucKutusu,
 		gec
 	]);
