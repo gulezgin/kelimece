@@ -2821,3 +2821,101 @@ button.profileEdit {
 	gap: 8px;
 	margin-top: 12px;
 }
+
+/* ==============================================
+   GÜNLÜK PLAN
+   ============================================== */
+.planPanel {
+	margin-bottom: 16px;
+}
+
+.planHead {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 10px;
+	margin-bottom: 12px;
+}
+
+.planTitle {
+	font-size: 16px;
+	font-weight: 800;
+}
+
+.planCount {
+	color: var(--muted);
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.planList {
+	display: grid;
+	gap: 8px;
+}
+
+button.planTask {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	padding: 12px 14px;
+	text-align: left;
+	border: 1px solid #263049;
+	border-radius: 12px;
+	background: #0f1529;
+	color: var(--text);
+	cursor: pointer;
+	transition: border-color var(--transition);
+}
+
+button.planTask:hover {
+	border-color: var(--acc);
+}
+
+/* Tamamlanan gorev silinmiyor, soluyor: kullanici ne yaptigini
+   gormeye devam etmeli. */
+button.planTask--done {
+	opacity: 0.5;
+}
+
+button.planTask--done .planTaskIcon {
+	color: var(--good);
+}
+
+.planTaskIcon {
+	font-size: 20px;
+	line-height: 1;
+	width: 24px;
+	text-align: center;
+}
+
+.planTaskBody {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.planTaskTitle {
+	font-weight: 700;
+	font-size: 14px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.planTaskNote {
+	color: var(--muted);
+	font-size: 12px;
+}
+
+.planTaskMin {
+	color: var(--muted);
+	font-size: 11px;
+	white-space: nowrap;
+}
+
+.planEdit {
+	margin-top: 12px;
+}

@@ -10,6 +10,7 @@
  * bu yüzden IndexedDB'de indeksli sorguya gerek yok.
  */
 import { NO_ACCOUNT } from '../core/account.js';
+import { DEFAULT_PLAN_PREFS } from '../core/plan.js';
 import { isWorthSyncing } from '../core/sync.js';
 import { accessibleWords, grantPremium, isPremiumActive, NO_PREMIUM } from '../core/entitlements.js';
 import { applyRating } from '../core/scheduler.js';
@@ -65,7 +66,14 @@ export const DEFAULT_PROFILE = {
 	 * Yerel profil (ad, e-posta). Sunucu yok — bu bilgiler cihazda
 	 * kalır ve yedek görevi görmez.
 	 */
-	account: { ...NO_ACCOUNT }
+	account: { ...NO_ACCOUNT },
+	/** Öğrenme hedefi ve günlük ayrılan süre; günlük planı belirler. */
+	goal: DEFAULT_PLAN_PREFS.goal,
+	dailyMinutes: DEFAULT_PLAN_PREFS.dailyMinutes,
+	/** Hedef soruldu mu? Sorulmadıysa ana ekran soruyor. */
+	goalAskedAt: null,
+	/** Bugün tamamlanan görevler: { date, ids[] } */
+	dailyDone: { date: null, ids: [] }
 };
 
 /** @type {{words: object[], settings: object, profile: object, ready: boolean, packs: object}} */
@@ -202,7 +210,8 @@ export async function init({ packUrl } = {}) {
 			// İç içe nesneler yüzeysel birleştirmede kaybolur
 			reminder: { ...DEFAULT_PROFILE.reminder, ...(savedProfile.reminder || {}) },
 			premium: { ...NO_PREMIUM, ...(savedProfile.premium || {}) },
-			account: { ...NO_ACCOUNT, ...(savedProfile.account || {}) }
+			account: { ...NO_ACCOUNT, ...(savedProfile.account || {}) },
+			dailyDone: { date: null, ids: [], ...(savedProfile.dailyDone || {}) }
 		};
 		refreshStreak();
 		state.settings = { ...DEFAULT_SETTINGS, ...((await getMeta('settings')) || {}) };
@@ -649,6 +658,37 @@ export async function saveAccount(account) {
 	emit();
 	await persistProfile();
 	return state.profile.account;
+}
+
+/**
+ * Öğrenme hedefini ve günlük süreyi kaydeder.
+ */
+export async function savePlanPrefs({ goal, dailyMinutes }) {
+	if (goal) state.profile.goal = goal;
+	if (dailyMinutes) state.profile.dailyMinutes = Number(dailyMinutes);
+	state.profile.goalAskedAt = new Date().toISOString();
+	emit();
+	await persistProfile();
+}
+
+/**
+ * Bir günlük görevi tamamlanmış işaretler.
+ * Gün değişince liste sıfırlanır; dünün görevleri bugünü etkilemez.
+ */
+export async function markTaskDone(taskId) {
+	const bugun = todayISO();
+	const d = state.profile.dailyDone || { date: null, ids: [] };
+	const ids = d.date === bugun ? d.ids.slice() : [];
+	if (!ids.includes(taskId)) ids.push(taskId);
+	state.profile.dailyDone = { date: bugun, ids };
+	emit();
+	await persistProfile();
+}
+
+/** Bugün tamamlanan görev kimlikleri. */
+export function todayDoneIds() {
+	const d = state.profile.dailyDone;
+	return d && d.date === todayISO() ? d.ids : [];
 }
 
 /** Yerel profili siler. */

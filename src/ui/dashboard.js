@@ -19,6 +19,7 @@ export function renderDashboard(overview, breakdown, handlers) {
 
 	host.appendChild(goalRing(overview));
 	host.appendChild(heroSection(overview, handlers));
+	if (overview.plan) host.appendChild(dailyPlan(overview.plan, handlers));
 	host.appendChild(statsRow(overview));
 	host.appendChild(levelProgress(breakdown, overview.level, handlers));
 	host.appendChild(moreRow(handlers));
@@ -128,11 +129,57 @@ function heroSection(o, handlers) {
 	placeBtn.onclick = () => handlers.onPlacement();
 	actions.appendChild(placeBtn);
 
+	// Hedef sorulmadiysa plan uretilemiyor; kullaniciyi oraya cagir.
+	if (!o.plan) {
+		const planBtn = el('button', { class: 'ghost', text: '📋 Günlük planımı oluştur' });
+		planBtn.onclick = () => handlers.onSetupPlan();
+		actions.appendChild(planBtn);
+	}
+
 	const browseBtn = el('button', { class: 'ghost', text: 'Kelime havuzu' });
 	browseBtn.onclick = () => handlers.onBrowse();
 	actions.appendChild(browseBtn);
 
 	return el('section', { class: 'panel hero' }, [title, subtitle, actions]);
+}
+
+
+/**
+ * Bugünün görev listesi.
+ *
+ * Uygulamayı açan kişi "bugün ne yapayım?" diye düşünmemeli. Liste
+ * kısa: hedefe ve ayrılan süreye göre üretiliyor, çünkü tamamlanamayan
+ * bir plan motive etmez, suçluluk üretir.
+ */
+function dailyPlan(plan, handlers) {
+	const bitti = plan.done >= plan.total && plan.total > 0;
+
+	const baslik = el('div', { class: 'planHead' }, [
+		el('div', { class: 'planTitle', text: bitti ? '✅ Bugünü tamamladın' : '📋 Bugünkü görevlerin' }),
+		el('div', { class: 'planCount', text: `${plan.done} / ${plan.total}` })
+	]);
+
+	const liste = el('div', { class: 'planList' });
+	for (const t of plan.tasks) {
+		const satir = el('button', {
+			class: 'planTask' + (t.done ? ' planTask--done' : ''),
+			title: t.title
+		}, [
+			el('span', { class: 'planTaskIcon', text: t.done ? '✓' : t.icon }),
+			el('span', { class: 'planTaskBody' }, [
+				el('span', { class: 'planTaskTitle', text: t.title }),
+				el('span', { class: 'planTaskNote', text: t.note })
+			]),
+			el('span', { class: 'planTaskMin', text: t.minutes + ' dk' })
+		]);
+		satir.onclick = () => handlers.onTask(t);
+		liste.appendChild(satir);
+	}
+
+	const alt = el('button', { class: 'ghost planEdit', text: '⚙️ Hedefimi değiştir' });
+	alt.onclick = () => handlers.onEditGoal();
+
+	return el('section', { class: 'panel planPanel' }, [baslik, liste, alt]);
 }
 
 /** Günlük hedef, seri ve genel ilerleme. */

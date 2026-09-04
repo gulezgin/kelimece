@@ -8,6 +8,9 @@ import './styles/main.css';
 
 import { isLevelUnlocked, lockedLevels } from './core/entitlements.js';
 import { levelsUpTo } from './core/placement.js';
+import { buildDailyPlan, DAILY_MINUTES, GOALS } from './core/plan.js';
+import { isDialogueUnlocked } from './core/dialogues.js';
+import { topicSummaries } from './core/topics.js';
 import { renderTopicChip, renderTopics } from './ui/topics.js';
 import { findDialogue, loadDialogues } from './core/dialogues.js';
 import { renderDialogue, renderDialogueList } from './ui/dialogues.js';
@@ -221,6 +224,8 @@ function render() {
 			? store.state.words.filter((w) => scope.includes(w.cefr))
 			: store.state.words;
 		overview.session = countQueue(scopeWords, { isDue, newLimit: store.state.settings.dailyGoal });
+		// Hedef sorulmadiysa plan gosterilmez; once soru sorulur.
+		overview.plan = store.state.profile.goalAskedAt ? currentPlan() : null;
 		renderDashboard(overview, breakdown, dashboardHandlers);
 		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
 		return;
@@ -253,6 +258,73 @@ function render() {
 	else renderTiles(list);
 }
 
+
+// ===================== Gunluk plan =====================
+
+/** Ana ekran icin bugunun plani. */
+function currentPlan() {
+	const prof = store.state.profile;
+	const acik = dialogues.filter((d) => isDialogueUnlocked(d, prof.premium));
+	const { topics } = topicSummaries(store.state.words, prof.premium);
+	return buildDailyPlan({
+		goal: prof.goal,
+		dailyMinutes: prof.dailyMinutes,
+		dueCount: store.getStats(isDue).due,
+		dialogues: acik,
+		topics,
+		doneIds: store.todayDoneIds()
+	});
+}
+
+/**
+ * Hedef ve gunluk sure sorusu.
+ * Uygulamanin plani buna dayaniyor; sorulmadan plan uretilemez.
+ */
+async function askGoal() {
+	const prof = store.state.profile;
+
+	const hedef = await choiceDialog('Neden Ingilizce ogreniyorsun?', {
+		title: 'Hedefin',
+		options: Object.entries(GOALS).map(([key, g]) => ({
+			value: key,
+			label: g.icon + '  ' + g.label
+		})),
+		cancelText: 'Vazgec'
+	});
+	if (!hedef) return;
+
+	const sure = await choiceDialog('Her gun ne kadar zaman ayirabilirsin?', {
+		title: 'Gunluk sure',
+		options: DAILY_MINUTES.map((m) => ({ value: String(m), label: m + ' dakika' })),
+		cancelText: 'Vazgec'
+	});
+	if (!sure) return;
+
+	await store.savePlanPrefs({ goal: hedef, dailyMinutes: Number(sure) });
+	toast('Planin hazir.');
+	render();
+}
+
+/** Gorev satirina dokunulunca ilgili ekrana goturur. */
+async function runTask(task) {
+	await store.markTaskDone(task.id);
+	if (task.kind === 'words') {
+		const level = store.state.profile.level;
+		activeLevel = 'all';
+		startReviewSession({ levels: level ? levelsUpTo(level) : null });
+		return;
+	}
+	if (task.kind === 'dialogue') {
+		openDialogueId = task.target;
+		showSection('dialogues');
+		return;
+	}
+	if (task.kind === 'topic') {
+		activeTopic = task.target;
+		startReviewSession({ topic: task.target });
+	}
+}
+
 // ===================== Ana ekran =====================
 
 const dashboardHandlers = {
@@ -274,7 +346,10 @@ const dashboardHandlers = {
 		showSection('pool');
 	},
 	onBrowse: () => showSection('pool'),
-	onStats: () => showSection('stats')
+	onStats: () => showSection('stats'),
+	onTask: (task) => runTask(task),
+	onEditGoal: () => askGoal(),
+	onSetupPlan: () => askGoal()
 };
 
 /**
