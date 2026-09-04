@@ -174,7 +174,11 @@ export function renderComprehension(text, handlers, run) {
 	function puanla() {
 		if (!run.scored) {
 			run.scored = true;
-			if (isTextPassed(gradeComprehension(text, cevaplar))) handlers.onPassed(text.id);
+			const r = gradeComprehension(text, cevaplar);
+			// Beceri grafigi GECILSIN GECILMESIN sayiyor; yalnizca
+			// gecen denemeleri saymak basari oranini %100 gosterirdi.
+			handlers.onResult?.(r);
+			if (isTextPassed(r)) handlers.onPassed(text.id);
 		}
 		ciz();
 	}

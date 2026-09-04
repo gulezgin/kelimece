@@ -24,6 +24,7 @@ import { renderAntonymList, renderAntonymRound } from './ui/antonyms.js';
 import { renderListDetail, renderLists } from './ui/lists.js';
 import { isStruggling } from './core/stats.js';
 import { availableAccents, setAccent, setRate, speak } from './core/speech.js';
+import { XP } from './core/xp.js';
 import { renderTopicChip, renderTopics } from './ui/topics.js';
 import { findDialogue, loadDialogues } from './core/dialogues.js';
 import { renderDialogue, renderDialogueList } from './ui/dialogues.js';
@@ -54,6 +55,7 @@ import * as billing from './platform/billing.js';
 import * as paywall from './ui/paywall.js';
 import { startPlacement } from './ui/placement.js';
 import { renderStatsView } from './ui/statsView.js';
+import { progressPanel } from './ui/progress.js';
 import * as review from './ui/review.js';
 import {
 	filterWords,
@@ -206,6 +208,11 @@ function render() {
 		});
 		// Istatistigin kendi sekmesi yok; geri donus yolu gorunur olmali.
 		const host = $('statsView');
+		const s = store.getStats(isDue);
+		host.insertBefore(progressPanel(store.state.profile, {
+			learned: s.learned,
+			streak: store.state.profile.streak || 0
+		}), host.firstChild);
 		const back = el('button', { class: 'ghost backBtn', text: '← Ana sayfa' });
 		back.onclick = () => showSection('home');
 		host.insertBefore(back, host.firstChild);
@@ -401,7 +408,8 @@ const readingHandlers = {
 	onOpen: (id) => { openTextId = id; comprehensionOpen = false; window.scrollTo(0, 0); render(); },
 	onStartQuiz: (id) => { openTextId = id; comprehensionOpen = true; comprehensionRun = newQuizRun(); window.scrollTo(0, 0); render(); },
 	onLocked: () => openPaywall(),
-	onPassed: (id) => store.markTextDone(id),
+	onPassed: (id) => { store.awardXp(XP.READING); return store.markTextDone(id); },
+	onResult: (r) => store.recordSkill('reading', r.correct, r.total),
 	onWord: (word) => dialogueHandlers.onWord(word)
 };
 
@@ -456,7 +464,7 @@ const writingHandlers = {
 	// alaninin odagini ve imlec konumunu kaybettiriyor.
 	onDraft: (id, metin) => store.saveDraft(id, metin),
 	onLocked: () => openPaywall(),
-	onDone: (id) => { store.markWritingDone(id); openTaskId = null; checkOpen = false; window.scrollTo(0, 0); render(); }
+	onDone: (id) => { store.awardXp(XP.WRITING); store.markWritingDone(id); openTaskId = null; checkOpen = false; window.scrollTo(0, 0); render(); }
 };
 
 /**
@@ -577,7 +585,12 @@ const antonymHandlers = {
 	onStartRound: () => startAntonymRound(),
 	onLocked: () => openPaywall(),
 	onSpeak: (metin) => speak(metin),
-	onFinished: () => {}
+	// Tur XP'si dogru orani ile olceklendiriliyor; her turda sabit XP
+	// vermek rastgele tiklamayi odullendirirdi.
+	onFinished: (r) => {
+		store.awardXp(Math.round(XP.ANTONYM_ROUND * (r.score / 100)));
+		store.recordSkill('vocab', r.correct, r.total);
+	}
 };
 
 const grammarHandlers = {
@@ -587,7 +600,8 @@ const grammarHandlers = {
 	onOpen: (id) => { openLessonId = id; quizOpen = false; window.scrollTo(0, 0); render(); },
 	onStartQuiz: (id) => { openLessonId = id; quizOpen = true; quizRun = newQuizRun(); window.scrollTo(0, 0); render(); },
 	onLocked: () => openPaywall(),
-	onPassed: (id) => store.markLessonDone(id)
+	onPassed: (id) => { store.awardXp(XP.GRAMMAR); return store.markLessonDone(id); },
+	onResult: (r) => store.recordSkill('grammar', r.correct, r.total)
 };
 
 // ===================== Gunluk plan =====================
@@ -782,6 +796,19 @@ const dialogueHandlers = {
 		practiceDialogueId = id;
 		window.scrollTo(0, 0);
 		startPractice(d, dialogues, {
+			// XP cikista degil BITISTE veriliyor; erken cikan tam puan
+			// almamali.
+			onDone: (sonuc) => {
+				store.awardXp(Math.round(XP.DIALOGUE * (sonuc.score / 100)));
+				store.recordSkill('dialogue', sonuc.correct, sonuc.total);
+				store.markDialogueDone(sonuc.id);
+				// Konusma yalnizca DENENMISSE sayiliyor; mikrofon
+				// kullanilmayan bir diyalog konusma grafigini
+				// yanlis biçimde sifira cekmemeli.
+				if (sonuc.speak && sonuc.speak.attempts) {
+					store.recordSkill('speaking', sonuc.speak.passed, sonuc.speak.attempts);
+				}
+			},
 			onExit: () => {
 				stopPractice();
 				practiceDialogueId = null;
@@ -937,7 +964,15 @@ async function startReviewSession({ free = false, levels = null, topic = null, h
 		// böylece şıklar benzer zorlukta olur.
 		pool: pool.length >= 40 ? pool : store.state.words,
 		getWord: (id) => store.getWord(id),
-		onRate: (id, rating) => store.rateWord(id, rating),
+		onRate: (id, rating) => {
+			// Yanlis cevap da XP veriyor (daha az). Yalnizca dogruyu
+			// odullendirmek kullaniciyi bildigi kelimeleri tekrar etmeye
+			// ve bilmediklerinden kacinmaya iter - araliklı tekrarin tam
+			// tersi.
+			store.awardXp(rating === 'again' ? XP.REVIEW_FAIL : XP.REVIEW_OK);
+			store.recordSkill('vocab', rating === 'again' ? 0 : 1, 1);
+			return store.rateWord(id, rating);
+		},
 		onFinish: async (stats) => {
 			render();
 			if (stats.answered > 0) {

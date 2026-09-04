@@ -17,6 +17,8 @@ import { accessibleWords, grantPremium, isPremiumActive, NO_PREMIUM } from '../c
 import { applyRating } from '../core/scheduler.js';
 import { applyResult, MAX_LEVEL, scheduleNext } from '../core/srs.js';
 import { isSameDay, todayISO } from '../core/time.js';
+import { challengeRecord, challengeStatus } from '../core/challenge.js';
+import { addXp } from '../core/xp.js';
 import {
 	createProgress,
 	merge,
@@ -85,6 +87,22 @@ export const DEFAULT_PROFILE = {
 	textsDone: [],
 	/** Tamamlanmış yazma ve e-posta görevleri. */
 	tasksDone: [],
+	/** XP durumu: { total, byDay }. */
+	xp: { total: 0, byDay: {} },
+	/** Bu haftanın hedefi: { week, goal, done }. */
+	challenge: { week: null, goal: 0, done: false },
+	/** Rol yapması tamamlanmış diyaloglar. */
+	dialoguesDone: [],
+	/** Tamamlanmış haftalık hedef sayısı. */
+	weeksDone: 0,
+	/**
+	 * Beceri başarı sayaçları: { [beceri]: { correct, total } }.
+	 *
+	 * Grafik için birikimli sayaç tutuluyor, tek tek deneme kaydı
+	 * değil. Deneme kaydı bir yıl sonra profili şişirirdi ve grafik
+	 * zaten yalnızca oranı gösteriyor.
+	 */
+	skills: {},
 	/**
 	 * Kişisel kelime listeleri: [{ id, name, wordIds[], createdAt }].
 	 *
@@ -242,6 +260,11 @@ export async function init({ packUrl } = {}) {
 			textsDone: savedProfile.textsDone || [],
 			tasksDone: savedProfile.tasksDone || [],
 			lists: Array.isArray(savedProfile.lists) ? savedProfile.lists : [],
+			xp: { total: 0, byDay: {}, ...(savedProfile.xp || {}) },
+			challenge: { week: null, goal: 0, done: false, ...(savedProfile.challenge || {}) },
+			dialoguesDone: savedProfile.dialoguesDone || [],
+			weeksDone: Number(savedProfile.weeksDone) || 0,
+			skills: { ...(savedProfile.skills || {}) },
 			drafts: { ...(savedProfile.drafts || {}) }
 		};
 		refreshStreak();
@@ -729,6 +752,15 @@ export async function markLessonDone(lessonId) {
 	await persistProfile();
 }
 
+/** Diyaloğu tamamlanmış işaretler. */
+export async function markDialogueDone(dialogueId) {
+	const liste = state.profile.dialoguesDone || [];
+	if (liste.includes(dialogueId)) return;
+	state.profile.dialoguesDone = [...liste, dialogueId];
+	emit();
+	await persistProfile();
+}
+
 /** Okuma parçasını tamamlanmış işaretler. */
 export async function markTextDone(textId) {
 	const liste = state.profile.textsDone || [];
@@ -824,6 +856,58 @@ export async function setSpeechRate(rate) {
 	state.settings.speechRate = Number(rate);
 	emit();
 	await persistSettings();
+}
+
+/**
+ * XP ekler ve haftalık hedefi günceller.
+ *
+ * Hedef kaydı BURADA yenileniyor, okuma anında değil: hafta içinde
+ * hedefi yeniden hesaplamak, geçen haftanın günlük kayıtları budandığı
+ * anda hedefi kaydırır ve ilerleme çubuğu geri gider.
+ */
+export async function awardXp(amount) {
+	const miktar = Math.max(0, Math.round(Number(amount) || 0));
+	if (!miktar) return;
+
+	const now = new Date();
+	state.profile.xp = addXp(state.profile.xp, miktar, now);
+
+	const kayitli = state.profile.challenge;
+	const yeni = challengeRecord(state.profile.xp, kayitli, now);
+	// Hafta degistiyse "tamamlandi" bayragi sifirlaniyor.
+	const ayniHafta = kayitli && kayitli.week === yeni.week;
+	const durum = challengeStatus(state.profile.xp, yeni, now);
+	const oncedenBitti = ayniHafta && !!kayitli.done;
+
+	if (durum.done && !oncedenBitti) {
+		state.profile.weeksDone = (Number(state.profile.weeksDone) || 0) + 1;
+	}
+	state.profile.challenge = { week: yeni.week, goal: yeni.goal, done: durum.done || oncedenBitti };
+
+	emit();
+	await persistProfile();
+}
+
+/**
+ * Beceri sayaçlarını günceller.
+ *
+ * `emit()` çağırıyor ama `awardXp` genelde hemen ardından geliyor;
+ * iki yazma tek render'a düşsün diye çağrı sırası önemli değil,
+ * `persistProfile` zaten idempotent.
+ */
+export async function recordSkill(skill, correct, total) {
+	const ad = String(skill || '').trim();
+	const t = Math.max(0, Math.round(Number(total) || 0));
+	if (!ad || !t) return;
+	const c = Math.min(t, Math.max(0, Math.round(Number(correct) || 0)));
+
+	const mevcut = state.profile.skills[ad] || { correct: 0, total: 0 };
+	state.profile.skills = {
+		...state.profile.skills,
+		[ad]: { correct: mevcut.correct + c, total: mevcut.total + t }
+	};
+	emit();
+	await persistProfile();
 }
 
 /** Seçili aksanı kaydeder. */

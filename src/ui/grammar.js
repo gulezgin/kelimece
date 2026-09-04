@@ -187,7 +187,11 @@ export function renderQuiz(lesson, handlers, run) {
 	function puanla() {
 		if (!run.scored) {
 			run.scored = true;
-			if (isLessonPassed(gradeQuiz(lesson, cevaplar))) handlers.onPassed(lesson.id);
+			const r = gradeQuiz(lesson, cevaplar);
+			// Beceri grafigi GECILSIN GECILMESIN sayiyor; yalnizca
+			// gecen denemeleri saymak basari oranini %100 gosterirdi.
+			handlers.onResult?.(r);
+			if (isLessonPassed(r)) handlers.onPassed(lesson.id);
 		}
 		ciz();
 	}

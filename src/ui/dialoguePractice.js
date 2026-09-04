@@ -47,12 +47,16 @@ export function startPractice(dialogue, allDialogues, handlers, options = {}) {
 		// cikmasi fark ediliyor ve soruyu ucuz gosteriyor.
 		usedDistractors: new Set(),
 		allowSpeak: !!options.allowSpeak,
+		/** `onDone` bir kez cagrilsin diye. */
+		reported: false,
 		/**
 		 * Konusma adimlarinda tutturulamayan kelimeler.
 		 * Tek bir puan "neyi duzeltmeliyim" sorusunu cevaplamiyor;
 		 * bitiste toplu gormek yon veriyor.
 		 */
-		missedWords: []
+		missedWords: [],
+		/** Konusma denemeleri: { attempts, passed }. Grafik icin. */
+		speak: { attempts: 0, passed: 0 }
 	};
 	draw();
 }
@@ -95,6 +99,20 @@ function draw() {
 
 	const step = currentStep();
 	if (!step) {
+		// `onDone` bir kez cagriliyor. Cizim her adimda tekrarlaniyor;
+		// korumasiz birakmak diyalog bitisinde her yeniden cizimde XP
+		// verirdi.
+		if (!state.reported) {
+			state.reported = true;
+			const toplam = state.steps.length;
+			state.handlers.onDone?.({
+				id: state.dialogue.id,
+				correct: state.correct,
+				total: toplam,
+				score: toplam ? Math.round((state.correct / toplam) * 100) : 0,
+				speak: { ...state.speak }
+			});
+		}
 		host.appendChild(finishBox());
 		return;
 	}
@@ -321,7 +339,13 @@ function speakUi(ex) {
 			if (!w.ok) state.missedWords.push(w.word);
 		}
 
-		if (isPass(sonuc)) judge(true, ex);
+		// Konusma istatistigi HER denemede sayiliyor, yalnizca gecen
+		// denemede degil: basari orani ancak boyle gercegi gosterir.
+		state.speak.attempts++;
+		if (isPass(sonuc)) {
+			state.speak.passed++;
+			judge(true, ex);
+		}
 	};
 
 	return el('div', { class: 'speakUi' }, [

@@ -189,6 +189,26 @@ seviyede en az bir diyalog var mı) denetler.
   doğru yazılmış bir cümleye "yanlış" demek, öğrencinin doğruyu
   bozmasına yol açar. `test/writing.test.js` her kalıp için hem
   yakalaması hem yakalamaması gereken bir örnek tutuyor.
+- **XP öğrenmeyi ölçmüyor.** `src/core/xp.js` yalnızca "bugün bir şey
+  yaptım" duygusu için; öğrenmeyi SM-2 aralıkları ölçüyor. Bu yüzden
+  yanlış cevap da XP veriyor (daha az): yalnızca doğruyu ödüllendirmek,
+  kullanıcıyı bildiği kelimeleri tekrar etmeye ve bilmediklerinden
+  kaçınmaya iter — aralıklı tekrarın tam tersi.
+- **Rozetler saklanmıyor, her seferinde yeniden değerlendiriliyor**
+  (`src/core/badges.js`). Saklanan liste gerçek durumla ayrışabiliyor
+  ve "kazandım ama görünmüyor" en can sıkıcı hata. Bedeli kabul edildi:
+  geriye dönük hesaplanamayan bir şey rozet olamaz, bu yüzden hepsi
+  birikimli sayaçlara dayanıyor.
+- **Haftalık hedef kullanıcının kendi geçmişinden türetiliyor**
+  (`src/core/challenge.js`) ve hafta ortasında değişmiyor. Sabit hedef
+  az çalışanı vazgeçiriyor, çok çalışan için salı biterek haftayı
+  anlamsızlaştırıyor. Hedefin hafta içinde kayması ilerleme çubuğunu
+  geri götürür.
+- **XP grafiği SVG değil DOM.** İki SVG denemesi de bozuktu:
+  `preserveAspectRatio` kapalıyken yazılar yatay geriliyor, açıkken
+  grafik genişliğe ölçeklendiğinde yazı boyutu da büyüyor. Ayrıca
+  `.chart` / `.chartBar` sınıf adları istatistik ekranının kendi
+  grafiklerine ait; yeni grafikler `xp` önekli sınıflar kullanıyor.
 - **Giriş ekranı `index.html` gövdesinin en başında, satır içi.** JS paketi
   yüklenmeden boyanabilsin ve yerel açılış ekranıyla arasında geçiş
   görünmesin diye. `main.js` veri hazır olunca kaldırır.
