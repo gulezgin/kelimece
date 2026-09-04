@@ -53,6 +53,7 @@
   },
   "homepage": "https://WordPool-TR-EN.netlify.app",
   "dependencies": {
+    "@capacitor-community/speech-recognition": "^7.0.1",
     "@capacitor/app": "^8.1.1",
     "@capacitor/core": "^8.5.1",
     "@capacitor/local-notifications": "^8.3.1",
