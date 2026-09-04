@@ -3220,3 +3220,40 @@ button.exOption--bad { border-color: var(--bad); }
 
 .writeModel { display: grid; gap: 0.5rem; }
 .writeModelPara { margin: 0; line-height: 1.65; }
+
+/* ---------- Zıt anlamlılar ---------- */
+
+.antGroup { display: grid; gap: 0.3rem; }
+.antGroupHead {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.2rem;
+}
+
+.antRow {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+	gap: 0.5rem;
+	align-items: center;
+	padding: 0.45rem 0.5rem;
+	border-radius: 8px;
+	border: none;
+	background: var(--surface2, rgba(255, 255, 255, 0.04));
+	text-align: left;
+	color: inherit;
+	font: inherit;
+}
+.antRow--tappable { cursor: pointer; }
+.antRow--tappable:hover { background: var(--surface3, rgba(255, 255, 255, 0.08)); }
+.antRow--locked { opacity: 0.55; cursor: pointer; }
+
+.antSide { display: grid; gap: 0.05rem; min-width: 0; }
+.antSide--right { text-align: right; }
+.antEn { font-weight: 600; overflow-wrap: anywhere; }
+.antTr { font-size: 0.82rem; opacity: 0.7; overflow-wrap: anywhere; }
+.antArrow { flex: none; opacity: 0.6; }
+
+.antPrompt { display: grid; gap: 0.15rem; margin: 0.5rem 0 0.8rem; }
+.antPromptEn { font-size: 1.6rem; font-weight: 700; }
+.antPromptTr { font-size: 0.92rem; opacity: 0.75; }

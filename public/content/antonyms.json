@@ -1,0 +1,951 @@
+{
+  "version": 2,
+  "pairs": [
+    {
+      "id": "an-big",
+      "level": "A1",
+      "pos": "adj",
+      "a": {
+        "en": "big",
+        "tr": "büyük"
+      },
+      "b": {
+        "en": "small",
+        "tr": "küçük"
+      }
+    },
+    {
+      "id": "an-hot",
+      "level": "A1",
+      "pos": "adj",
+      "a": {
+        "en": "hot",
+        "tr": "sıcak"
+      },
+      "b": {
+        "en": "cold",
+        "tr": "soğuk"
+      }
+    },
+    {
+      "id": "an-good",
+      "level": "A1",
+      "pos": "adj",
+      "a": {
+        "en": "good",
+        "tr": "iyi"
+      },
+      "b": {
+        "en": "bad",
+        "tr": "kötü"
+      }
+    },
+    {
+      "id": "an-old",
+      "level": "A1",
+      "pos": "adj",
+      "a": {
+        "en": "old",
+        "tr": "eski, yaşlı"
+      },
+      "b": {
+        "en": "new",
+        "tr": "yeni"
+      },
+      "also": [
+        "young"
+      ]
+    },
+    {
+      "id": "an-fast",
+      "level": "A1",
+      "pos": "adj",
+      "a": {
+        "en": "fast",
+        "tr": "hızlı"
+      },
+      "b": {
+        "en": "slow",
+        "tr": "yavaş"
+      }
+    },
+    {
+      "id": "an-happy",
+      "level": "A1",
+      "pos": "adj",
+      "a": {
+        "en": "happy",
+        "tr": "mutlu"
+      },
+      "b": {
+        "en": "sad",
+        "tr": "üzgün"
+      }
+    },
+    {
+      "id": "an-long",
+      "level": "A1",
+      "pos": "adj",
+      "a": {
+        "en": "long",
+        "tr": "uzun"
+      },
+      "b": {
+        "en": "short",
+        "tr": "kısa"
+      }
+    },
+    {
+      "id": "an-easy",
+      "level": "A1",
+      "pos": "adj",
+      "a": {
+        "en": "easy",
+        "tr": "kolay"
+      },
+      "b": {
+        "en": "difficult",
+        "tr": "zor"
+      },
+      "also": [
+        "hard"
+      ]
+    },
+    {
+      "id": "an-open",
+      "level": "A1",
+      "pos": "verb",
+      "a": {
+        "en": "open",
+        "tr": "açmak"
+      },
+      "b": {
+        "en": "close",
+        "tr": "kapatmak"
+      },
+      "also": [
+        "shut"
+      ]
+    },
+    {
+      "id": "an-start",
+      "level": "A1",
+      "pos": "verb",
+      "a": {
+        "en": "start",
+        "tr": "başlamak"
+      },
+      "b": {
+        "en": "finish",
+        "tr": "bitirmek"
+      },
+      "also": [
+        "stop",
+        "end"
+      ]
+    },
+    {
+      "id": "an-buy",
+      "level": "A1",
+      "pos": "verb",
+      "a": {
+        "en": "buy",
+        "tr": "satın almak"
+      },
+      "b": {
+        "en": "sell",
+        "tr": "satmak"
+      }
+    },
+    {
+      "id": "an-day",
+      "level": "A1",
+      "pos": "noun",
+      "a": {
+        "en": "day",
+        "tr": "gündüz, gün"
+      },
+      "b": {
+        "en": "night",
+        "tr": "gece"
+      }
+    },
+    {
+      "id": "an-boy",
+      "level": "A1",
+      "pos": "noun",
+      "a": {
+        "en": "boy",
+        "tr": "erkek çocuk"
+      },
+      "b": {
+        "en": "girl",
+        "tr": "kız çocuk"
+      }
+    },
+    {
+      "id": "an-man",
+      "level": "A1",
+      "pos": "noun",
+      "a": {
+        "en": "man",
+        "tr": "adam"
+      },
+      "b": {
+        "en": "woman",
+        "tr": "kadın"
+      }
+    },
+    {
+      "id": "an-summer",
+      "level": "A1",
+      "pos": "noun",
+      "a": {
+        "en": "summer",
+        "tr": "yaz"
+      },
+      "b": {
+        "en": "winter",
+        "tr": "kış"
+      }
+    },
+    {
+      "id": "an-give",
+      "level": "A1",
+      "pos": "verb",
+      "a": {
+        "en": "give",
+        "tr": "vermek"
+      },
+      "b": {
+        "en": "take",
+        "tr": "almak"
+      }
+    },
+    {
+      "id": "an-early",
+      "level": "A2",
+      "pos": "adj",
+      "a": {
+        "en": "early",
+        "tr": "erken"
+      },
+      "b": {
+        "en": "late",
+        "tr": "geç"
+      }
+    },
+    {
+      "id": "an-clean",
+      "level": "A2",
+      "pos": "adj",
+      "a": {
+        "en": "clean",
+        "tr": "temiz"
+      },
+      "b": {
+        "en": "dirty",
+        "tr": "kirli"
+      }
+    },
+    {
+      "id": "an-full",
+      "level": "A2",
+      "pos": "adj",
+      "a": {
+        "en": "full",
+        "tr": "dolu"
+      },
+      "b": {
+        "en": "empty",
+        "tr": "boş"
+      }
+    },
+    {
+      "id": "an-cheap",
+      "level": "A2",
+      "pos": "adj",
+      "a": {
+        "en": "cheap",
+        "tr": "ucuz"
+      },
+      "b": {
+        "en": "expensive",
+        "tr": "pahalı"
+      }
+    },
+    {
+      "id": "an-strong",
+      "level": "A2",
+      "pos": "adj",
+      "a": {
+        "en": "strong",
+        "tr": "güçlü"
+      },
+      "b": {
+        "en": "weak",
+        "tr": "zayıf"
+      }
+    },
+    {
+      "id": "an-safe",
+      "level": "A2",
+      "pos": "adj",
+      "a": {
+        "en": "safe",
+        "tr": "güvenli"
+      },
+      "b": {
+        "en": "dangerous",
+        "tr": "tehlikeli"
+      }
+    },
+    {
+      "id": "an-quiet",
+      "level": "A2",
+      "pos": "adj",
+      "a": {
+        "en": "quiet",
+        "tr": "sessiz"
+      },
+      "b": {
+        "en": "noisy",
+        "tr": "gürültülü"
+      },
+      "also": [
+        "loud"
+      ]
+    },
+    {
+      "id": "an-wet",
+      "level": "A2",
+      "pos": "adj",
+      "a": {
+        "en": "wet",
+        "tr": "ıslak"
+      },
+      "b": {
+        "en": "dry",
+        "tr": "kuru"
+      }
+    },
+    {
+      "id": "an-remember",
+      "level": "A2",
+      "pos": "verb",
+      "a": {
+        "en": "remember",
+        "tr": "hatırlamak"
+      },
+      "b": {
+        "en": "forget",
+        "tr": "unutmak"
+      }
+    },
+    {
+      "id": "an-arrive",
+      "level": "A2",
+      "pos": "verb",
+      "a": {
+        "en": "arrive",
+        "tr": "varmak"
+      },
+      "b": {
+        "en": "leave",
+        "tr": "ayrılmak"
+      },
+      "also": [
+        "depart"
+      ]
+    },
+    {
+      "id": "an-push",
+      "level": "A2",
+      "pos": "verb",
+      "a": {
+        "en": "push",
+        "tr": "itmek"
+      },
+      "b": {
+        "en": "pull",
+        "tr": "çekmek"
+      }
+    },
+    {
+      "id": "an-question",
+      "level": "A2",
+      "pos": "noun",
+      "a": {
+        "en": "question",
+        "tr": "soru"
+      },
+      "b": {
+        "en": "answer",
+        "tr": "cevap"
+      }
+    },
+    {
+      "id": "an-friend",
+      "level": "A2",
+      "pos": "noun",
+      "a": {
+        "en": "friend",
+        "tr": "arkadaş"
+      },
+      "b": {
+        "en": "enemy",
+        "tr": "düşman"
+      }
+    },
+    {
+      "id": "an-truth",
+      "level": "A2",
+      "pos": "noun",
+      "a": {
+        "en": "truth",
+        "tr": "gerçek"
+      },
+      "b": {
+        "en": "lie",
+        "tr": "yalan"
+      }
+    },
+    {
+      "id": "an-war",
+      "level": "A2",
+      "pos": "noun",
+      "a": {
+        "en": "war",
+        "tr": "savaş"
+      },
+      "b": {
+        "en": "peace",
+        "tr": "barış"
+      }
+    },
+    {
+      "id": "an-win",
+      "level": "A2",
+      "pos": "verb",
+      "a": {
+        "en": "win",
+        "tr": "kazanmak"
+      },
+      "b": {
+        "en": "lose",
+        "tr": "kaybetmek"
+      }
+    },
+    {
+      "id": "an-increase",
+      "level": "B1",
+      "pos": "verb",
+      "a": {
+        "en": "increase",
+        "tr": "artmak, artırmak"
+      },
+      "b": {
+        "en": "decrease",
+        "tr": "azalmak, azaltmak"
+      },
+      "also": [
+        "reduce"
+      ]
+    },
+    {
+      "id": "an-accept",
+      "level": "B1",
+      "pos": "verb",
+      "a": {
+        "en": "accept",
+        "tr": "kabul etmek"
+      },
+      "b": {
+        "en": "reject",
+        "tr": "reddetmek"
+      },
+      "also": [
+        "refuse"
+      ]
+    },
+    {
+      "id": "an-borrow",
+      "level": "B1",
+      "pos": "verb",
+      "a": {
+        "en": "borrow",
+        "tr": "ödünç almak"
+      },
+      "b": {
+        "en": "lend",
+        "tr": "ödünç vermek"
+      }
+    },
+    {
+      "id": "an-allow",
+      "level": "B1",
+      "pos": "verb",
+      "a": {
+        "en": "allow",
+        "tr": "izin vermek"
+      },
+      "b": {
+        "en": "forbid",
+        "tr": "yasaklamak"
+      },
+      "also": [
+        "ban",
+        "prohibit"
+      ]
+    },
+    {
+      "id": "an-tighten",
+      "level": "B1",
+      "pos": "verb",
+      "a": {
+        "en": "tighten",
+        "tr": "sıkmak"
+      },
+      "b": {
+        "en": "loosen",
+        "tr": "gevşetmek"
+      }
+    },
+    {
+      "id": "an-permanent",
+      "level": "B1",
+      "pos": "adj",
+      "a": {
+        "en": "permanent",
+        "tr": "kalıcı"
+      },
+      "b": {
+        "en": "temporary",
+        "tr": "geçici"
+      }
+    },
+    {
+      "id": "an-common",
+      "level": "B1",
+      "pos": "adj",
+      "a": {
+        "en": "common",
+        "tr": "yaygın"
+      },
+      "b": {
+        "en": "rare",
+        "tr": "nadir"
+      }
+    },
+    {
+      "id": "an-guilty",
+      "level": "B1",
+      "pos": "adj",
+      "a": {
+        "en": "guilty",
+        "tr": "suçlu"
+      },
+      "b": {
+        "en": "innocent",
+        "tr": "masum"
+      }
+    },
+    {
+      "id": "an-private",
+      "level": "B1",
+      "pos": "adj",
+      "a": {
+        "en": "private",
+        "tr": "özel"
+      },
+      "b": {
+        "en": "public",
+        "tr": "kamuya açık"
+      }
+    },
+    {
+      "id": "an-shallow",
+      "level": "B1",
+      "pos": "adj",
+      "a": {
+        "en": "shallow",
+        "tr": "sığ"
+      },
+      "b": {
+        "en": "deep",
+        "tr": "derin"
+      }
+    },
+    {
+      "id": "an-success",
+      "level": "B1",
+      "pos": "noun",
+      "a": {
+        "en": "success",
+        "tr": "başarı"
+      },
+      "b": {
+        "en": "failure",
+        "tr": "başarısızlık"
+      }
+    },
+    {
+      "id": "an-majority",
+      "level": "B1",
+      "pos": "noun",
+      "a": {
+        "en": "majority",
+        "tr": "çoğunluk"
+      },
+      "b": {
+        "en": "minority",
+        "tr": "azınlık"
+      }
+    },
+    {
+      "id": "an-abundant",
+      "level": "B2",
+      "pos": "adj",
+      "a": {
+        "en": "abundant",
+        "tr": "bol"
+      },
+      "b": {
+        "en": "scarce",
+        "tr": "kıt"
+      }
+    },
+    {
+      "id": "an-artificial",
+      "level": "B2",
+      "pos": "adj",
+      "a": {
+        "en": "artificial",
+        "tr": "yapay"
+      },
+      "b": {
+        "en": "natural",
+        "tr": "doğal"
+      }
+    },
+    {
+      "id": "an-deliberate",
+      "level": "B2",
+      "pos": "adj",
+      "a": {
+        "en": "deliberate",
+        "tr": "kasıtlı"
+      },
+      "b": {
+        "en": "accidental",
+        "tr": "kazara olan"
+      },
+      "also": [
+        "unintentional"
+      ]
+    },
+    {
+      "id": "an-generous",
+      "level": "B2",
+      "pos": "adj",
+      "a": {
+        "en": "generous",
+        "tr": "cömert"
+      },
+      "b": {
+        "en": "stingy",
+        "tr": "cimri"
+      },
+      "also": [
+        "mean"
+      ]
+    },
+    {
+      "id": "an-humble",
+      "level": "B2",
+      "pos": "adj",
+      "a": {
+        "en": "humble",
+        "tr": "alçakgönüllü"
+      },
+      "b": {
+        "en": "arrogant",
+        "tr": "kibirli"
+      }
+    },
+    {
+      "id": "an-optimistic",
+      "level": "B2",
+      "pos": "adj",
+      "a": {
+        "en": "optimistic",
+        "tr": "iyimser"
+      },
+      "b": {
+        "en": "pessimistic",
+        "tr": "kötümser"
+      }
+    },
+    {
+      "id": "an-rigid",
+      "level": "B2",
+      "pos": "adj",
+      "a": {
+        "en": "rigid",
+        "tr": "katı, esnemez"
+      },
+      "b": {
+        "en": "flexible",
+        "tr": "esnek"
+      }
+    },
+    {
+      "id": "an-transparent",
+      "level": "B2",
+      "pos": "adj",
+      "a": {
+        "en": "transparent",
+        "tr": "saydam"
+      },
+      "b": {
+        "en": "opaque",
+        "tr": "donuk, geçirmez"
+      }
+    },
+    {
+      "id": "an-unite",
+      "level": "B2",
+      "pos": "verb",
+      "a": {
+        "en": "unite",
+        "tr": "birleştirmek"
+      },
+      "b": {
+        "en": "divide",
+        "tr": "bölmek"
+      },
+      "also": [
+        "separate",
+        "split"
+      ]
+    },
+    {
+      "id": "an-expand",
+      "level": "B2",
+      "pos": "verb",
+      "a": {
+        "en": "expand",
+        "tr": "genişlemek"
+      },
+      "b": {
+        "en": "contract",
+        "tr": "büzülmek"
+      },
+      "also": [
+        "shrink"
+      ]
+    },
+    {
+      "id": "an-praise",
+      "level": "B2",
+      "pos": "verb",
+      "a": {
+        "en": "praise",
+        "tr": "övmek"
+      },
+      "b": {
+        "en": "criticise",
+        "tr": "eleştirmek"
+      },
+      "also": [
+        "criticize",
+        "blame"
+      ]
+    },
+    {
+      "id": "an-encourage",
+      "level": "B2",
+      "pos": "verb",
+      "a": {
+        "en": "encourage",
+        "tr": "cesaretlendirmek"
+      },
+      "b": {
+        "en": "discourage",
+        "tr": "caydırmak"
+      }
+    },
+    {
+      "id": "an-ambiguous",
+      "level": "C1",
+      "pos": "adj",
+      "a": {
+        "en": "ambiguous",
+        "tr": "belirsiz, iki anlamlı"
+      },
+      "b": {
+        "en": "explicit",
+        "tr": "açık, net"
+      },
+      "also": [
+        "unambiguous"
+      ]
+    },
+    {
+      "id": "an-concise",
+      "level": "C1",
+      "pos": "adj",
+      "a": {
+        "en": "concise",
+        "tr": "özlü"
+      },
+      "b": {
+        "en": "verbose",
+        "tr": "lafı uzatan"
+      },
+      "also": [
+        "long-winded"
+      ]
+    },
+    {
+      "id": "an-mundane",
+      "level": "C1",
+      "pos": "adj",
+      "a": {
+        "en": "mundane",
+        "tr": "sıradan"
+      },
+      "b": {
+        "en": "extraordinary",
+        "tr": "olağanüstü"
+      }
+    },
+    {
+      "id": "an-obscure",
+      "level": "C1",
+      "pos": "adj",
+      "a": {
+        "en": "obscure",
+        "tr": "az bilinen"
+      },
+      "b": {
+        "en": "prominent",
+        "tr": "öne çıkan"
+      },
+      "also": [
+        "well-known"
+      ]
+    },
+    {
+      "id": "an-prudent",
+      "level": "C1",
+      "pos": "adj",
+      "a": {
+        "en": "prudent",
+        "tr": "sağgörülü, tedbirli"
+      },
+      "b": {
+        "en": "reckless",
+        "tr": "pervasız"
+      }
+    },
+    {
+      "id": "an-resilient",
+      "level": "C1",
+      "pos": "adj",
+      "a": {
+        "en": "resilient",
+        "tr": "dayanıklı"
+      },
+      "b": {
+        "en": "fragile",
+        "tr": "kırılgan"
+      }
+    },
+    {
+      "id": "an-superficial",
+      "level": "C1",
+      "pos": "adj",
+      "a": {
+        "en": "superficial",
+        "tr": "yüzeysel"
+      },
+      "b": {
+        "en": "profound",
+        "tr": "derin, köklü"
+      }
+    },
+    {
+      "id": "an-benevolent",
+      "level": "C1",
+      "pos": "adj",
+      "a": {
+        "en": "benevolent",
+        "tr": "iyiliksever"
+      },
+      "b": {
+        "en": "malevolent",
+        "tr": "kötü niyetli"
+      }
+    },
+    {
+      "id": "an-meticulous",
+      "level": "C1",
+      "pos": "adj",
+      "a": {
+        "en": "meticulous",
+        "tr": "titiz"
+      },
+      "b": {
+        "en": "careless",
+        "tr": "özensiz"
+      },
+      "also": [
+        "sloppy"
+      ]
+    },
+    {
+      "id": "an-candid",
+      "level": "C1",
+      "pos": "adj",
+      "a": {
+        "en": "candid",
+        "tr": "açık sözlü"
+      },
+      "b": {
+        "en": "evasive",
+        "tr": "kaçamak"
+      }
+    },
+    {
+      "id": "an-lenient",
+      "level": "C1",
+      "pos": "adj",
+      "a": {
+        "en": "lenient",
+        "tr": "hoşgörülü"
+      },
+      "b": {
+        "en": "severe",
+        "tr": "sert, ağır"
+      },
+      "also": [
+        "harsh",
+        "strict"
+      ]
+    },
+    {
+      "id": "an-scrutiny",
+      "level": "C1",
+      "pos": "noun",
+      "a": {
+        "en": "scrutiny",
+        "tr": "yakın inceleme"
+      },
+      "b": {
+        "en": "neglect",
+        "tr": "ihmal"
+      }
+    }
+  ]
+}

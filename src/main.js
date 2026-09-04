@@ -16,8 +16,10 @@ import { renderGrammarList, renderLesson, renderQuiz } from './ui/grammar.js';
 import { renderLearn } from './ui/learn.js';
 import { findText, loadTexts } from './core/reading.js';
 import { findTask, loadTasks, taskSummaries } from './core/writing.js';
+import { buildRound, loadPairs, pairsByLevel, unlockedPairs } from './core/antonyms.js';
 import { renderComprehension, renderReadingList, renderText } from './ui/reading.js';
 import { renderCheck, renderTask, renderTaskList } from './ui/writing.js';
+import { renderAntonymList, renderAntonymRound } from './ui/antonyms.js';
 import { isStruggling } from './core/stats.js';
 import { setRate, speak } from './core/speech.js';
 import { renderTopicChip, renderTopics } from './ui/topics.js';
@@ -254,6 +256,19 @@ function render() {
 		return;
 	}
 
+	if (activeSection === 'antonyms') {
+		const prof = store.state.profile;
+		if (antonymRun) {
+			renderAntonymRound(antonymRun, antonymHandlers);
+		} else {
+			const acik = unlockedPairs(antonymPairs, prof.premium);
+			renderAntonymList(pairsByLevel(antonymPairs, prof.premium),
+				acik.length < antonymPairs.length, antonymHandlers);
+		}
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
+
 	if (activeSection === 'topics') {
 		renderTopics(store.state.words, store.state.profile.premium, topicHandlers);
 		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
@@ -327,6 +342,7 @@ let quizRun = newQuizRun();
 const READING_URL = import.meta.env.BASE_URL + 'content/reading.json';
 const WRITING_URL = import.meta.env.BASE_URL + 'content/writing.json';
 const EMAIL_URL = import.meta.env.BASE_URL + 'content/email.json';
+const ANTONYMS_URL = import.meta.env.BASE_URL + 'content/antonyms.json';
 let texts = [];
 let openTextId = null;
 let comprehensionOpen = false;
@@ -336,6 +352,9 @@ let writingTasks = [];
 let emailTasks = [];
 let openTaskId = null;
 let checkOpen = false;
+let antonymPairs = [];
+/** Zit anlamli turu: sorular ve ilerleme birlikte. */
+let antonymRun = null;
 
 /** Ogren ekranindaki moduller. */
 function learnModules() {
@@ -344,7 +363,8 @@ function learnModules() {
 		{ id: 'grammar', icon: '📐', title: 'Dilbilgisi', note: lessons.length + ' ders', ready: lessons.length > 0 },
 		{ id: 'reading', icon: '📖', title: 'Okuma', note: texts.length + ' parça', ready: texts.length > 0 },
 		{ id: 'writing', icon: '✍️', title: 'Yazma', note: writingTasks.length + ' görev', ready: writingTasks.length > 0 },
-		{ id: 'email', icon: '📧', title: 'E-posta', note: emailTasks.length + ' görev', ready: emailTasks.length > 0 }
+		{ id: 'email', icon: '📧', title: 'E-posta', note: emailTasks.length + ' görev', ready: emailTasks.length > 0 },
+		{ id: 'antonyms', icon: '↔️', title: 'Zıt anlamlılar', note: antonymPairs.length + ' çift', ready: antonymPairs.length > 0 }
 	];
 }
 
@@ -354,8 +374,9 @@ const learnHandlers = {
 		if (id === 'grammar') { openLessonId = null; quizOpen = false; showSection('grammar'); return; }
 		if (id === 'reading') { openTextId = null; comprehensionOpen = false; showSection('reading'); return; }
 		if (id === 'writing' || id === 'email') {
-			openTaskId = null; checkOpen = false; showSection(id);
+			openTaskId = null; checkOpen = false; showSection(id); return;
 		}
+		if (id === 'antonyms') { antonymRun = null; showSection('antonyms'); }
 	}
 };
 
@@ -422,6 +443,29 @@ const writingHandlers = {
 	onDraft: (id, metin) => store.saveDraft(id, metin),
 	onLocked: () => openPaywall(),
 	onDone: (id) => { store.markWritingDone(id); openTaskId = null; checkOpen = false; window.scrollTo(0, 0); render(); }
+};
+
+/**
+ * Zit anlamli tur baslatici.
+ *
+ * Tur yalnizca KILIDI ACIK ciftlerden kuruluyor; kilitli bir kelimeyi
+ * soruda gostermek hem ogretmiyor hem de abonelik duvarini anlamsiz
+ * kiliyor.
+ */
+function startAntonymRound() {
+	const acik = unlockedPairs(antonymPairs, store.state.profile.premium);
+	antonymRun = { questions: buildRound(acik, { size: 10 }), index: 0, answers: [], scored: false };
+	window.scrollTo(0, 0);
+	render();
+}
+
+const antonymHandlers = {
+	onBack: () => showSection('learn'),
+	onBackToList: () => { antonymRun = null; window.scrollTo(0, 0); render(); },
+	onStartRound: () => startAntonymRound(),
+	onLocked: () => openPaywall(),
+	onSpeak: (metin) => speak(metin),
+	onFinished: () => {}
 };
 
 const grammarHandlers = {
@@ -1146,6 +1190,7 @@ function showSection(section) {
 		['reading', 'readingView', 'navLearn'],
 		['writing', 'writingView', 'navLearn'],
 		['email', 'emailView', 'navLearn'],
+		['antonyms', 'antonymsView', 'navLearn'],
 		['topics', 'topicsView', 'navLearn'],
 		['dialogues', 'dialoguesView', 'navDialogues'],
 		['pool', 'poolView', 'navPool'],
@@ -1292,6 +1337,11 @@ async function boot() {
 	loadTasks(EMAIL_URL).then((list) => {
 		emailTasks = list;
 		if (activeSection === 'learn' || activeSection === 'email') render();
+	});
+
+	loadPairs(ANTONYMS_URL).then((list) => {
+		antonymPairs = list;
+		if (activeSection === 'learn' || activeSection === 'antonyms') render();
 	});
 
 	loadLessons(GRAMMAR_URL).then((list) => {
