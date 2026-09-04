@@ -3419,3 +3419,55 @@ button.exOption--bad { border-color: var(--bad); }
 }
 
 .examAudio { width: 100%; margin-top: 0.6rem; }
+
+/* ---------- Acil İngilizce ---------- */
+
+.emSearch { width: 100%; box-sizing: border-box; }
+
+.emCritical { border-left: 3px solid var(--bad, #f87171); }
+
+.emRow {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto auto;
+	gap: 0.4rem;
+	align-items: center;
+	padding: 0.5rem 0;
+	border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+}
+.emRow:first-of-type { border-top: none; }
+.emRow--hear { opacity: 0.85; }
+.emText { display: grid; gap: 0.1rem; min-width: 0; }
+.emEn { font-weight: 600; font-size: 1rem; overflow-wrap: anywhere; }
+.emTr { font-size: 0.85rem; opacity: 0.72; overflow-wrap: anywhere; }
+.emShowBtn { flex: none; padding: 0.3rem 0.6rem; font-size: 1rem; }
+.emSource { grid-column: 1 / -1; font-size: 0.74rem; opacity: 0.55; }
+
+.emOverlay {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	display: grid;
+	place-items: center;
+	padding: 1.2rem;
+	background: rgba(0, 0, 0, 0.85);
+}
+.emOverlayBox {
+	display: grid;
+	gap: 1rem;
+	justify-items: center;
+	text-align: center;
+	max-width: 640px;
+}
+.emOverlayEn {
+	font-size: clamp(1.6rem, 7vw, 3rem);
+	font-weight: 700;
+	line-height: 1.25;
+	color: #fff;
+	overflow-wrap: anywhere;
+}
+.emOverlayTr {
+	font-size: clamp(0.9rem, 3.4vw, 1.1rem);
+	opacity: 0.7;
+	color: #fff;
+	overflow-wrap: anywhere;
+}

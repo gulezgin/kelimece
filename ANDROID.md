@@ -438,6 +438,23 @@ bu Google'ın kendi beyanı kapsamındadır; yine de gizlilik politikasında
 konuşma tanımanın cihazın sistem servisine devredildiğini yazmak doğru
 olur.
 
+### Ses kaydı (Acil değil, sınav modu)
+
+`src/platform/recorder.js` `MediaRecorder` ile kayıt alıyor. Konuşma
+tanımadan **ayrı bir yol**: tanıma metin üretiyor, kayıt ses üretiyor.
+İkisi de aynı `RECORD_AUDIO` iznini kullanıyor, eklenti bildirdiği için
+manifest'e ekleme yapmaya gerek yok.
+
+Kayıt bellekte bir `Blob` olarak duruyor, dosyaya yazılmıyor ve
+cihazdan çıkmıyor. Ekran değişince `URL.revokeObjectURL` ile serbest
+bırakılıyor; bırakılmazsa her denemede bellekte bir kopya kalıyor.
+
+WebView'de `MediaRecorder` destekleniyor ama **HTTPS ya da
+`file://` bağlamı** gerekiyor; Capacitor'ın WebView'ü bu şartı
+karşılıyor. Uzaktan `http://` bir adres yüklenirse `getUserMedia`
+sessizce reddediliyor — `server.url` ile geliştirme yaparken bu tuzağa
+düşülür.
+
 > **Ölçülen şey telaffuz puanı DEĞİL.** Uygulama, tanıyıcının duyduğu
 > metni hedef cümleyle karşılaştırıyor. Fonem düzeyinde analiz
 > (ör. "TH sesin zayıf") ücretli ve özel bir servis gerektiriyor;

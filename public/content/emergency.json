@@ -1,0 +1,154 @@
+{
+  "version": 1,
+  "critical": [
+    { "en": "I don't speak English well. Please speak slowly.", "tr": "İngilizceyi iyi konuşamıyorum. Lütfen yavaş konuşun." },
+    { "en": "I need help.", "tr": "Yardıma ihtiyacım var." },
+    { "en": "Please call an ambulance.", "tr": "Lütfen ambulans çağırın." },
+    { "en": "Please call the police.", "tr": "Lütfen polis çağırın." },
+    { "en": "Does anyone here speak Turkish?", "tr": "Burada Türkçe bilen var mı?" },
+    { "en": "I want to contact my embassy.", "tr": "Konsolosluğumla görüşmek istiyorum." }
+  ],
+  "situations": [
+    {
+      "id": "e-health",
+      "icon": "🚑",
+      "title": "Sağlık ve hastane",
+      "summary": "Ağrı, ilaç, alerji, acil servis",
+      "say": [
+        { "en": "I need a doctor.", "tr": "Doktora ihtiyacım var." },
+        { "en": "I have a severe pain here.", "tr": "Burada şiddetli bir ağrım var." },
+        { "en": "It started two hours ago.", "tr": "İki saat önce başladı." },
+        { "en": "I am allergic to penicillin.", "tr": "Penisiline alerjim var." },
+        { "en": "I take medication for my heart.", "tr": "Kalbim için ilaç kullanıyorum." },
+        { "en": "I am pregnant.", "tr": "Hamileyim." },
+        { "en": "I have diabetes.", "tr": "Şeker hastasıyım." },
+        { "en": "I feel dizzy and I cannot breathe well.", "tr": "Başım dönüyor ve iyi nefes alamıyorum." },
+        { "en": "I have travel insurance. Here is my card.", "tr": "Seyahat sigortam var. Kartım burada." },
+        { "en": "How much will this cost?", "tr": "Bu ne kadar tutacak?" }
+      ],
+      "hear": [
+        { "en": "Where does it hurt?", "tr": "Neresi ağrıyor?" },
+        { "en": "How long have you had this?", "tr": "Ne zamandır böyle?" },
+        { "en": "Are you taking any medication?", "tr": "İlaç kullanıyor musunuz?" },
+        { "en": "Do you have any allergies?", "tr": "Alerjiniz var mı?" },
+        { "en": "Please take a seat and wait.", "tr": "Lütfen oturup bekleyin." },
+        { "en": "We need to run some tests.", "tr": "Bazı testler yapmamız gerekiyor." }
+      ]
+    },
+    {
+      "id": "e-police",
+      "icon": "👮",
+      "title": "Polis ve güvenlik",
+      "summary": "Hırsızlık, kayıp eşya, ihbar",
+      "say": [
+        { "en": "My wallet has been stolen.", "tr": "Cüzdanım çalındı." },
+        { "en": "My phone was stolen on the metro.", "tr": "Telefonum metroda çalındı." },
+        { "en": "I want to report a theft.", "tr": "Hırsızlık ihbarında bulunmak istiyorum." },
+        { "en": "I need a police report for my insurance.", "tr": "Sigortam için polis raporuna ihtiyacım var." },
+        { "en": "It happened about an hour ago, near the station.", "tr": "Yaklaşık bir saat önce, istasyonun yakınında oldu." },
+        { "en": "Here is my passport.", "tr": "Pasaportum burada." },
+        { "en": "I am a tourist. I arrived three days ago.", "tr": "Turistim. Üç gün önce geldim." },
+        { "en": "I would like to call my embassy.", "tr": "Konsolosluğumu aramak istiyorum." }
+      ],
+      "hear": [
+        { "en": "Can I see some identification?", "tr": "Kimliğinizi görebilir miyim?" },
+        { "en": "What exactly was taken?", "tr": "Tam olarak ne alındı?" },
+        { "en": "Did you see the person?", "tr": "Kişiyi gördünüz mü?" },
+        { "en": "Please fill in this form.", "tr": "Lütfen bu formu doldurun." },
+        { "en": "We will give you a reference number.", "tr": "Size bir referans numarası vereceğiz." }
+      ]
+    },
+    {
+      "id": "e-lost",
+      "icon": "🧭",
+      "title": "Kayboldum",
+      "summary": "Yol sorma, ulaşım, iletişim",
+      "say": [
+        { "en": "Excuse me, I think I'm lost.", "tr": "Affedersiniz, sanırım kayboldum." },
+        { "en": "How do I get to the city centre?", "tr": "Şehir merkezine nasıl giderim?" },
+        { "en": "Can you show me on the map?", "tr": "Haritada gösterebilir misiniz?" },
+        { "en": "Is it far from here?", "tr": "Buraya uzak mı?" },
+        { "en": "Which bus goes to the airport?", "tr": "Havaalanına hangi otobüs gider?" },
+        { "en": "My phone has no battery. May I use yours?", "tr": "Telefonumun şarjı bitti. Sizinkini kullanabilir miyim?" },
+        { "en": "Is there free wifi here?", "tr": "Burada ücretsiz wifi var mı?" },
+        { "en": "I am staying at this address.", "tr": "Bu adreste kalıyorum." }
+      ],
+      "hear": [
+        { "en": "Go straight and turn left at the lights.", "tr": "Düz gidin, ışıklardan sola dönün." },
+        { "en": "It's about ten minutes on foot.", "tr": "Yürüyerek yaklaşık on dakika." },
+        { "en": "Take the second exit.", "tr": "İkinci çıkışı kullanın." },
+        { "en": "You're going the wrong way.", "tr": "Yanlış yöne gidiyorsunuz." },
+        { "en": "It's just around the corner.", "tr": "Hemen köşede." }
+      ]
+    },
+    {
+      "id": "e-pharmacy",
+      "icon": "💊",
+      "title": "Eczane",
+      "summary": "İlaç isteme, reçete, doz",
+      "say": [
+        { "en": "Do I need a prescription for this?", "tr": "Bunun için reçete gerekiyor mu?" },
+        { "en": "I need something for a headache.", "tr": "Baş ağrısı için bir şeye ihtiyacım var." },
+        { "en": "Do you have something for a sore throat?", "tr": "Boğaz ağrısı için bir şeyiniz var mı?" },
+        { "en": "This is my prescription.", "tr": "Bu benim reçetem." },
+        { "en": "How many times a day should I take it?", "tr": "Günde kaç kez almalıyım?" },
+        { "en": "Can I take this with food?", "tr": "Bunu yemekle birlikte alabilir miyim?" },
+        { "en": "It is for a child. She is six years old.", "tr": "Bir çocuk için. Altı yaşında." },
+        { "en": "Does it make you sleepy?", "tr": "Uyku yapar mı?" }
+      ],
+      "hear": [
+        { "en": "Take one tablet twice a day.", "tr": "Günde iki kez bir tablet alın." },
+        { "en": "Take it after meals.", "tr": "Yemeklerden sonra alın." },
+        { "en": "Don't drink alcohol with this.", "tr": "Bununla alkol almayın." },
+        { "en": "You'll need a prescription for that.", "tr": "Onun için reçete gerekecek." },
+        { "en": "If it doesn't improve in three days, see a doctor.", "tr": "Üç günde geçmezse doktora görünün." }
+      ]
+    },
+    {
+      "id": "e-travel",
+      "icon": "✈️",
+      "title": "Havaalanı ve seyahat",
+      "summary": "Kaçırılan uçuş, kayıp bagaj, aktarma",
+      "say": [
+        { "en": "I missed my connecting flight.", "tr": "Aktarma uçuşumu kaçırdım." },
+        { "en": "My luggage did not arrive.", "tr": "Bagajım gelmedi." },
+        { "en": "Here is my baggage tag.", "tr": "Bagaj etiketim burada." },
+        { "en": "What is the next available flight?", "tr": "Bir sonraki uygun uçuş hangisi?" },
+        { "en": "Will you cover the hotel for tonight?", "tr": "Bu geceki oteli karşılayacak mısınız?" },
+        { "en": "I need to change my ticket.", "tr": "Biletimi değiştirmem gerekiyor." },
+        { "en": "Which gate is my flight leaving from?", "tr": "Uçuşum hangi kapıdan kalkıyor?" },
+        { "en": "My passport is in my checked bag.", "tr": "Pasaportum verdiğim bagajda." }
+      ],
+      "hear": [
+        { "en": "Can I see your boarding pass?", "tr": "Biniş kartınızı görebilir miyim?" },
+        { "en": "Your flight has been delayed.", "tr": "Uçuşunuz ertelendi." },
+        { "en": "Please go to the transfer desk.", "tr": "Lütfen aktarma bankosuna gidin." },
+        { "en": "We'll deliver your bag to your hotel.", "tr": "Bagajınızı otelinize teslim edeceğiz." },
+        { "en": "Boarding closes in twenty minutes.", "tr": "Biniş yirmi dakika içinde kapanıyor." }
+      ]
+    },
+    {
+      "id": "e-money",
+      "icon": "💳",
+      "title": "Para ve kart",
+      "summary": "Kart çalışmıyor, para çekme, fazla ücret",
+      "say": [
+        { "en": "My card was declined. Can you try again?", "tr": "Kartım reddedildi. Tekrar deneyebilir misiniz?" },
+        { "en": "The machine took my card.", "tr": "Makine kartımı yuttu." },
+        { "en": "I think I was charged twice.", "tr": "Sanırım iki kez ücretlendirildim." },
+        { "en": "Can I pay in cash instead?", "tr": "Bunun yerine nakit ödeyebilir miyim?" },
+        { "en": "Is there a fee for this?", "tr": "Bunun için bir ücret var mı?" },
+        { "en": "Can I have a receipt, please?", "tr": "Fiş alabilir miyim, lütfen?" },
+        { "en": "Where is the nearest cash machine?", "tr": "En yakın bankamatik nerede?" },
+        { "en": "I need to block my card. It was stolen.", "tr": "Kartımı bloke ettirmem gerekiyor. Çalındı." }
+      ],
+      "hear": [
+        { "en": "Please try a different card.", "tr": "Lütfen başka bir kart deneyin." },
+        { "en": "Enter your PIN.", "tr": "Şifrenizi girin." },
+        { "en": "Contact your bank, please.", "tr": "Lütfen bankanızla iletişime geçin." },
+        { "en": "We only take cash.", "tr": "Yalnızca nakit alıyoruz." },
+        { "en": "The refund takes three to five working days.", "tr": "İade üç ila beş iş günü sürer." }
+      ]
+    }
+  ]
+}

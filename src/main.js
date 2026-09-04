@@ -20,11 +20,13 @@ import { buildRound, loadPairs, pairsByLevel, unlockedPairs } from './core/anton
 import { createList, deleteList, findList, listCountFor, listSummaries, renameList, toggleWord, wordsInList } from './core/lists.js';
 import { examContent, examSummaries, findSpeakingTask, findVocabSet, isExamTaskUnlocked, loadExams, speakingPhases } from './core/exam.js';
 import * as recorder from './platform/recorder.js';
+import { findSituation, loadEmergency, searchPhrases, situationSummaries } from './core/emergency.js';
 import { renderComprehension, renderReadingList, renderText } from './ui/reading.js';
 import { renderCheck, renderTask, renderTaskList } from './ui/writing.js';
 import { renderAntonymList, renderAntonymRound } from './ui/antonyms.js';
 import { renderListDetail, renderLists } from './ui/lists.js';
 import { renderExam, renderExamList, renderSpeakingTask, renderVocabSet, updateClock } from './ui/exam.js';
+import { renderEmergency, renderShowOverlay, renderSituation } from './ui/emergency.js';
 import { isStruggling } from './core/stats.js';
 import { availableAccents, setAccent, setRate, speak } from './core/speech.js';
 import { XP } from './core/xp.js';
@@ -268,6 +270,18 @@ function render() {
 		return;
 	}
 
+	if (activeSection === 'emergency') {
+		if (openSituationId) {
+			renderSituation(findSituation(emergencyPack, openSituationId), emergencyHandlers);
+		} else {
+			renderEmergency(emergencyPack, emergencyQuery,
+				searchPhrases(emergencyPack, emergencyQuery),
+				{ ...emergencyHandlers, summaries: situationSummaries(emergencyPack) });
+		}
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
+
 	if (activeSection === 'exam') {
 		renderExamSection();
 		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
@@ -371,6 +385,7 @@ const WRITING_URL = import.meta.env.BASE_URL + 'content/writing.json';
 const EMAIL_URL = import.meta.env.BASE_URL + 'content/email.json';
 const ANTONYMS_URL = import.meta.env.BASE_URL + 'content/antonyms.json';
 const EXAM_URL = import.meta.env.BASE_URL + 'content/exam.json';
+const EMERGENCY_URL = import.meta.env.BASE_URL + 'content/emergency.json';
 let texts = [];
 let openTextId = null;
 let comprehensionOpen = false;
@@ -391,6 +406,9 @@ let openVocabId = null;
 /** Konusma gorevi sayaci ve kaydi. */
 let speakingRun = null;
 let speakingTimer = null;
+let emergencyPack = null;
+let openSituationId = null;
+let emergencyQuery = '';
 
 /** Ogren ekranindaki moduller. */
 function learnModules() {
@@ -402,7 +420,8 @@ function learnModules() {
 		{ id: 'email', icon: '📧', title: 'E-posta', note: emailTasks.length + ' görev', ready: emailTasks.length > 0 },
 		{ id: 'antonyms', icon: '↔️', title: 'Zıt anlamlılar', note: antonymPairs.length + ' çift', ready: antonymPairs.length > 0 },
 		{ id: 'lists', icon: '📋', title: 'Listelerim', note: (store.state.profile.lists || []).length + ' liste', ready: true },
-		{ id: 'exam', icon: '🎓', title: 'Sınav modu', note: 'IELTS · TOEFL', ready: !!examPack }
+		{ id: 'exam', icon: '🎓', title: 'Sınav modu', note: 'IELTS · TOEFL', ready: !!examPack },
+		{ id: 'emergency', icon: '🆘', title: 'Acil İngilizce', note: 'Her zaman ücretsiz', ready: !!emergencyPack }
 	];
 }
 
@@ -416,7 +435,8 @@ const learnHandlers = {
 		}
 		if (id === 'antonyms') { antonymRun = null; showSection('antonyms'); return; }
 		if (id === 'lists') { openListId = null; showSection('lists'); return; }
-		if (id === 'exam') { resetExamState(); showSection('exam'); }
+		if (id === 'exam') { resetExamState(); showSection('exam'); return; }
+		if (id === 'emergency') { openSituationId = null; emergencyQuery = ''; showSection('emergency'); }
 	}
 };
 
@@ -667,6 +687,25 @@ function newSpeakingRun(task) {
 		recordError: ''
 	};
 }
+
+const emergencyHandlers = {
+	onBack: () => { openSituationId = null; emergencyQuery = ''; showSection('learn'); },
+	onBackToList: () => { openSituationId = null; window.scrollTo(0, 0); render(); },
+	onOpen: (id) => { openSituationId = id; window.scrollTo(0, 0); render(); },
+	onSpeak: (metin) => speak(metin),
+	onShow: (p) => renderShowOverlay(p),
+	// Arama kutusu her tusta render() cagirmiyor; cagirsaydi girdi
+	// yeniden kurulur ve imlec basa atlardi. Yalnizca sonuc listesi
+	// yeniden ciziliyor.
+	onSearch: (q) => {
+		emergencyQuery = q;
+		renderEmergency(emergencyPack, emergencyQuery,
+			searchPhrases(emergencyPack, emergencyQuery),
+			{ ...emergencyHandlers, summaries: situationSummaries(emergencyPack) });
+		const kutu = document.querySelector('.emSearch');
+		if (kutu) { kutu.focus(); kutu.setSelectionRange(q.length, q.length); }
+	}
+};
 
 const examHandlers = {
 	onBack: () => { resetExamState(); showSection('learn'); },
@@ -1638,6 +1677,7 @@ function showSection(section) {
 		['antonyms', 'antonymsView', 'navLearn'],
 		['lists', 'listsView', 'navLearn'],
 		['exam', 'examView', 'navLearn'],
+		['emergency', 'emergencyView', 'navLearn'],
 		['topics', 'topicsView', 'navLearn'],
 		['dialogues', 'dialoguesView', 'navDialogues'],
 		['pool', 'poolView', 'navPool'],
@@ -1791,6 +1831,11 @@ async function boot() {
 	loadTasks(EMAIL_URL).then((list) => {
 		emailTasks = list;
 		if (activeSection === 'learn' || activeSection === 'email') render();
+	});
+
+	loadEmergency(EMERGENCY_URL).then((pack) => {
+		emergencyPack = pack;
+		if (activeSection === 'learn' || activeSection === 'emergency') render();
 	});
 
 	loadExams(EXAM_URL).then((pack) => {
