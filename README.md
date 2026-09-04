@@ -1,4 +1,4 @@
-# Kelime Havuzum (My Word Pool)
+# Kelimece (My Word Pool)
 
 [🇬🇧 English](#english--0) | [🇹🇷 Türkçe](#türkçe)
 
@@ -6,7 +6,7 @@
 
 ## Türkçe
 
-Kelime Havuzum, İngilizce öğrenenler için geliştirilmiş, **SRS (Spaced Repetition System)** tabanlı bir kelime öğrenme uygulamasıdır.
+Kelimece, İngilizce öğrenenler için geliştirilmiş, **SRS (Spaced Repetition System)** tabanlı bir kelime öğrenme uygulamasıdır.
 
 ### ✨ Özellikler
 

@@ -440,7 +440,7 @@ temeli atar ve uygulamanın ana özelliği olan aralıklı tekrarı gerçekten
 ## [1.0.0] - 2026-01-12
 
 ### Added
-- Initial release of Kelime Havuzum
+- Initial release of Kelimece
 - Spaced Repetition System (SRS) with 7-level progression
 - Add, search, and manage English-Turkish vocabulary pairs
 - Two view modes: Cards and Tiles

@@ -1,4 +1,4 @@
-# Contribute to Kelime Havuzum
+# Contribute to Kelimece
 
 Thank you for considering contributing to our project! 🎉
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Proje
 
-Kelime Havuzum — Türkçe konuşanlar için A1–C2 İngilizce öğrenme
+Kelimece — Türkçe konuşanlar için A1–C2 İngilizce öğrenme
 uygulaması. Çekirdeği aralıklı tekrar (SRS) ile kelime; üstüne
 dilbilgisi, okuma, yazma, e-posta, rol yapmalı diyalog, zıt anlamlılar,
 kişisel listeler, IELTS/TOEFL modu ve acil İngilizce eklendi.

@@ -9,7 +9,7 @@ body:
       value: |
         ## Feature Request
 
-        Thank you for suggesting an improvement to Kelime Havuzum!
+        Thank you for suggesting an improvement to Kelimece!
 
   - type: input
     id: title

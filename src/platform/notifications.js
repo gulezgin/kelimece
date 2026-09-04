@@ -104,7 +104,7 @@ export function buildMessage({ due = 0, streak = 0 } = {}) {
 		};
 	}
 	return {
-		title: 'Kelime Havuzum',
+		title: 'Kelimece',
 		body: 'Bugün birkaç kelime çalışmaya ne dersin?'
 	};
 }

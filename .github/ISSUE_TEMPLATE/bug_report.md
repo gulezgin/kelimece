@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug or issue with Kelime Havuzum
+description: Report a bug or issue with Kelimece
 labels: ["bug"]
 assignees: []
 

@@ -3,107 +3,198 @@
 Kopyala-yapıştır için hazır. Karakter sınırları Play Console'un
 istediği değerler.
 
+**Metinler arama için yazıldı.** Play'de sıralamayı belirleyen üç
+indekslenen alan var ve ağırlıkları eşit değil:
+
+| Alan | Sınır | Ağırlık |
+|---|---|---|
+| Uygulama adı | 30 | En yüksek |
+| Kısa açıklama | 80 | Yüksek |
+| Tam açıklama | 4000 | Orta (terim sıklığı sayılır) |
+
+Kural: **başlığa sığmayan terim kısa açıklamaya, oraya da sığmayan
+tam açıklamaya taşınır.** Aynı terimi üç alanda da tekrarlamak
+sıralamayı artırmıyor; Play bunu doldurma sayıp cezalandırabiliyor.
+
 ---
 
 ## Uygulama adı (30 karakter)
 
 ```
-Kelime Havuzum
+Kelimece: İngilizce Öğren
 ```
+
+*(25 karakter)*
+
+**Neden bu ad:** Marka **"kelime"** terimini kendi içinde taşıyor,
+başlığın görünen kısmı da **"İngilizce Öğren"** geniş terimini alıyor.
+Böylece tek başlıkla iki arama grubuna birden giriliyor ve başlık
+doldurma gibi durmuyor — Play jenerik/doldurulmuş başlıkları kalite
+sinyali olarak aşağı çekiyor.
+
+Yakaladığı aramalar: `ingilizce` · `ingilizce öğren` · `öğren` ·
+`kelime` · `ingilizce kelime` · `kelimece` (marka)
+
+> **Başlıkta yasak:** emoji, TAMAMI BÜYÜK harf, "en iyi", "1
+> numara", "ücretsiz", "indirim", performans iddiaları. Bunlar
+> yayını reddettirir.
+
+---
 
 ## Kısa açıklama (80 karakter)
 
 ```
-A1'den C2'ye İngilizce kelime. Aralıklı tekrar, çevrimdışı, reklamsız.
+Kelime, gramer, okuma, konuşma ve IELTS. Aralıklı tekrarla A1'den C2'ye.
 ```
 
-*(69 karakter)*
+*(72 karakter)*
+
+Başlığın alamadığı terimleri taşıyor: `gramer` · `okuma` · `konuşma` ·
+`IELTS` · `aralıklı tekrar` · `A1` · `C2`.
+
+---
 
 ## Tam açıklama (4000 karakter)
 
-```
-Kelime Havuzum, İngilizce kelime dağarcığını A1'den C2'ye kadar sistemli
-biçimde büyütmen için tasarlandı. Ezber listesi değil — ne zaman neyi
-tekrar etmen gerektiğini hesaplayan bir çalışma arkadaşı.
+Terim sıklığı burada sayılıyor. Ana terim ("İngilizce") doğal biçimde
+5 kez geçiyor; daha fazlası doldurma sayılıyor. Başlıklar tarama
+kolaylığı için, alt satırlar arama için.
 
-■ ARALIKLI TEKRAR (SPACED REPETITION)
+```
+Kelimece, İngilizce'yi A1'den C2'ye kadar sistemli biçimde öğrenmen için
+tasarlandı. Ezber listesi değil: ne zaman neyi tekrar etmen gerektiğini
+hesaplayan bir çalışma arkadaşı.
+
+Türkçe konuşanlar için yazıldı. Açıklamalar Türkçe, örnekler Türkçe
+konuşanların gerçekten zorlandığı yerlerden seçildi.
+
+■ ARALIKLI TEKRAR — KELİME AKLINDA KALSIN
 
 Bildiğin kelimeyi tekrar tekrar sormaz. Her doğru cevapta bir sonraki
 tekrar daha uzağa planlanır: 1 gün, 2 gün, 4 gün, bir hafta, iki hafta,
-bir ay. Unuttuğun kelime ise başa döner. Böylece zamanını gerçekten
-zorlandığın kelimelere ayırırsın.
+bir ay. Unuttuğun kelime başa döner. Zamanını gerçekten zorlandığın
+kelimelere ayırırsın.
 
-■ SENİN SEVİYENDEN BAŞLA
+5300 kelime, kullanım sıklığına göre sıralı. En çok karşına çıkacak
+kelimeyi önce öğrenirsin.
 
-Kısa bir seviye belirleme testi hangi seviyeden başlaman gerektiğini
-söyler. Test uyarlanabilir: doğru cevapladıkça zorlaşır, zorlandıkça
-kolaylaşır. Sonrasında uygulama kendi seviyene ve altına odaklanır.
+■ SADECE KELİME DEĞİL
 
-■ 2500 KELİME, HER BİRİ SEVİYELENDİRİLMİŞ
+• Dilbilgisi dersleri ve quizleri — her sorunun "neden" açıklaması var
+• Okuma parçaları — hikâyeler ve makaleler, sorular metin görünmeden
+• Yazma ve e-posta görevleri — örnek cevapla karşılaştırmalı
+• Rol yapmalı diyaloglar — sen B kişisi olarak cevap veriyorsun
+• Zıt anlamlılar — çift yönlü sorulur
+• Konu konu kelime — seyahat, iş, sağlık, yemek
 
-A1: 599 · A2: 679 · B1: 639 · B2: 383 · C1: 174 · C2: 19
+■ KONUŞMA PRATİĞİ
 
-Sayılardan ve günlerden başlayıp akademik kelimelere kadar uzanan,
-konu konu düzenlenmiş bir havuz. Her kelimede seviye, sözcük türü ve
-konu bilgisi var.
+İngilizce cümleyi mikrofona söylersin, hangi kelimeyi tutturamadığın
+kelime kelime gösterilir. Kendi sesini kaydedip dinleyebilirsin — konuşurken
+fark etmediğin duraksamaları böyle duyarsın.
 
-■ KENDİ KELİMELERİNİ EKLE
+Farklı aksanlar: cihazında kurulu İngilizce seslerin arasından seçim
+yaparsın (Amerikan, İngiliz, Avustralya...) ve aynı cümleyi
+karşılaştırmalı dinlersin.
 
-Derste, dizide veya kitapta karşılaştığın kelimeyi ekle; aynı tekrar
-sistemi ona da uygulanır. Örnek cümle ve etiket ekleyebilirsin.
+■ SINAV MODU: IELTS VE TOEFL
 
-■ TAMAMEN ÇEVRİMDIŞI
+Sınav biçimi, bölümler ve süreler. Gerçek görev formatında yazma
+alıştırmaları. Konuşma görevleri gerçek süreleriyle: 1 dakika hazırlık,
+2 dakika konuşma. Sınava özgü kelime setleri.
 
-İnternet gerekmez. Uçakta, metroda, çekmediği yerde çalışır.
+■ ACİL İNGİLİZCE
 
-■ VERİLERİN SENDE KALIR
-
-Hesap yok, kayıt yok, sunucu yok. Her şey cihazında. İstediğin an JSON
-olarak yedek al, başka cihaza taşı. Reklam yok, izleme yok.
-
-■ TÜRKÇE DÜŞÜNENLERE GÖRE
-
-Arama Türkçe klavye gerektirmez: "yag" yazınca "don yağı" bulunur.
-Arayüzün tamamı Türkçe.
+Hastane, polis, eczane, havaalanı, kayboldum, para. Söyleyeceğin
+cümleler ve karşıdan DUYACAĞIN cümleler bir arada. Cümleyi
+seslendirebilir ya da telefonu karşındakine gösterebilirsin.
+İnternet gerekmez, tamamı ücretsiz.
 
 ■ İLERLEMENİ GÖR
 
-Günlük seri, günlük hedef, seviye seviye tamamlanma oranı. Ne kadar
-yol aldığını her gün görürsün.
+Günlük hedef, seri takibi, XP ve rozetler. Haftalık hedef senin kendi
+geçmişinden hesaplanır — herkese aynı sayı verilmez. Kelime, dilbilgisi,
+okuma, diyalog ve konuşma için ayrı başarı oranları.
 
-Ücretsiz ve reklamsız.
+■ ÇEVRİMDIŞI ÇALIŞIR
+
+Uçakta, metroda, kotan bittiğinde. Tüm İngilizce içeriği cihazında.
+Reklam yok, takip yok, hesap zorunlu değil.
+
+■ NE VAAT ETMİYORUZ
+
+Yazma kontrolü uzunluğa, istenen ögelere ve Türkçe konuşanların sık
+yaptığı kalıp hatalara bakar — anlamı ve üslubu değerlendiremez.
+Sınav modu bant ya da TOEFL puanı vermez; o eğitimli
+değerlendiricilerin kararıdır. Konuşma alıştırması telaffuz puanı
+vermez, söylediğin kelimeleri hedefle karşılaştırır. Bunları
+uygulamanın içinde de açıkça yazıyoruz.
+
+■ ÜCRETSİZ VE ABONELİK
+
+A1 ve A2 seviyelerinin tamamı ücretsiz. Acil İngilizce her zaman
+ücretsiz. B1'den C2'ye abonelikle açılır.
 ```
+
+---
+
+## Anahtar kelime haritası
+
+Hangi terimin hangi alanda geçtiği. Bir terim en az bir yerde
+geçmiyorsa o arama için görünmezsin.
+
+| Terim | Ad | Kısa | Tam |
+|---|:--:|:--:|:--:|
+| ingilizce | ✓ | | ✓ |
+| ingilizce öğren | ✓ | | ✓ |
+| kelime | ✓ | ✓ | ✓ |
+| ingilizce kelime | ✓ | | ✓ |
+| kelime ezberleme | | | ✓ |
+| aralıklı tekrar | | ✓ | ✓ |
+| gramer / dilbilgisi | | ✓ | ✓ |
+| okuma | | ✓ | ✓ |
+| konuşma pratiği | | ✓ | ✓ |
+| ielts | | ✓ | ✓ |
+| toefl | | | ✓ |
+| çevrimdışı | | | ✓ |
+| a1 / c2 | | ✓ | ✓ |
+
+**Eksik bırakılanlar ve sebebi:** `yds`, `yökdil`, `kpds` — uygulamada
+o sınavlara özel içerik yok. Aranan terim diye eklemek, indiren
+kullanıcının aradığını bulamayıp uygulamayı silmesine yol açar; Play
+bunu kaldırma oranından görüp sıralamayı düşürür.
 
 ---
 
 ## Görsel varlıklar — hazırlanacaklar
 
-| Öğe | Boyut | Durum |
+| Varlık | Boyut | Not |
 |---|---|---|
-| Uygulama simgesi | 512×512 PNG | ✅ `assets/generated/icon-1024.png` küçültülecek |
-| Öne çıkan grafik | 1024×500 PNG | ⬜ hazırlanacak |
-| Telefon ekran görüntüsü | min. 2 adet | ⬜ cihazda çekilecek |
-| 7" tablet görüntüsü | isteğe bağlı | ⬜ |
+| Uygulama simgesi | 512×512 PNG | Şeffaflık yok |
+| Öne çıkan görsel | 1024×500 PNG | Mağaza üstünde |
+| Telefon ekran görüntüsü | en az 2, 1080×1920 | 8'e kadar |
+| 7" tablet | isteğe bağlı | |
+| 10" tablet | isteğe bağlı | |
 
-### Önerilen ekran görüntüleri
+**Ekran görüntüleri de arama sonucu tıklanma oranını etkiliyor.**
+Önerilen sıra — ilk ikisi listede küçük hâlde görünüyor, en güçlü
+ikisi öne:
 
-1. **Ana ekran** — seviye rozeti, seri ve "Çalışmaya başla" görünür
-2. **Tekrar kartı** — anlamı açılmış hâlde, CEFR rozetiyle
-3. **Seviye belirleme testi** — çoktan seçmeli soru
-4. **Seviye ilerlemesi** — A1-C2 çubukları
-5. **Kelime havuzu** — filtrelenmiş liste
-
-Her görüntünün üstüne kısa bir başlık eklemek dönüşümü artırır:
-"Seviyeni ölç", "Unutmadan tekrar et", "2500 kelime, 6 seviye".
+1. Kelime çalışma ekranı, üstünde "5300 kelime, sıklık sırasına göre"
+2. İlerleme paneli (halkalar, grafik, rozetler)
+3. Diyalog rol yapma
+4. Sınav modu — IELTS konuşma sayacı
+5. Acil İngilizce
+6. Açık ve koyu tema yan yana
 
 ---
 
 ## Kategori ve etiketler
 
 - **Kategori:** Eğitim
-- **Etiketler:** dil öğrenme, İngilizce, kelime, sözlük, eğitim
-- **İçerik derecelendirmesi:** 3+ (Herkes)
-- **Ücretlendirme:** Ücretsiz
+- **Etiketler:** Dil öğrenme, Eğitim, Kelime
+- **İçerik derecelendirmesi:** Herkes
+- **Hedef kitle:** 13+
 
 ---
 
@@ -112,10 +203,30 @@ Her görüntünün üstüne kısa bir başlık eklemek dönüşümü artırır:
 ```
 İlk sürüm.
 
-• A1-C2 arası 2500 seviyelendirilmiş kelime
-• Aralıklı tekrar sistemi
-• Uyarlanabilir seviye belirleme testi
-• Günlük seri ve ilerleme takibi
-• Tamamen çevrimdışı, reklamsız
-• Verilerin cihazında kalır
+• 5300 kelime, aralıklı tekrar ile A1–C2
+• Dilbilgisi, okuma, yazma, e-posta ve rol yapmalı diyalog
+• Konuşma pratiği ve ses kaydı
+• IELTS / TOEFL modu
+• Acil İngilizce — her zaman ücretsiz
+• Açık ve koyu tema
+• Çevrimdışı çalışır, reklam yok
 ```
+
+---
+
+## Yayından sonra
+
+ASO tek seferlik bir iş değil. Play Console **Erişim ve cihazlar →
+Mağaza performansı** altında hangi aramaların gösterim getirdiğini
+veriyor. İlk iki hafta sonra oraya bak:
+
+- Gösterim alıp **tıklanmayan** terim → ekran görüntüleri ya da kısa
+  açıklama o beklentiyi karşılamıyor
+- Tıklanıp **indirilmeyen** terim → ekran görüntüleri yanlış şeyi
+  gösteriyor
+- Hiç gösterim almayan terim → o kelime metinlerde yok ya da o
+  aramada rekabet çok yüksek
+
+Adı değiştirmek sıralamayı sıfırlamıyor ama **paket adı
+(`com.gulezgin.kelimece`) yayından sonra ASLA değişmez.** İlk yükleme
+öncesi son kontrol noktası burası.

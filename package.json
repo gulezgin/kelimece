@@ -1,5 +1,5 @@
 {
-  "name": "kelime-havuzum",
+  "name": "kelimece",
   "version": "2.0.0",
   "private": true,
   "type": "module",
@@ -35,7 +35,7 @@
     "education",
     "language-learning"
   ],
-  "author": "Kelime Havuzum Contributors",
+  "author": "Kelimece Contributors",
   "license": "MIT",
   "devDependencies": {
     "@capacitor/android": "^8.5.1",

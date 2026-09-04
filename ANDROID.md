@@ -58,7 +58,7 @@ gerekmiyor; sıfırdan kurman gerekirse komut şu:
 npm run android:add
 ```
 
-> Paket adı `capacitor.config.json` içinde `com.gulezgin.kelimehavuzum`
+> Paket adı `capacitor.config.json` içinde `com.gulezgin.kelimece`
 > olarak ayarlı. **Play Store'a ilk yüklemeden sonra bu asla
 > değiştirilemez.** Değiştireceksen şimdi yap.
 
@@ -113,7 +113,7 @@ npm run build:icons
 **Bu adımı ben yapamam — parola girmen gerekiyor.**
 
 ```bash
-keytool -genkey -v -keystore kelime-havuzum.keystore -alias kelimehavuzum -keyalg RSA -keysize 2048 -validity 10000
+keytool -genkey -v -keystore kelimece.keystore -alias kelimece -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 Komut sırayla soracak: keystore parolası, ad-soyad, kurum, şehir, ülke
@@ -121,7 +121,7 @@ kodu (TR), sonra anahtar parolası.
 
 ### ⚠️ Bu dosyayı kaybetme
 
-`kelime-havuzum.keystore` dosyası ve parolaları **uygulamanın kimliği**.
+`kelimece.keystore` dosyası ve parolaları **uygulamanın kimliği**.
 Kaybedersen aynı uygulamayı bir daha güncelleyemezsin — yeni bir uygulama
 olarak, sıfır indirmeyle baştan başlaman gerekir.
 
@@ -139,9 +139,9 @@ olarak, sıfır indirmeyle baştan başlaman gerekir.
 `android/keystore.properties` dosyası oluştur (git'e girmez):
 
 ```properties
-storeFile=../../kelime-havuzum.keystore
+storeFile=../../kelimece.keystore
 storePassword=BURAYA_KEYSTORE_PAROLASI
-keyAlias=kelimehavuzum
+keyAlias=kelimece
 keyPassword=BURAYA_ANAHTAR_PAROLASI
 ```
 
@@ -234,7 +234,7 @@ doğrulaması isteniyor ve birkaç gün sürebilir.
 
 ### Uygulama oluştur
 
-1. **Uygulama oluştur** → ad: *Kelime Havuzum*, dil: Türkçe,
+1. **Uygulama oluştur** → ad: *Kelimece*, dil: Türkçe,
    tür: Uygulama, ücretsiz
 2. **Uygulama içeriği** bölümündeki her maddeyi doldur (aşağıda)
 3. **Üretim → Yeni sürüm oluştur** → AAB'yi yükle
@@ -507,4 +507,4 @@ sınırı yükselirse buradan değiştirip `npx cap sync android` çalıştır.
 **AAB imzasız görünüyor**
 `keystore.properties` yolu yanlış olabilir. `storeFile` yolu
 `android/` klasörüne göre göreli: kök dizindeki keystore için
-`../../kelime-havuzum.keystore`.
+`../../kelimece.keystore`.

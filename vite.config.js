@@ -20,8 +20,8 @@ export default defineConfig({
 					registerType: 'autoUpdate',
 					includeAssets: ['favicon.png', 'icons/apple-touch-icon.png'],
 					manifest: {
-						name: 'Kelime Havuzum - İngilizce Öğren',
-						short_name: 'Kelime Havuzum',
+						name: 'Kelimece - İngilizce Öğren',
+						short_name: 'Kelimece',
 						description:
 							'Aralıklı tekrar ile A1-C2 arası İngilizce kelime öğrenme. Tüm veriler cihazında kalır.',
 						lang: 'tr',

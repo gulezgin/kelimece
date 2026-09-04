@@ -1,10 +1,10 @@
-# Gizlilik Politikası — Kelime Havuzum
+# Gizlilik Politikası — Kelimece
 
 **Son güncelleme:** 1 Eylül 2026
 
 ## Özet
 
-Kelime Havuzum hiçbir kişisel veri toplamaz, saklamaz veya paylaşmaz.
+Kelimece hiçbir kişisel veri toplamaz, saklamaz veya paylaşmaz.
 Uygulamada oluşturduğun her şey yalnızca kendi cihazında kalır.
 
 ## Toplanan veriler

@@ -1,4 +1,4 @@
-package com.gulezgin.kelimehavuzum;
+package com.gulezgin.kelimece;
 
 import com.getcapacitor.BridgeActivity;
 

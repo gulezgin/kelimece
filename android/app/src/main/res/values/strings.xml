@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Kelime Havuzum</string>
-    <string name="title_activity_main">Kelime Havuzum</string>
-    <string name="package_name">com.gulezgin.kelimehavuzum</string>
-    <string name="custom_url_scheme">com.gulezgin.kelimehavuzum</string>
+    <string name="app_name">Kelimece</string>
+    <string name="title_activity_main">Kelimece</string>
+    <string name="package_name">com.gulezgin.kelimece</string>
+    <string name="custom_url_scheme">com.gulezgin.kelimece</string>
 </resources>

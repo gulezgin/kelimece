@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Kelime Havuzum, please report it by emailing [security@example.com](mailto:security@example.com) instead of using the issue tracker.
+If you discover a security vulnerability in Kelimece, please report it by emailing [security@example.com](mailto:security@example.com) instead of using the issue tracker.
 
 Please include the following details:
 - Description of the vulnerability
@@ -14,7 +14,7 @@ We appreciate your responsible disclosure and will make every effort to acknowle
 
 ## Security Notes
 
-Since Kelime Havuzum is a client-side application with no backend:
+Since Kelimece is a client-side application with no backend:
 
 - ✅ Your data is stored only in your browser's localStorage
 - ✅ No data is sent to any external server

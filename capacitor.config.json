@@ -1,6 +1,6 @@
 {
-  "appId": "com.gulezgin.kelimehavuzum",
-  "appName": "Kelime Havuzum",
+  "appId": "com.gulezgin.kelimece",
+  "appName": "Kelimece",
   "webDir": "dist",
   "android": {
     "allowMixedContent": false,

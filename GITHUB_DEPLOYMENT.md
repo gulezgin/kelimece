@@ -63,7 +63,7 @@ GitHub'da yeni bir repository oluştur: `kelime-havuzum`
 cd c:\Users\msı\Desktop\Zeng-trZAPP
 git init
 git add .
-git commit -m "Initial commit: Professional Kelime Havuzum app"
+git commit -m "Initial commit: Professional Kelimece app"
 git branch -M main
 git remote add origin https://github.com/gulezgin/WordPool-TR-EN.git
 git push -u origin main
