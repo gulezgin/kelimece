@@ -42,7 +42,9 @@ export const DEFAULT_SETTINGS = {
 	dailyGoal: 10,
 	today: null,
 	/** Seslendirme hızı: 0.75 yavaş, 1.0 normal, 1.25 hızlı. */
-	speechRate: 0.9
+	speechRate: 0.9,
+	/** Seçili İngilizce aksan (ör. 'en-GB'). Boş = cihazın seçimi. */
+	accent: ''
 };
 
 /**
@@ -820,6 +822,13 @@ export async function clearPremium() {
 /** Seslendirme hızını kaydeder. */
 export async function setSpeechRate(rate) {
 	state.settings.speechRate = Number(rate);
+	emit();
+	await persistSettings();
+}
+
+/** Seçili aksanı kaydeder. */
+export async function setAccentSetting(lang) {
+	state.settings.accent = String(lang || '');
 	emit();
 	await persistSettings();
 }

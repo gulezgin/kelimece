@@ -23,7 +23,7 @@ import { renderCheck, renderTask, renderTaskList } from './ui/writing.js';
 import { renderAntonymList, renderAntonymRound } from './ui/antonyms.js';
 import { renderListDetail, renderLists } from './ui/lists.js';
 import { isStruggling } from './core/stats.js';
-import { setRate, speak } from './core/speech.js';
+import { availableAccents, setAccent, setRate, speak } from './core/speech.js';
 import { renderTopicChip, renderTopics } from './ui/topics.js';
 import { findDialogue, loadDialogues } from './core/dialogues.js';
 import { renderDialogue, renderDialogueList } from './ui/dialogues.js';
@@ -993,6 +993,60 @@ function handleImport(file) {
 // ===================== İlerleme denetimi =====================
 
 /**
+ * Aksan seçicisini cihazda GERÇEKTEN kurulu seslerle doldurur.
+ *
+ * Sabit bir aksan listesi göstermek yanıltıcı olurdu: seçilen aksana
+ * ait ses yoksa uygulama sessizce başka bir sesle konuşur ve kullanıcı
+ * İngiliz aksanı dinlediğini sanır. Tek aksan varsa satır hiç
+ * gösterilmiyor — seçenek sunmayan bir seçici gürültüdür.
+ */
+function fillAccentSelect() {
+	const sec = $('accentSelect');
+	const satir = $('accentRow');
+	if (!sec || !satir) return;
+
+	const aksanlar = availableAccents();
+	satir.hidden = aksanlar.length < 2;
+	if (aksanlar.length < 2) return;
+
+	const secili = store.state.settings.accent || '';
+	sec.textContent = '';
+	sec.appendChild(el('option', { text: 'Otomatik', attrs: { value: '' } }));
+	for (const a of aksanlar) {
+		sec.appendChild(el('option', {
+			text: a.label + ' (' + a.lang + ')',
+			attrs: { value: a.lang }
+		}));
+	}
+	// Kayitli aksan cihazda yoksa "Otomatik"e dusuyor; olmayan bir
+	// secenegi secili gostermek kullaniciya yalan soyler.
+	sec.value = aksanlar.some((a) => a.lang === secili) ? secili : '';
+}
+
+/**
+ * Aynı cümleyi cihazdaki her aksanla sırayla okur.
+ *
+ * Aksan farkını anlatmanın tek dürüst yolu duyurmak; "İngiliz aksanı
+ * daha yuvarlak" gibi bir açıklama yazmak öğretmiyor.
+ */
+async function handleAccentCompare() {
+	const aksanlar = availableAccents();
+	if (!aksanlar.length) {
+		toast('Cihazda İngilizce ses bulunamadı.', 'warn');
+		return;
+	}
+	const cumle = 'Water, better, schedule, tomato.';
+	for (const a of aksanlar) {
+		toast(a.label + ' (' + a.lang + ')');
+		speak(cumle, { accent: a.lang });
+		// Konusma bitisini beklemek yerine sabit aralik: bazi
+		// tarayicilarda 'end' olayi hic tetiklenmiyor ve dongu asili
+		// kaliyor.
+		await new Promise((r) => setTimeout(r, 2600));
+	}
+}
+
+/**
  * "Öğrenilmiş" işaretini hak etmeyen kelimeleri gösterir ve ne yapılacağını
  * kullanıcıya sorar. Hiçbir onarım kullanıcı seçmeden uygulanmaz.
  */
@@ -1282,6 +1336,15 @@ function wireEvents() {
 		speak('This is the new speed.');
 	});
 
+	$('accentSelect').addEventListener('change', async (e) => {
+		setAccent(e.target.value);
+		await store.setAccentSetting(e.target.value);
+		// Secimi kulakla dogrulatmak icin ornek okunuyor.
+		speak('This is how I sound.');
+	});
+
+	$('accentCompareBtn').addEventListener('click', handleAccentCompare);
+
 	$('auditBtn').addEventListener('click', handleProgressAudit);
 
 	$('wipeBtn').addEventListener('click', async () => {
@@ -1429,6 +1492,13 @@ async function boot() {
 	$('goalInput').value = store.state.settings.dailyGoal;
 	// Kayitli hiz konusma motoruna ve secicilere uygulaniyor.
 	setRate(store.state.settings.speechRate);
+	setAccent(store.state.settings.accent || '');
+	// Sesler eszamansiz yukleniyor; ilk cagrida liste bos gelebiliyor
+	// ve secici bos gorunuyordu. Ses listesi degisince yeniden kur.
+	fillAccentSelect();
+	if (typeof window !== 'undefined' && window.speechSynthesis) {
+		window.speechSynthesis.addEventListener?.('voiceschanged', fillAccentSelect);
+	}
 	$('rateSelect').value = String(store.state.settings.speechRate);
 	showSection('home');
 	setupReminderUi();
