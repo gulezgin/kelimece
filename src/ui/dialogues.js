@@ -9,6 +9,7 @@
 import { dialogueSummaries } from '../core/dialogues.js';
 import { hasEnglishVoice, speak } from '../core/speech.js';
 import { $, el } from './dom.js';
+import { appendTappableWords } from './tappable.js';
 
 /**
  * Diyalog listesi.
@@ -106,7 +107,7 @@ function lineRow(line, canSpeak, handlers, wordIndex) {
 	const tr = el('div', { class: 'dlgTr hidden', text: line.tr || '' });
 
 	const en = el('div', { class: 'dlgEn' });
-	appendTappableWords(en, line.en || '', handlers, wordIndex);
+	appendTappableWords(en, line.en || '', wordIndex, handlers.onWord);
 
 	const row = el('div', { class: 'dlgLine dlgLine--' + (line.s === 'B' ? 'b' : 'a') }, [
 		el('span', { class: 'dlgSpeaker', text: line.s || 'A' }),
@@ -126,27 +127,4 @@ function lineRow(line, canSpeak, handlers, wordIndex) {
 	// Satira dokunmak ceviriyi acip kapatiyor
 	row.onclick = () => tr.classList.toggle('hidden');
 	return row;
-}
-
-/**
- * Cümleyi sözcüklere bölüp havuzda karşılığı olanları tıklanabilir yapar.
- * Noktalama ve boşluklar olduğu gibi korunuyor; yoksa cümle bozuluyor.
- */
-function appendTappableWords(host, text, handlers, wordIndex) {
-	const parts = String(text).split(/([A-Za-z']+)/);
-	for (const part of parts) {
-		if (!part) continue;
-		const key = part.toLowerCase().replace(/^'+|'+$/g, '');
-		const word = /^[A-Za-z']+$/.test(part) && wordIndex ? wordIndex.get(key) : null;
-		if (!word) {
-			host.appendChild(document.createTextNode(part));
-			continue;
-		}
-		const span = el('span', { class: 'dlgWord', text: part, title: word.tr });
-		span.onclick = (e) => {
-			e.stopPropagation();
-			handlers.onWord(word);
-		};
-		host.appendChild(span);
-	}
 }

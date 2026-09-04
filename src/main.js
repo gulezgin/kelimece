@@ -14,6 +14,8 @@ import { topicSummaries } from './core/topics.js';
 import { findLesson, loadLessons } from './core/grammar.js';
 import { renderGrammarList, renderLesson, renderQuiz } from './ui/grammar.js';
 import { renderLearn } from './ui/learn.js';
+import { findText, loadTexts } from './core/reading.js';
+import { renderComprehension, renderReadingList, renderText } from './ui/reading.js';
 import { isStruggling } from './core/stats.js';
 import { setRate, speak } from './core/speech.js';
 import { renderTopicChip, renderTopics } from './ui/topics.js';
@@ -226,10 +228,20 @@ function render() {
 
 	if (activeSection === 'grammar') {
 		const acik = openLessonId ? findLesson(lessons, openLessonId) : null;
-		if (acik && quizOpen) renderQuiz(acik, grammarHandlers);
+		if (acik && quizOpen) renderQuiz(acik, grammarHandlers, quizRun);
 		else if (acik) renderLesson(acik, grammarHandlers);
 		else renderGrammarList(lessons, store.state.profile.premium,
 			store.state.profile.lessonsDone || [], grammarHandlers);
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
+
+	if (activeSection === 'reading') {
+		const acik = openTextId ? findText(texts, openTextId) : null;
+		if (acik && comprehensionOpen) renderComprehension(acik, readingHandlers, comprehensionRun);
+		else if (acik) renderText(acik, readingHandlers, getWordIndex());
+		else renderReadingList(texts, store.state.profile.premium,
+			store.state.profile.textsDone || [], readingHandlers);
 		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
 		return;
 	}
@@ -292,15 +304,30 @@ const GRAMMAR_URL = import.meta.env.BASE_URL + 'content/grammar.json';
 
 /** Yuklenen dersler ve acik olanin durumu. */
 let lessons = [];
+/** Bos quiz kosusu. */
+function newQuizRun() { return { index: 0, answers: [], scored: false }; }
+
 let openLessonId = null;
 let quizOpen = false;
+/**
+ * Quiz ilerlemesi burada tutuluyor, cizim fonksiyonunun icinde degil.
+ * Depoya her yazma `render()` cagiriyor; durum cizimde olsaydi quiz
+ * ortasindaki her yazma kullanicinin ilerlemesini sifirlardi.
+ */
+let quizRun = newQuizRun();
+
+const READING_URL = import.meta.env.BASE_URL + 'content/reading.json';
+let texts = [];
+let openTextId = null;
+let comprehensionOpen = false;
+let comprehensionRun = newQuizRun();
 
 /** Ogren ekranindaki moduller. */
 function learnModules() {
 	return [
 		{ id: 'topics', icon: '🗂️', title: 'Konular', note: 'Alan alan kelime', ready: true },
 		{ id: 'grammar', icon: '📐', title: 'Dilbilgisi', note: lessons.length + ' ders', ready: lessons.length > 0 },
-		{ id: 'reading', icon: '📖', title: 'Okuma', note: '', ready: false },
+		{ id: 'reading', icon: '📖', title: 'Okuma', note: texts.length + ' parça', ready: texts.length > 0 },
 		{ id: 'writing', icon: '✍️', title: 'Yazma', note: '', ready: false }
 	];
 }
@@ -308,8 +335,20 @@ function learnModules() {
 const learnHandlers = {
 	onOpen: (id) => {
 		if (id === 'topics') { showSection('topics'); return; }
-		if (id === 'grammar') { openLessonId = null; quizOpen = false; showSection('grammar'); }
+		if (id === 'grammar') { openLessonId = null; quizOpen = false; showSection('grammar'); return; }
+		if (id === 'reading') { openTextId = null; comprehensionOpen = false; showSection('reading'); }
 	}
+};
+
+const readingHandlers = {
+	onBack: () => showSection('learn'),
+	onBackToList: () => { openTextId = null; comprehensionOpen = false; window.scrollTo(0, 0); render(); },
+	onBackToText: (id) => { openTextId = id; comprehensionOpen = false; window.scrollTo(0, 0); render(); },
+	onOpen: (id) => { openTextId = id; comprehensionOpen = false; window.scrollTo(0, 0); render(); },
+	onStartQuiz: (id) => { openTextId = id; comprehensionOpen = true; comprehensionRun = newQuizRun(); window.scrollTo(0, 0); render(); },
+	onLocked: () => openPaywall(),
+	onPassed: (id) => store.markTextDone(id),
+	onWord: (word) => dialogueHandlers.onWord(word)
 };
 
 const grammarHandlers = {
@@ -317,7 +356,7 @@ const grammarHandlers = {
 	onBackToList: () => { openLessonId = null; quizOpen = false; window.scrollTo(0, 0); render(); },
 	onBackToLesson: (id) => { openLessonId = id; quizOpen = false; window.scrollTo(0, 0); render(); },
 	onOpen: (id) => { openLessonId = id; quizOpen = false; window.scrollTo(0, 0); render(); },
-	onStartQuiz: (id) => { openLessonId = id; quizOpen = true; window.scrollTo(0, 0); render(); },
+	onStartQuiz: (id) => { openLessonId = id; quizOpen = true; quizRun = newQuizRun(); window.scrollTo(0, 0); render(); },
 	onLocked: () => openPaywall(),
 	onPassed: (id) => store.markLessonDone(id)
 };
@@ -1031,6 +1070,7 @@ function showSection(section) {
 		['home', 'homeView', 'navHome'],
 		['learn', 'learnView', 'navLearn'],
 		['grammar', 'grammarView', 'navLearn'],
+		['reading', 'readingView', 'navLearn'],
 		['topics', 'topicsView', 'navLearn'],
 		['dialogues', 'dialoguesView', 'navDialogues'],
 		['pool', 'poolView', 'navPool'],
@@ -1163,6 +1203,11 @@ async function boot() {
 
 	// Bulut da acilisi bekletmesin; yapilandirma yoksa hicbir sey yapmaz.
 	initCloud();
+
+	loadTexts(READING_URL).then((list) => {
+		texts = list;
+		if (activeSection === 'learn' || activeSection === 'reading') render();
+	});
 
 	loadLessons(GRAMMAR_URL).then((list) => {
 		lessons = list;

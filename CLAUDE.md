@@ -173,6 +173,13 @@ seviyede en az bir diyalog var mı) denetler.
   Play, `SCHEDULE_EXACT_ALARM` iznini yalnızca alarm/takvim uygulamalarına
   açıyor; ayrıca izin yokken API 31+ kullanıcının yüzüne sistem ayar ekranı
   açıyor. Günlük çalışma hatırlatması için dakika hassasiyeti gerekmiyor.
+- **Quiz ilerlemesi çizim fonksiyonunun dışında tutulur.** `renderQuiz`
+  ve `renderComprehension` durumu `main.js`'ten `run` nesnesiyle alır.
+  Sebebi: depoya her yazma `emit()` → `render()` zinciri kuruyor. Durum
+  closure'da olsaydı quiz ortasındaki her yazma kullanıcıyı birinci
+  soruya döndürürdü. Aynı nedenle puanlama (`onPassed`) çizim sırasında
+  değil, son sorudan sonraki tıklamada çağrılır — çizim içinde yazmak
+  quizi kendi üstüne yeniden çizdiriyordu.
 - **Giriş ekranı `index.html` gövdesinin en başında, satır içi.** JS paketi
   yüklenmeden boyanabilsin ve yerel açılış ekranıyla arasında geçiş
   görünmesin diye. `main.js` veri hazır olunca kaldırır.

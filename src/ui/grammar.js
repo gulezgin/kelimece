@@ -106,14 +106,18 @@ export function renderLesson(lesson, handlers) {
  *
  * Doğru cevabı hemen göstermek yerine önce NEDEN yanlış olduğunu
  * söylüyor; kural anlaşılmadan doğru şıkkı görmek ezber üretir.
+ *
+ * Quiz durumu (`run`) dışarıdan geliyor, closure'da tutulmuyor. Sebep:
+ * herhangi bir depo yazımı `emit()` -> `render()` zincirini tetikliyor
+ * ve bu fonksiyon baştan çağrılıyor; durum içeride olsaydı kullanıcı
+ * quizin ortasında birinci soruya geri dönerdi.
  */
-export function renderQuiz(lesson, handlers) {
+export function renderQuiz(lesson, handlers, run) {
 	const host = $('grammarView');
-	if (!host || !lesson) return;
+	if (!host || !lesson || !run) return;
 
 	const sorular = lesson.quiz || [];
-	const cevaplar = [];
-	let index = 0;
+	const cevaplar = run.answers;
 
 	function ciz() {
 		host.textContent = '';
@@ -122,16 +126,16 @@ export function renderQuiz(lesson, handlers) {
 		cik.onclick = () => handlers.onBackToLesson(lesson.id);
 		host.appendChild(el('div', { class: 'dlgHead' }, [
 			cik,
-			el('span', { class: 'dlgProgress', text: `${index} / ${sorular.length}` }),
+			el('span', { class: 'dlgProgress', text: `${run.index} / ${sorular.length}` }),
 			el('span', { class: 'cefr cefr--' + lesson.level, text: lesson.level })
 		]));
 
-		if (index >= sorular.length) {
+		if (run.index >= sorular.length) {
 			host.appendChild(sonuc());
 			return;
 		}
 
-		const q = sorular[index];
+		const q = sorular[run.index];
 		const kutu = el('div', { class: 'panel quizBox' }, [
 			el('div', { class: 'quizQuestion', text: q.q })
 		]);
@@ -145,8 +149,8 @@ export function renderQuiz(lesson, handlers) {
 				el('span', { text: metin })
 			]);
 			btn.onclick = () => {
-				if (cevaplar[index] !== undefined) return;
-				cevaplar[index] = i;
+				if (cevaplar[run.index] !== undefined) return;
+				cevaplar[run.index] = i;
 				const dogru = i === q.answer;
 
 				for (const b of secenekler.querySelectorAll('button')) b.disabled = true;
@@ -161,8 +165,9 @@ export function renderQuiz(lesson, handlers) {
 
 				const devam = el('button', { class: 'primary', text: 'Devam' });
 				devam.onclick = () => {
-					index++;
-					ciz();
+					run.index++;
+					if (run.index >= sorular.length) puanla();
+					else ciz();
 				};
 				geri.appendChild(el('div', { class: 'quizNext' }, [devam]));
 			};
@@ -174,15 +179,28 @@ export function renderQuiz(lesson, handlers) {
 		host.appendChild(kutu);
 	}
 
+	/**
+	 * Puanlama render'dan ayrı: `onPassed` depoya yazıyor, depo `render()`
+	 * çağırıyor. Bu çağrı çizimin ortasında olsaydı quiz kendi üstüne
+	 * yeniden çizilirdi.
+	 */
+	function puanla() {
+		if (!run.scored) {
+			run.scored = true;
+			if (isLessonPassed(gradeQuiz(lesson, cevaplar))) handlers.onPassed(lesson.id);
+		}
+		ciz();
+	}
+
 	function sonuc() {
 		const r = gradeQuiz(lesson, cevaplar);
 		const gecti = isLessonPassed(r);
-		if (gecti) handlers.onPassed(lesson.id);
 
 		const tekrar = el('button', { class: gecti ? 'ghost' : 'primary', text: 'Tekrar dene' });
 		tekrar.onclick = () => {
 			cevaplar.length = 0;
-			index = 0;
+			run.index = 0;
+			run.scored = false;
 			ciz();
 		};
 		const bitir = el('button', { class: gecti ? 'primary' : 'ghost', text: 'Derslere dön' });

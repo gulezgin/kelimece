@@ -78,7 +78,9 @@ export const DEFAULT_PROFILE = {
 	/** Bugün tamamlanan görevler: { date, ids[] } */
 	dailyDone: { date: null, ids: [] },
 	/** Quizi geçilmiş dilbilgisi dersleri. */
-	lessonsDone: []
+	lessonsDone: [],
+	/** Soruları geçilmiş okuma parçaları. */
+	textsDone: []
 };
 
 /** @type {{words: object[], settings: object, profile: object, ready: boolean, packs: object}} */
@@ -217,7 +219,8 @@ export async function init({ packUrl } = {}) {
 			premium: { ...NO_PREMIUM, ...(savedProfile.premium || {}) },
 			account: { ...NO_ACCOUNT, ...(savedProfile.account || {}) },
 			dailyDone: { date: null, ids: [], ...(savedProfile.dailyDone || {}) },
-			lessonsDone: savedProfile.lessonsDone || []
+			lessonsDone: savedProfile.lessonsDone || [],
+			textsDone: savedProfile.textsDone || []
 		};
 		refreshStreak();
 		state.settings = { ...DEFAULT_SETTINGS, ...((await getMeta('settings')) || {}) };
@@ -700,6 +703,15 @@ export async function markLessonDone(lessonId) {
 	const liste = state.profile.lessonsDone || [];
 	if (liste.includes(lessonId)) return;
 	state.profile.lessonsDone = [...liste, lessonId];
+	emit();
+	await persistProfile();
+}
+
+/** Okuma parçasını tamamlanmış işaretler. */
+export async function markTextDone(textId) {
+	const liste = state.profile.textsDone || [];
+	if (liste.includes(textId)) return;
+	state.profile.textsDone = [...liste, textId];
 	emit();
 	await persistProfile();
 }

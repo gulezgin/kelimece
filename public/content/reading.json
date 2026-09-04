@@ -1,0 +1,445 @@
+{
+  "pack": {
+    "id": "reading",
+    "version": 1,
+    "name": "Okuma Parçaları",
+    "language": "en-tr",
+    "count": 10
+  },
+  "texts": [
+    {
+      "id": "rd:lost-key",
+      "title": "The Lost Key",
+      "level": "A1",
+      "kind": "story",
+      "icon": "🔑",
+      "topic": "günlük",
+      "summary": "Anahtarını kaybeden bir adam",
+      "paragraphs": [
+        "Tom cannot find his key. He looks on the table. The key is not there. He looks under the bed. The key is not there.",
+        "His cat is sleeping on the sofa. Tom moves the cat. The key is under the cat! Tom is very happy."
+      ],
+      "questions": [
+        {
+          "q": "Where does Tom look first?",
+          "options": [
+            "Under the bed",
+            "On the table",
+            "On the sofa"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "Where is the key?",
+          "options": [
+            "Under the cat",
+            "In his pocket",
+            "On the table"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "How does Tom feel at the end?",
+          "options": [
+            "Angry",
+            "Tired",
+            "Happy"
+          ],
+          "answer": 2
+        }
+      ]
+    },
+    {
+      "id": "rd:new-neighbour",
+      "title": "The New Neighbour",
+      "level": "A1",
+      "kind": "story",
+      "icon": "🏠",
+      "topic": "insanlar",
+      "summary": "Yeni komşuyla tanışma",
+      "paragraphs": [
+        "A woman moves into the flat next door. Her name is Elif. She is from Izmir.",
+        "Ali says hello. He gives her some bread and salt. Elif smiles. She says thank you. Now they are friends."
+      ],
+      "questions": [
+        {
+          "q": "Where is Elif from?",
+          "options": [
+            "Ankara",
+            "Izmir",
+            "Istanbul"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What does Ali give her?",
+          "options": [
+            "Money",
+            "Flowers",
+            "Bread and salt"
+          ],
+          "answer": 2
+        },
+        {
+          "q": "How does Elif react?",
+          "options": [
+            "She smiles",
+            "She is angry",
+            "She leaves"
+          ],
+          "answer": 0
+        }
+      ]
+    },
+    {
+      "id": "rd:my-week",
+      "title": "My Week",
+      "level": "A2",
+      "kind": "story",
+      "icon": "📔",
+      "topic": "günlük",
+      "summary": "Bir haftalık günlük yazısı",
+      "paragraphs": [
+        "On Monday I started a new job. The office is far from my house, so I take two buses every morning. It is tiring but the people are friendly.",
+        "On Wednesday my manager asked me to write a short report. I was nervous because my English is not perfect. I finished it late at night.",
+        "On Friday she told me the report was clear and useful. I felt proud. This weekend I am going to rest and visit my parents."
+      ],
+      "questions": [
+        {
+          "q": "How does the writer travel to work?",
+          "options": [
+            "By car",
+            "By two buses",
+            "On foot"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "Why was the writer nervous?",
+          "options": [
+            "The job was new",
+            "The report was long",
+            "Their English is not perfect"
+          ],
+          "answer": 2
+        },
+        {
+          "q": "What was the manager's reaction?",
+          "options": [
+            "She was disappointed",
+            "She found it clear and useful",
+            "She rewrote it"
+          ],
+          "answer": 1
+        }
+      ]
+    },
+    {
+      "id": "rd:market-day",
+      "title": "Market Day",
+      "level": "A2",
+      "kind": "story",
+      "icon": "🧺",
+      "topic": "alışveriş",
+      "summary": "Pazarda geçen bir sabah",
+      "paragraphs": [
+        "Every Tuesday my grandmother goes to the local market. She wakes up early because the best vegetables are gone by nine o'clock.",
+        "She never uses a shopping list. She walks slowly, touches the tomatoes, and talks to the sellers she has known for twenty years.",
+        "When she comes home, her bags are heavy and her face is happy. She says the market is not only about food; it is about people."
+      ],
+      "questions": [
+        {
+          "q": "Why does she wake up early?",
+          "options": [
+            "The market closes early",
+            "The best vegetables go quickly",
+            "The buses are full"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "Does she use a shopping list?",
+          "options": [
+            "Yes, always",
+            "No, never",
+            "Only sometimes"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What does she say the market is about?",
+          "options": [
+            "Food only",
+            "Cheap prices",
+            "People"
+          ],
+          "answer": 2
+        }
+      ]
+    },
+    {
+      "id": "rd:remote-work",
+      "title": "Working From Home",
+      "level": "B1",
+      "kind": "article",
+      "icon": "💻",
+      "topic": "iş",
+      "summary": "Evden çalışmanın iki yüzü",
+      "paragraphs": [
+        "Ten years ago, working from home was unusual. Today millions of people open their laptops at the kitchen table instead of travelling to an office.",
+        "The advantages are clear. Employees save time and money on transport, and many say they concentrate better without the noise of an open office.",
+        "However, there are costs that are harder to measure. New employees learn less when they cannot watch experienced colleagues. Some workers report that the line between work and private life has almost disappeared.",
+        "Most companies now choose a middle path: two or three days in the office, the rest at home. Nobody is completely satisfied, but the arrangement seems to work."
+      ],
+      "questions": [
+        {
+          "q": "What is one clear advantage mentioned?",
+          "options": [
+            "Higher salaries",
+            "Saving time and money on transport",
+            "More holidays"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "Which group is said to learn less?",
+          "options": [
+            "Managers",
+            "New employees",
+            "Customers"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What do most companies choose now?",
+          "options": [
+            "Fully remote work",
+            "Fully office work",
+            "A mix of both"
+          ],
+          "answer": 2
+        }
+      ]
+    },
+    {
+      "id": "rd:sleep",
+      "title": "Why We Need Sleep",
+      "level": "B1",
+      "kind": "article",
+      "icon": "😴",
+      "topic": "sağlık",
+      "summary": "Uykunun beyne yaptığı iş",
+      "paragraphs": [
+        "Many people treat sleep as wasted time. They stay up late to finish work and wake early to start again. Scientists say this is a serious mistake.",
+        "During sleep the brain does not switch off. It sorts through the day's experiences, keeps what matters and removes what does not. This is why students who sleep well remember more than those who study all night.",
+        "Sleep also cleans the brain. A system of channels washes away waste products that build up while we are awake. When we sleep too little, this cleaning is not finished.",
+        "The advice is simple but unpopular: seven to nine hours, at roughly the same time each night."
+      ],
+      "questions": [
+        {
+          "q": "What do many people think about sleep?",
+          "options": [
+            "It is wasted time",
+            "It is enjoyable",
+            "It is expensive"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What does the brain do during sleep?",
+          "options": [
+            "Nothing at all",
+            "Sorts experiences and removes waste",
+            "Only rests the eyes"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What is the recommended amount?",
+          "options": [
+            "Five to six hours",
+            "Seven to nine hours",
+            "Ten or more hours"
+          ],
+          "answer": 1
+        }
+      ]
+    },
+    {
+      "id": "rd:cities",
+      "title": "Cities Without Cars",
+      "level": "B2",
+      "kind": "article",
+      "icon": "🚲",
+      "topic": "toplum",
+      "summary": "Arabasız şehir denemeleri",
+      "paragraphs": [
+        "When a European city announces that it will close its centre to cars, the reaction is predictable. Shopkeepers warn of empty streets, drivers speak of lost freedom, and newspapers publish angry letters.",
+        "Yet the evidence from cities that have actually done it tells a different story. In most cases, foot traffic increased and small businesses reported higher, not lower, revenue. People who arrive on foot or by bicycle tend to stop more often and spend more overall.",
+        "This does not mean the transition is painless. Deliveries must be reorganised, and residents with limited mobility need alternatives that are genuinely reliable rather than symbolic.",
+        "The lesson is not that cars are evil. It is that a street designed only for movement stops being a place where anyone wants to stay."
+      ],
+      "questions": [
+        {
+          "q": "How do shopkeepers usually react at first?",
+          "options": [
+            "With enthusiasm",
+            "With warnings of empty streets",
+            "With indifference"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What actually happened to small businesses?",
+          "options": [
+            "Revenue fell sharply",
+            "Revenue rose",
+            "Nothing changed"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What does the author say the real lesson is?",
+          "options": [
+            "Cars are evil",
+            "Streets designed only for movement stop being places to stay",
+            "Cities should ban bicycles"
+          ],
+          "answer": 1
+        }
+      ]
+    },
+    {
+      "id": "rd:memory",
+      "title": "The Language You Forget",
+      "level": "B2",
+      "kind": "article",
+      "icon": "🧠",
+      "topic": "bilim",
+      "summary": "Dil neden unutulur",
+      "paragraphs": [
+        "People who move abroad as children often lose their first language. They understand it when they hear it, but the words no longer come when they need them.",
+        "Researchers call this attrition. It is not that the knowledge disappears; rather, it becomes difficult to reach. The stronger language pushes the weaker one aside every time the speaker searches for a word.",
+        "The surprising part is how quickly it happens and how completely it can be reversed. Adults who return to their first country often recover fluency within weeks, far faster than someone learning from zero.",
+        "This suggests that forgetting a language is less like erasing a file and more like losing the path to a room that is still full of furniture."
+      ],
+      "questions": [
+        {
+          "q": "What is 'attrition' in this text?",
+          "options": [
+            "Learning a new language",
+            "Losing access to a first language",
+            "Speaking two languages equally"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What happens when adults return to their first country?",
+          "options": [
+            "They never recover",
+            "They recover within weeks",
+            "They must start from zero"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What image does the author use at the end?",
+          "options": [
+            "An erased file",
+            "A room still full of furniture",
+            "A closed book"
+          ],
+          "answer": 1
+        }
+      ]
+    },
+    {
+      "id": "rd:attention",
+      "title": "The Price of Attention",
+      "level": "C1",
+      "kind": "article",
+      "icon": "📱",
+      "topic": "teknoloji",
+      "summary": "Dikkatimizin nasıl satıldığına dair bir deneme",
+      "paragraphs": [
+        "We are accustomed to describing certain services as free. Email costs nothing, maps cost nothing, and an endless supply of video costs nothing. The arrangement feels generous until one asks what is actually being exchanged.",
+        "What is exchanged is attention, and attention is finite in a way that money is not. A person can earn more money; nobody can manufacture a twenty-fifth hour. Every minute captured by one product is permanently unavailable to another.",
+        "Defenders of the model argue that users consent, and in a narrow legal sense they do. But consent given to a system explicitly engineered to erode the conditions under which refusal is possible is a thin kind of consent.",
+        "None of this requires us to imagine villains. It requires only that we notice what a business measures. An organisation that is rewarded for time spent will, over years and without conspiracy, become extremely good at taking time."
+      ],
+      "questions": [
+        {
+          "q": "What does the author say is actually exchanged?",
+          "options": [
+            "Money",
+            "Attention",
+            "Personal data only"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "Why is attention different from money?",
+          "options": [
+            "It is easier to earn",
+            "It cannot be increased",
+            "It is worth less"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What is the author's view of villains?",
+          "options": [
+            "They are necessary to explain the problem",
+            "The problem needs no villains, only incentives",
+            "They should be punished"
+          ],
+          "answer": 1
+        }
+      ]
+    },
+    {
+      "id": "rd:expertise",
+      "title": "On Being Wrong Well",
+      "level": "C1",
+      "kind": "article",
+      "icon": "🎓",
+      "topic": "felsefe",
+      "summary": "Uzmanlık ve hata üzerine",
+      "paragraphs": [
+        "Expertise is usually described as knowing a great deal. A more useful description is knowing precisely where one's knowledge ends, and behaving accordingly.",
+        "The novice and the expert both make errors, but the errors differ in character. The novice is wrong in ways that are unpredictable and often invisible to them. The expert is wrong in ways that are narrower, more specific, and — crucially — noticed sooner.",
+        "This suggests that the training of experts should devote as much attention to calibration as to content. A physician who is confident in proportion to the evidence is more valuable than one who is confident in proportion to their seniority.",
+        "There is an uncomfortable corollary. Fields in which practitioners are rarely told they were wrong will produce confident people who are frequently mistaken, and no mechanism will exist to reveal it."
+      ],
+      "questions": [
+        {
+          "q": "How does the author redefine expertise?",
+          "options": [
+            "Knowing a great deal",
+            "Knowing where one's knowledge ends",
+            "Never making errors"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "How do experts' errors differ from novices'?",
+          "options": [
+            "They are larger",
+            "They are noticed sooner",
+            "They never happen"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What is the 'uncomfortable corollary'?",
+          "options": [
+            "Experts should be paid more",
+            "Fields without feedback produce confident but mistaken people",
+            "Novices should not be trained"
+          ],
+          "answer": 1
+        }
+      ]
+    }
+  ]
+}

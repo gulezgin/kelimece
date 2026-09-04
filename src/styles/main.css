@@ -2322,12 +2322,12 @@ button.dlgCard--locked {
 }
 
 /* Havuzda karsiligi olan kelime: dokunulabilir */
-.dlgWord {
+.tapWord {
 	border-bottom: 1px dotted #3d5788;
 	cursor: pointer;
 }
 
-.dlgWord:hover {
+.tapWord:hover {
 	color: var(--acc);
 	border-bottom-color: var(--acc);
 }
@@ -3113,3 +3113,30 @@ button.exOption--bad { border-color: var(--bad); }
 
 .quizReviewQ { font-weight: 600; font-size: 14px; }
 .quizReviewA { color: var(--good); font-size: 14px; margin: 4px 0; }
+
+/* ==============================================
+   OKUMA
+   ============================================== */
+.readingBody {
+	line-height: 1.85;
+	font-size: 16px;
+}
+
+.readingPara {
+	margin: 0 0 16px;
+	overflow-wrap: anywhere;
+}
+
+.readingPara:last-child {
+	margin-bottom: 0;
+}
+
+.readingSpeak {
+	margin-left: 6px;
+	vertical-align: middle;
+}
+
+.readingHint {
+	margin: 12px 0 16px;
+	line-height: 1.6;
+}
