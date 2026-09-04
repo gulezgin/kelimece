@@ -15,7 +15,9 @@ import {
 	normalize,
 	practiceSteps
 } from '../core/dialoguePractice.js';
+import { compareUtterance, isPass } from '../core/speaking.js';
 import { hasEnglishVoice, speak } from '../core/speech.js';
+import { errorText, isSupported as micSupported, listenOnce } from '../platform/speech-input.js';
 import { $, el } from './dom.js';
 
 /** Cevap gösterilmeden önceki deneme hakkı. */
@@ -28,8 +30,8 @@ let state = null;
  * @param {object[]} allDialogues Yanıltıcı havuzu
  * @param {{onExit: () => void, onDone: (sonuc: object) => void}} handlers
  */
-export function startPractice(dialogue, allDialogues, handlers) {
-	const steps = practiceSteps(dialogue);
+export function startPractice(dialogue, allDialogues, handlers, options = {}) {
+	const steps = practiceSteps(dialogue, 'B', { allowSpeak: !!options.allowSpeak });
 	state = {
 		dialogue,
 		allDialogues,
@@ -43,7 +45,8 @@ export function startPractice(dialogue, allDialogues, handlers) {
 		picked: [],
 		// Oturumda kullanilmis yanilticilar. Ayni cumlenin iki kez
 		// cikmasi fark ediliyor ve soruyu ucuz gosteriyor.
-		usedDistractors: new Set()
+		usedDistractors: new Set(),
+		allowSpeak: !!options.allowSpeak
 	};
 	draw();
 }
@@ -120,7 +123,9 @@ function finishBox() {
 	const toplam = state.steps.length;
 	const oran = toplam ? Math.round((state.correct / toplam) * 100) : 0;
 	const tekrar = el('button', { class: 'primary', text: 'Tekrar dene' });
-	tekrar.onclick = () => startPractice(state.dialogue, state.allDialogues, state.handlers);
+	tekrar.onclick = () => startPractice(
+		state.dialogue, state.allDialogues, state.handlers, { allowSpeak: state.allowSpeak }
+	);
 	const bitir = el('button', { class: 'ghost', text: 'Diyaloglara dön' });
 	bitir.onclick = () => state.handlers.onExit();
 
@@ -158,6 +163,7 @@ function exerciseBox(step) {
 
 	if (ex.mode === MODES.CHOICE) box.appendChild(choiceUi(ex));
 	else if (ex.mode === MODES.ORDER) box.appendChild(orderUi(ex));
+	else if (ex.mode === MODES.SPEAK) box.appendChild(speakUi(ex));
 	else box.appendChild(blankUi(ex));
 
 	const geri = el('div', { class: 'dlgFeedback hidden' });
@@ -219,6 +225,79 @@ function orderUi(ex) {
 	const wrap = el('div', { class: 'orderUi' }, [secilen, havuz, onayla]);
 	ciz();
 	return wrap;
+}
+
+/**
+ * Konuşma alıştırması.
+ *
+ * Kullanıcı önce cümleyi DUYUYOR, sonra söylüyor. Duymadan tekrar
+ * etmek gölgeleme değil, okuma olur.
+ *
+ * Puan bir TELAFFUZ PUANI DEĞİL — konuşma tanımanın söylenenle hedefi
+ * ne kadar eşleştirebildiği. Arayüz bunu gizlemiyor; "telaffuz puanın"
+ * demek, veremediğimiz bir söz vermek olur.
+ */
+function speakUi(ex) {
+	const dinle = el('button', { class: 'ghost', text: '🔊 Önce dinle' });
+	dinle.onclick = () => speak(ex.say);
+
+	const mikrofon = el('button', { class: 'primary micBtn', text: '🎤 Söyle' });
+	const sonucKutusu = el('div', { class: 'speakResult hidden' });
+	const gec = el('button', { class: 'ghost', text: 'Bu repliği atla' });
+	gec.onclick = () => {
+		state.revealed++;
+		state.tries = 0;
+		state.stepIndex++;
+		draw();
+	};
+
+	mikrofon.onclick = async () => {
+		mikrofon.disabled = true;
+		mikrofon.textContent = '🎙️ Dinliyorum…';
+		sonucKutusu.classList.add('hidden');
+
+		const duyulan = await listenOnce({ lang: 'en-US' });
+		mikrofon.disabled = false;
+		mikrofon.textContent = '🎤 Tekrar söyle';
+
+		if (!duyulan.ok) {
+			sonucKutusu.className = 'speakResult bad';
+			sonucKutusu.textContent = errorText(duyulan.reason);
+			return;
+		}
+
+		const sonuc = compareUtterance(ex.say, duyulan.text);
+		sonucKutusu.className = 'speakResult';
+		sonucKutusu.textContent = '';
+		sonucKutusu.appendChild(el('div', { class: 'speakScore', text: '%' + sonuc.score }));
+
+		// Kelime kelime geri bildirim: kullanici hangi kelimede
+		// takildigini gormeli, tek bir puan bunu soylemiyor.
+		const satir = el('div', { class: 'speakWords' });
+		for (const w of sonuc.words) {
+			satir.appendChild(el('span', {
+				class: 'speakWord' + (w.ok ? ' speakWord--ok' : ' speakWord--miss'),
+				text: w.word
+			}));
+		}
+		sonucKutusu.appendChild(satir);
+		sonucKutusu.appendChild(el('div', { class: 'small', text: sonuc.comment }));
+		if (sonuc.heard) {
+			sonucKutusu.appendChild(el('div', {
+				class: 'speakHeard',
+				text: 'Duyulan: ' + sonuc.heard
+			}));
+		}
+
+		if (isPass(sonuc)) judge(true, ex);
+	};
+
+	return el('div', { class: 'speakUi' }, [
+		el('div', { class: 'speakTarget', text: ex.say }),
+		el('div', { class: 'speakActions' }, [dinle, mikrofon]),
+		sonucKutusu,
+		gec
+	]);
 }
 
 function blankUi(ex) {

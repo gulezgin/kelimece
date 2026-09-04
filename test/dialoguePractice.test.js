@@ -210,3 +210,26 @@ describe('yanıltıcı çeşitliliği', () => {
 		expect(collectDistractors(cok[0], tek, 2, () => 0, { answer: 'x' })).toEqual([]);
 	});
 });
+
+describe('konuşma modu', () => {
+	it('cihazda konuşma tanıma yoksa sıraya girmez', () => {
+		// Calismayan bir mikrofon dugmesi gostermek, kullaniciya
+		// veremedigimiz bir soz vermek olur.
+		const modlar = practiceSteps(ORNEK).map((s) => s.mode);
+		expect(modlar).not.toContain(MODES.SPEAK);
+	});
+
+	it('varsa sıraya girer ve ikinci replik konuşma olur', () => {
+		const modlar = practiceSteps(ORNEK, 'B', { allowSpeak: true }).map((s) => s.mode);
+		expect(modlar[0]).toBe(MODES.CHOICE);
+		expect(modlar[1]).toBe(MODES.SPEAK);
+	});
+
+	it('konuşma adımı söylenecek cümleyi taşır', () => {
+		const step = practiceSteps(ORNEK, 'B', { allowSpeak: true })[1];
+		const ex = buildStep(ORNEK, step, { allDialogues: [ORNEK], random: noShuffle });
+		expect(ex.mode).toBe(MODES.SPEAK);
+		expect(ex.say).toBe('Yes, with milk.');
+		expect(ex.answer).toBe('Yes, with milk.');
+	});
+});

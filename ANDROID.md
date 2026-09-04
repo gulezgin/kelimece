@@ -405,6 +405,46 @@ maliyeti, kaybı muhtemel gelirden yüksek.
 
 ---
 
+## 13. Konuşma tanımayı bağlama (Android)
+
+Rol yapma alıştırmasındaki **konuşma adımı** cihazın konuşma tanıyıcısını
+kullanıyor. Tarayıcıda Web Speech API ile çalışıyor; Android WebView'de
+o API yok, native eklenti gerekiyor.
+
+```bash
+npm install @capacitor-community/speech-recognition
+npx cap sync android
+```
+
+Eklentiye Capacitor'ın çalışma zamanı kaydından erişiliyor
+(`Capacitor.Plugins.SpeechRecognition`), doğrudan `import` ile değil —
+aynı Play Billing'de olduğu gibi, statik import derlemeyi kırıyor.
+Eklenti kurulduğunda kod değişikliği gerekmeden devreye giriyor.
+
+**Eklenti kurulmazsa ne olur:** `isSupported()` false döner ve rol
+yapmada konuşma adımı hiç verilmez; diğer üç mod (seçme, dizme, boşluk
+doldurma) çalışmaya devam eder. Çalışmayan bir mikrofon düğmesi
+gösterilmez.
+
+### Mikrofon izni
+
+Eklenti kendi manifest'inde `RECORD_AUDIO` iznini bildiriyor; ayrıca
+eklemeye gerek yok. İzin ilk kullanımda isteniyor.
+
+Play veri güvenliği formunda **ses kaydı** beyanı gerekmiyor: ses
+cihazdan çıkmıyor, tanıma cihazın kendi motorunda yapılıyor ve kayıt
+saklanmıyor. Cihazın tanıyıcısı Google'ın bulut motorunu kullanıyorsa
+bu Google'ın kendi beyanı kapsamındadır; yine de gizlilik politikasında
+konuşma tanımanın cihazın sistem servisine devredildiğini yazmak doğru
+olur.
+
+> **Ölçülen şey telaffuz puanı DEĞİL.** Uygulama, tanıyıcının duyduğu
+> metni hedef cümleyle karşılaştırıyor. Fonem düzeyinde analiz
+> (ör. "TH sesin zayıf") ücretli ve özel bir servis gerektiriyor;
+> arayüz bu farkı gizlemiyor.
+
+---
+
 ## Sık karşılaşılan sorunlar
 
 **Gradle "Unable to establish loopback connection" diyor**

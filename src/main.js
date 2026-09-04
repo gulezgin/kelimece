@@ -14,6 +14,7 @@ import { topicSummaries } from './core/topics.js';
 import { renderTopicChip, renderTopics } from './ui/topics.js';
 import { findDialogue, loadDialogues } from './core/dialogues.js';
 import { renderDialogue, renderDialogueList } from './ui/dialogues.js';
+import { isSupported as micSupported } from './platform/speech-input.js';
 import { startPractice, stopPractice } from './ui/dialoguePractice.js';
 import { buildReviewQueue, countQueue, MAX_LEVEL } from './core/srs.js';
 import { isDue } from './core/time.js';
@@ -77,6 +78,8 @@ let dialogues = [];
 let openDialogueId = null;
 /** Rol yapma acikken diyalog kimligi; null = okuma gorunumu. */
 let practiceDialogueId = null;
+/** Cihazda konusma tanima var mi? Acilista bir kez olculuyor. */
+let speechInput = false;
 
 /**
  * Diyalogda kelimeye dokunulabilmesi icin havuz dizini.
@@ -452,7 +455,7 @@ const dialogueHandlers = {
 				window.scrollTo(0, 0);
 				render();
 			}
-		});
+		}, { allowSpeak: speechInput });
 	},
 	/** Diyalogda kelimeye dokunmak anlamini gosteriyor. */
 	onWord: (word) => {
@@ -1064,6 +1067,10 @@ async function boot() {
 
 	// Veri hazir; giris ekrani artik gidebilir.
 	hideLaunchScreen();
+
+	// Konusma tanima var mi? Yoksa rol yapmada konusma adimi hic
+	// verilmiyor - calismayan bir mikrofon dugmesi gostermek olurdu.
+	micSupported().then((v) => { speechInput = v; });
 
 	// Bulut da acilisi bekletmesin; yapilandirma yoksa hicbir sey yapmaz.
 	initCloud();

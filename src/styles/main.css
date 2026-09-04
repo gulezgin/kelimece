@@ -2919,3 +2919,85 @@ button.planTask--done .planTaskIcon {
 .planEdit {
 	margin-top: 12px;
 }
+
+/* ==============================================
+   KONUŞMA ALIŞTIRMASI
+   ============================================== */
+.speakUi {
+	display: grid;
+	gap: 12px;
+}
+
+.speakTarget {
+	padding: 14px;
+	border-radius: 12px;
+	background: #0d1528;
+	border: 1px solid #2b3a52;
+	font-size: 17px;
+	line-height: 1.5;
+	text-align: center;
+	overflow-wrap: anywhere;
+}
+
+.speakActions {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+	gap: 8px;
+}
+
+button.micBtn {
+	font-size: 16px;
+}
+
+.speakResult {
+	padding: 12px;
+	border-radius: 12px;
+	background: #101830;
+	border: 1px solid #2b3a52;
+}
+
+.speakResult.bad {
+	color: var(--bad);
+	border-color: #4a2530;
+}
+
+.speakScore {
+	font-size: 26px;
+	font-weight: 800;
+	text-align: center;
+	margin-bottom: 8px;
+}
+
+/* Kelime kelime geri bildirim: tek bir puan hangi kelimede
+   takildigini soylemiyor. */
+.speakWords {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	justify-content: center;
+	margin-bottom: 8px;
+}
+
+.speakWord {
+	padding: 3px 8px;
+	border-radius: 8px;
+	font-size: 14px;
+}
+
+.speakWord--ok {
+	background: #14301f;
+	color: var(--good);
+}
+
+.speakWord--miss {
+	background: #331a20;
+	color: var(--bad);
+}
+
+.speakHeard {
+	margin-top: 6px;
+	color: var(--muted);
+	font-size: 12px;
+	font-style: italic;
+	overflow-wrap: anywhere;
+}

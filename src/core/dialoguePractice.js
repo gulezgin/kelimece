@@ -21,11 +21,24 @@
 export const MODES = {
 	CHOICE: 'secme',
 	ORDER: 'dizme',
-	BLANK: 'bosluk'
+	BLANK: 'bosluk',
+	/**
+	 * Repliği SESLİ söyle.
+	 *
+	 * Uygulamanın amacı "İngilizce biliyorum"dan "İngilizce
+	 * konuşabiliyorum"a geçirmek; diğer üç mod yazılı üretim ölçüyor,
+	 * bu mod gerçek konuşma. Cihazda konuşma tanıma yoksa sıraya
+	 * girmiyor — çalışmayan bir mikrofon düğmesi göstermek, kullanıcıya
+	 * veremediğimiz bir söz vermek olur.
+	 */
+	SPEAK: 'konusma'
 };
 
 /** Sıra: seç → diz → yaz. Kolaydan zora, sonra baştan. */
 const MODE_CYCLE = [MODES.CHOICE, MODES.ORDER, MODES.BLANK];
+
+/** Konuşma açıkken sıraya o da giriyor. */
+const MODE_CYCLE_SPEAK = [MODES.CHOICE, MODES.SPEAK, MODES.ORDER, MODES.BLANK];
 
 /**
  * Boşluk bırakılmayacak sözcükler.
@@ -64,15 +77,17 @@ export function normalize(text) {
  * Kullanıcının üreteceği satırları sırayla verir.
  * @param {object} dialogue
  * @param {string} [userSpeaker] Kullanıcının oynadığı taraf
+ * @param {{allowSpeak?: boolean}} [options] Cihazda konuşma tanıma var mı
  * @returns {{index: number, turn: number, mode: string, line: object}[]}
  */
-export function practiceSteps(dialogue, userSpeaker = 'B') {
+export function practiceSteps(dialogue, userSpeaker = 'B', { allowSpeak = false } = {}) {
 	const lines = (dialogue && dialogue.lines) || [];
+	const cycle = allowSpeak ? MODE_CYCLE_SPEAK : MODE_CYCLE;
 	const steps = [];
 	let turn = 0;
 	lines.forEach((line, index) => {
 		if (!line || line.s !== userSpeaker) return;
-		steps.push({ index, turn, mode: MODE_CYCLE[turn % MODE_CYCLE.length], line });
+		steps.push({ index, turn, mode: cycle[turn % cycle.length], line });
 		turn++;
 	});
 	return steps;
@@ -210,6 +225,14 @@ export function buildStep(dialogue, step, options = {}) {
 			instruction: 'Ne dersin?',
 			options: options_,
 			correctIndex: options_.indexOf(line.en)
+		};
+	}
+
+	if (step.mode === MODES.SPEAK) {
+		return {
+			...base,
+			instruction: 'Bu repliği sesli söyle',
+			say: line.en
 		};
 	}
 
