@@ -183,45 +183,50 @@ kırmızı) → 6 durum kartı. Her cümle satırı (`.emRow`): metin + 🔊 + �
 
 ---
 
-## 4. Tasarım jetonları (şu anki)
+## 4. Tasarım jetonları
 
-```css
-:root {
-	--bg:    #0f1320;   /* sayfa zemini */
-	--panel: #171c2c;   /* kart zemini */
-	--text:  #e6ecf2;
-	--muted: #9aa4b2;
-	--acc:   #5cc8ff;   /* birincil / vurgu */
-	--good:  #3ddc97;
-	--bad:   #ff6b6b;
-	--warn:  #ffc857;
-	--transition: 0.2s ease;
-}
+Renkler `src/styles/tokens.css` içinde; `main.css` sabit hex
+kullanmıyor (0 tane). **Koyu ve açık tema tam olarak hazır.**
+
+```
+:root                                   → koyu (varsayılan kimlik)
+@media (prefers-color-scheme: light)
+  :root:not([data-theme="dark"])        → sistem açıksa
+:root[data-theme="light"]               → kullanıcı açık seçtiyse
 ```
 
-**Yalnızca koyu tema var.** `prefers-color-scheme` hiç kullanılmıyor
-(0 eşleşme). Açık tema eklenecekse önce renkler jetona çevrilmeli:
-CSS'te **118 ayrı sabit hex** var (`#22283a`, `#0e1424`, `#212a44`
-gibi) ve bunların çoğu jeton değil, doğrudan kurala gömülü.
+Ayar `Ayarlar → Tema`: **Sistem · Açık · Koyu**. "Sistem" seçiliyse
+kökte damga yok ve medya sorgusu karar veriyor.
+
+### Jeton grupları
+
+| Grup | Jetonlar |
+|---|---|
+| Zemin | `--bg` `--bg-deep` `--panel` `--surface2` `--surface3` `--inset` |
+| Çizgi | `--border` `--border2` `--border3` |
+| Metin | `--text` `--text2` `--muted` `--on-acc` `--on-scrim` |
+| Vurgu | `--acc` `--accent` `--acc-grad-1/2` `--acc-bg` `--acc-border` `--acc-ink` |
+| Anlam | `--good/-ink/-bg/-border`, `--bad/…`, `--warn/…` |
+| Aşama | `--stage-untouched/-learning/-young/-maturing/-learned` |
+| CEFR | `--cefr-{a1…c2}-{ink,bg,bd}` + `--cefr-none-bg` |
+| Diğer | `--shadow-1/2` `--scrim` `--transition` |
+
+### İki tuzak
+
+**`--on-acc` temayla ters döner.** Koyu temada vurgu parlak → üstüne
+koyu metin. Açık temada vurgu koyu → üstüne beyaz. İki temada da beyaz
+bırakmak avatar harfini koyu temada 1.88:1 ile okunmaz bırakmıştı.
+
+**Perde ayrı.** Acil gösterim katmanı iki temada da koyu (birine
+telefon uzatılıyor, ortam ışığı belirsiz). Metni `--on-scrim`, daima
+beyaz.
 
 ### CEFR renkleri
 
-`.cefr--A1` … `.cefr--C2` altı ayrı üçlü taşıyor (`color`,
-`background`, `border-color`) ve **anlam yüklü**: kullanıcı seviyeyi
-renkten tanıyor.
-
-```css
-.cefr--A1 { color: #b8f5da; background: #10382b; border-color: #1f6b4f; }
-.cefr--A2 { color: #cdf6c4; background: #1c3a1a; border-color: #3a6b2f; }
-.cefr--B1 { color: #c4e4ff; background: #0f2c47; border-color: #1f5482; }
-.cefr--B2 { color: #c9d6ff; background: #17224a; border-color: #2e3f80; }
-/* C1, C2 aynı biçimde */
-```
-
-Rozetin **metni de seviyeyi yazıyor** ("A1"), yani tek başına renge
-bağımlı değil. Ama A1/A2 (iki yeşil) ve B1/B2 (iki mavi) birbirine
-yakın; renk körlüğünde ayrışmaları zayıf. Yeniden tasarımda altısının
-ayırt edilebilirliği gözden geçirilmeli.
+Altı seviye × üç değer (`ink`, `bg`, `bd`), her iki temada tanımlı.
+Rozetin metni de seviyeyi yazdığı için tek başına renge bağımlı değil.
+Yine de A1/A2 (iki yeşil) ve B1/B2 (iki mavi) birbirine yakın; renk
+körlüğünde ayrışmaları zayıf ve yeniden tasarımda gözden geçirilmeli.
 
 ### Tipografi
 
@@ -268,13 +273,24 @@ Kelime, cümle ve liste adları uzun olabiliyor. `min-width: 0` ve
 `overflow-wrap: anywhere` yaygın olarak kullanılıyor; kaldırılırsa
 yatay kaydırma geri geliyor.
 
-### 5.7 Metin `textContent` ile yazılıyor
+### 5.7 Renk jetondan gelir, kuraldan değil
+
+`main.css` içinde **sıfır** sabit hex var. Yeni bir renk gerekiyorsa
+önce `tokens.css`'te iki temada da tanımlanır. Kurala doğrudan hex
+yazmak, o öge tema değiştiğinde eski renkte kalır.
+
+Aynı tuzağın sessiz hâli: tanımsız bir jetonu yedekle çağırmak
+(`var(--yok, #4f8cff)`). Böyle beş jeton vardı ve o bölümler tema
+değişimine hiç tepki vermiyordu — çalışıyor göründükleri için de
+fark edilmiyordu.
+
+### 5.8 Metin `textContent` ile yazılıyor
 
 `ui/dom.js`'teki `el()` yardımcısı **daima** `textContent` kullanıyor,
 `innerHTML` değil. İçerik dosyaları kullanıcıya gösterilen metin
 üretiyor; HTML enjeksiyonuna kapalı kalmalı.
 
-### 5.8 `el()` yalnızca dört seçenek biliyor
+### 5.9 `el()` yalnızca dört seçenek biliyor
 
 `class`, `text`, `title`, `attrs`. Başka bir anahtar (`id`, `rows`,
 `placeholder`, `open`) **sessizce yok sayılıyor** — `attrs` içine

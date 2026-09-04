@@ -46,7 +46,15 @@ export const DEFAULT_SETTINGS = {
 	/** Seslendirme hızı: 0.75 yavaş, 1.0 normal, 1.25 hızlı. */
 	speechRate: 0.9,
 	/** Seçili İngilizce aksan (ör. 'en-GB'). Boş = cihazın seçimi. */
-	accent: ''
+	accent: '',
+	/**
+	 * Tema: 'system' | 'light' | 'dark'.
+	 *
+	 * Varsayılan 'system': telefonunu açık temaya almış biri
+	 * uygulamayı da açık bekliyor. Koyu tema uygulamanın kimliği
+	 * ama kullanıcının tercihi ondan önce gelir.
+	 */
+	theme: 'system'
 };
 
 /**
@@ -908,6 +916,14 @@ export async function recordSkill(skill, correct, total) {
 	};
 	emit();
 	await persistProfile();
+}
+
+/** Temayı kaydeder. */
+export async function setTheme(theme) {
+	const gecerli = ['system', 'light', 'dark'];
+	state.settings.theme = gecerli.includes(theme) ? theme : 'system';
+	emit();
+	await persistSettings();
 }
 
 /** Seçili aksanı kaydeder. */

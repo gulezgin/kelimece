@@ -4,6 +4,7 @@
  * Burada iş mantığı yoktur — sadece "kullanıcı şunu yaptı -> store'daki
  * şu fonksiyonu çağır -> ekranı tazele" eşlemesi.
  */
+import './styles/tokens.css';
 import './styles/main.css';
 
 import { isLevelUnlocked, lockedLevels } from './core/entitlements.js';
@@ -368,6 +369,27 @@ const GRAMMAR_URL = import.meta.env.BASE_URL + 'content/grammar.json';
 
 /** Yuklenen dersler ve acik olanin durumu. */
 let lessons = [];
+/**
+ * Temayi koke damgalar.
+ *
+ * 'system' seciliyse damga HIC BASILMIYOR: damga varsa medya sorgusu
+ * devre disi kalir ve kullanici telefonunu acik temaya aldiginda
+ * uygulama koyu kalirdi.
+ */
+function applyTheme(theme) {
+	const kok = document.documentElement;
+	if (theme === 'light' || theme === 'dark') kok.setAttribute('data-theme', theme);
+	else kok.removeAttribute('data-theme');
+}
+
+/** Secili tema kutusunu isaretler. */
+function markThemeChoice(theme) {
+	for (const id of ['themeSystem', 'themeLight', 'themeDark']) {
+		const btn = $(id);
+		if (btn) btn.setAttribute('aria-checked', String(btn.dataset.themeValue === theme));
+	}
+}
+
 /** Bos quiz kosusu. */
 function newQuizRun() { return { index: 0, answers: [], scored: false }; }
 
@@ -1627,6 +1649,15 @@ function wireEvents() {
 		speak('This is the new speed.');
 	});
 
+	for (const id of ['themeSystem', 'themeLight', 'themeDark']) {
+		$(id).addEventListener('click', async () => {
+			const secim = $(id).dataset.themeValue;
+			applyTheme(secim);
+			markThemeChoice(secim);
+			await store.setTheme(secim);
+		});
+	}
+
 	$('accentSelect').addEventListener('change', async (e) => {
 		setAccent(e.target.value);
 		await store.setAccentSetting(e.target.value);
@@ -1785,6 +1816,8 @@ async function boot() {
 
 	$('goalInput').value = store.state.settings.dailyGoal;
 	// Kayitli hiz konusma motoruna ve secicilere uygulaniyor.
+	applyTheme(store.state.settings.theme);
+	markThemeChoice(store.state.settings.theme || 'system');
 	setRate(store.state.settings.speechRate);
 	setAccent(store.state.settings.accent || '');
 	// Sesler eszamansiz yukleniyor; ilk cagrida liste bos gelebiliyor

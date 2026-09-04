@@ -322,6 +322,24 @@ bu dosyada yazılı.
   kullanıcı adında `new URL(...).pathname` `ms%C4%B1` veriyor ve klasör
   bulunamıyor; `fileURLToPath` kullan. Aynı ailedeki TEMP tuzağı için
   "Komutlar" bölümüne bak.
+- **Renk doğrudan kurala yazılmaz, `src/styles/tokens.css`'ten alınır.**
+  Önce CSS'te 118 ayrı sabit hex vardı ve tema eklemek imkânsızdı.
+  Yapı üç katmanlı: `:root` koyu (uygulamanın kimliği),
+  `@media (prefers-color-scheme: light) :root:not([data-theme="dark"])`
+  sistem açıksa, `:root[data-theme="light"]` kullanıcı seçtiyse.
+  Ayar "system" ise `main.js` damgayı **hiç basmıyor** — bassaydı
+  medya sorgusu devre dışı kalır ve kullanıcı telefonunu açığa
+  aldığında uygulama koyu kalırdı.
+- **`--on-acc` temayla TERS yönde döner.** Koyu temada vurgu rengi
+  parlak (#5cc8ff), üstüne koyu metin gidiyor; açık temada vurgu koyu,
+  üstüne beyaz. İki temada da beyaz bırakmak avatar harfini koyu
+  temada 1.9:1 kontrastla okunmaz bırakıyordu. Koyu perde üstündeki
+  metin ayrı jeton: `--on-scrim`, iki temada da beyaz.
+- **Kontrast denetimi göz kararı yapılmaz.** Tarayıcıda her bölüm iki
+  temada da taranıyor; bulunan üç gerçek kusur: birincil düğme
+  gradyanının açık ucu (4.11:1), avatar (1.88:1) ve açık temada ilk
+  seçilen vurgu tonu (3.97:1). Ölçerken **geçişin bitmesini bekle** —
+  `.tabBtn` `transition: color 0.2s` taşıyor ve ara değer okunuyor.
 - **Giriş ekranı `index.html` gövdesinin en başında, satır içi.** JS paketi
   yüklenmeden boyanabilsin ve yerel açılış ekranıyla arasında geçiş
   görünmesin diye. `main.js` veri hazır olunca kaldırır.

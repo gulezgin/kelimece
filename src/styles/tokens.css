@@ -1,0 +1,263 @@
+/* ==============================================
+   TASARIM JETONLARI — koyu ve açık tema
+
+   Kural: renk doğrudan kurala yazılmaz, jetondan alınır. Bu dosyadan
+   önce CSS'te 118 ayrı sabit hex vardı ve tema eklemek imkânsızdı.
+
+   Yapı üç katmanlı:
+
+     :root                              → KOYU (varsayılan kimlik)
+     @media (prefers-color-scheme: light)
+       :root:not([data-theme="dark"])   → sistem açıksa açık tema
+     :root[data-theme="light"]          → kullanıcı açık seçtiyse
+
+   Koyu tema `:root`te çünkü uygulamanın kimliği koyu: açılış ekranı,
+   mağaza görselleri ve Android splash hepsi koyu. Sistemi izleyen
+   kullanıcı yine de açık tema alıyor.
+
+   `[data-theme]` damgasını `main.js` basıyor; ayar "system" ise hiç
+   damga basılmıyor ve medya sorgusu karar veriyor.
+   ============================================== */
+
+:root {
+	/* --- Zeminler --- */
+	--bg: #0f1320;
+	--bg-deep: #0a0d14;
+	--panel: #171c2c;
+	--surface2: #16203a;
+	--surface3: #232b42;
+	--inset: #0e1424;
+
+	/* --- Çizgiler --- */
+	--border: #22283a;
+	--border2: #2a3350;
+	--border3: #355399;
+
+	/* --- Metin --- */
+	--text: #e6ecf2;
+	--text2: #cdd6e3;
+	--muted: #9aa4b2;
+	/*
+	 * `--acc` ile doldurulmus bir yuzeyin uzerindeki metin.
+	 *
+	 * Koyu temada vurgu rengi PARLAK (#5cc8ff), dolayisiyla ustune
+	 * koyu metin gidiyor. Acik temada vurgu koyu, ustune beyaz.
+	 * Yani bu jeton temayla TERS yonde donuyor; iki temada da
+	 * beyaz birakmak koyu temada 1.9:1 veriyordu ve avatar harfi
+	 * okunmuyordu.
+	 */
+	--on-acc: #0a1220;
+	/* Koyu perde uzerindeki metin. Perde iki temada da koyu. */
+	--on-scrim: #ffffff;
+
+	/* --- Vurgu --- */
+	--acc: #5cc8ff;
+	--accent: #5cc8ff;
+	/*
+	 * Acik uc koyulastirildi: #1d7af1 beyaz yaziyla 4.11:1 veriyordu,
+	 * 4.5 esiginin altinda. Bu koyu temada ONCEDEN vardi.
+	 */
+	--acc-grad-1: #176ad8;
+	--acc-grad-2: #1256da;
+	--acc-bg: #0d213a;
+	--acc-border: #1f3c66;
+	--acc-ink: #cfe6ff;
+
+	/* --- Anlam: iyi --- */
+	--good: #3ddc97;
+	--ok: #3ddc97;
+	--good-ink: #b8f5da;
+	--good-bg: #10291f;
+	--good-border: #1f5c46;
+
+	/* --- Anlam: kötü --- */
+	--bad: #ff6b6b;
+	--bad-ink: #ffd6d6;
+	--bad-bg: #2a1414;
+	--bad-border: #5b2a2a;
+
+	/* --- Anlam: uyarı --- */
+	--warn: #ffc857;
+	--warn-ink: #ffe9ad;
+	--warn-bg: #2a2414;
+	--warn-border: #6a5b2a;
+
+	/* --- Öğrenme aşamaları (sıralı dizi, anlam yüklü) --- */
+	--stage-untouched: #2a3350;
+	--stage-learning: #6a5b9a;
+	--stage-young: #4a7fd4;
+	--stage-maturing: #5cc8ff;
+	--stage-learned: #3ddc97;
+
+	/*
+	 * CEFR rozetleri. Altısı da ayrı bir renk ailesi; kullanıcı seviyeyi
+	 * renkten tanıyor. Rozetin metni de seviyeyi yazdığı için tek başına
+	 * renge bağımlı değil.
+	 */
+	--cefr-a1-ink: #b8f5da; --cefr-a1-bg: #10382b; --cefr-a1-bd: #1f6b4f;
+	--cefr-a2-ink: #cdf6c4; --cefr-a2-bg: #1c3a1a; --cefr-a2-bd: #3a6b2f;
+	--cefr-b1-ink: #c4e4ff; --cefr-b1-bg: #0f2c47; --cefr-b1-bd: #1f5482;
+	--cefr-b2-ink: #c9d6ff; --cefr-b2-bg: #17224a; --cefr-b2-bd: #2e3f80;
+	--cefr-c1-ink: #ddc9ff; --cefr-c1-bg: #291a45; --cefr-c1-bd: #513085;
+	--cefr-c2-ink: #ffc9e4; --cefr-c2-bg: #40182f; --cefr-c2-bd: #82305d;
+	--cefr-none-bg: #1a1f30;
+
+	/* --- Gölge ve geçiş --- */
+	--shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+	--shadow-2: 0 10px 30px rgba(0, 0, 0, 0.45);
+	--scrim: rgba(0, 0, 0, 0.62);
+	--transition: 0.2s ease;
+
+	color-scheme: dark;
+}
+
+/*
+ * Açık tema.
+ *
+ * Zemin saf beyaz değil, hafif mavi kaçan bir kâğıt (#f4f6fb):
+ * uygulamanın soğuk mavi kimliği açıkta da korunuyor ve saf beyaz
+ * uzun okuma ekranlarında (okuma parçaları, yazma alanı) parlıyor.
+ *
+ * Vurgu rengi koyu temadaki #5cc8ff DEĞİL: o açık zeminde 1.6:1
+ * kontrast veriyor ve okunmuyor. Açıkta aynı maviden koyu bir ton
+ * kullanılıyor.
+ */
+@media (prefers-color-scheme: light) {
+	:root:not([data-theme="dark"]) {
+		--bg: #f4f6fb;
+		--bg-deep: #e7ecf6;
+		--panel: #ffffff;
+		--surface2: #eef2f9;
+		--surface3: #e3e9f5;
+		--inset: #f0f3fa;
+
+		--border: #e3e8f1;
+		--border2: #d2dae8;
+		--border3: #9fb2d1;
+
+		--text: #10182a;
+		--text2: #36415a;
+		--muted: #5f6a82;
+		/* Acik temada vurgu koyu; ustune beyaz. Gerekce yukarida. */
+		--on-acc: #ffffff;
+		--on-scrim: #ffffff;
+
+		--acc: #1667c6;
+		--accent: #1667c6;
+		/*
+		 * Beyaz yazi 4.5:1 esigini gecsin diye koyulastirildi: ilk
+		 * secim #2a80e2 yalnizca 3.97:1 veriyordu ve dugme etiketi
+		 * acik zeminde okunmuyordu.
+		 */
+		--acc-grad-1: #1c6ccb;
+		--acc-grad-2: #0f52ad;
+		--acc-bg: #e5eefc;
+		--acc-border: #a9cbf3;
+		--acc-ink: #0f4d95;
+
+		--good: #0f7c55;
+		--ok: #0f7c55;
+		--good-ink: #0a5c3e;
+		--good-bg: #e2f6ed;
+		--good-border: #a3ddc4;
+
+		--bad: #c5352a;
+		--bad-ink: #91241d;
+		--bad-bg: #fce9e7;
+		--bad-border: #f0b6b0;
+
+		--warn: #8f6404;
+		--warn-ink: #6f4d03;
+		--warn-bg: #fcf1d7;
+		--warn-border: #ecd598;
+
+		--stage-untouched: #ccd5e4;
+		--stage-learning: #7a68b6;
+		--stage-young: #3d72c7;
+		--stage-maturing: #1a9cd4;
+		--stage-learned: #0f7c55;
+
+		--cefr-a1-ink: #0b5b3f; --cefr-a1-bg: #e1f6eb; --cefr-a1-bd: #9dd8c0;
+		--cefr-a2-ink: #3a6820; --cefr-a2-bg: #e9f6e1; --cefr-a2-bd: #b4d89e;
+		--cefr-b1-ink: #134f7e; --cefr-b1-bg: #e1eefb; --cefr-b1-bd: #a2c8ea;
+		--cefr-b2-ink: #2a3e7f; --cefr-b2-bg: #e6eafb; --cefr-b2-bd: #aeb9df;
+		--cefr-c1-ink: #552f8e; --cefr-c1-bg: #efe7fb; --cefr-c1-bd: #c7aee6;
+		--cefr-c2-ink: #8b2e60; --cefr-c2-bg: #fbe7f1; --cefr-c2-bd: #edb0cf;
+		--cefr-none-bg: #eef1f8;
+
+		--shadow-1: 0 1px 2px rgba(16, 24, 42, 0.08);
+		--shadow-2: 0 10px 30px rgba(16, 24, 42, 0.14);
+		--scrim: rgba(16, 24, 42, 0.45);
+
+		color-scheme: light;
+	}
+}
+
+/*
+ * Kullanıcı açıkça "Açık" seçtiyse — sistem koyu olsa bile kazanır.
+ * Değerler yukarıdakiyle aynı; CSS'te medya sorgusunu bir seçiciyle
+ * paylaşmanın yolu yok.
+ */
+:root[data-theme="light"] {
+	--bg: #f4f6fb;
+	--bg-deep: #e7ecf6;
+	--panel: #ffffff;
+	--surface2: #eef2f9;
+	--surface3: #e3e9f5;
+	--inset: #f0f3fa;
+
+	--border: #e3e8f1;
+	--border2: #d2dae8;
+	--border3: #9fb2d1;
+
+	--text: #10182a;
+	--text2: #36415a;
+	--muted: #5f6a82;
+	--on-acc: #ffffff;
+	--on-scrim: #ffffff;
+
+	--acc: #1667c6;
+	--accent: #1667c6;
+	/* Gerekce yukarida. */
+	--acc-grad-1: #1c6ccb;
+	--acc-grad-2: #0f52ad;
+	--acc-bg: #e5eefc;
+	--acc-border: #a9cbf3;
+	--acc-ink: #0f4d95;
+
+	--good: #0f7c55;
+	--ok: #0f7c55;
+	--good-ink: #0a5c3e;
+	--good-bg: #e2f6ed;
+	--good-border: #a3ddc4;
+
+	--bad: #c5352a;
+	--bad-ink: #91241d;
+	--bad-bg: #fce9e7;
+	--bad-border: #f0b6b0;
+
+	--warn: #8f6404;
+	--warn-ink: #6f4d03;
+	--warn-bg: #fcf1d7;
+	--warn-border: #ecd598;
+
+	--stage-untouched: #ccd5e4;
+	--stage-learning: #7a68b6;
+	--stage-young: #3d72c7;
+	--stage-maturing: #1a9cd4;
+	--stage-learned: #0f7c55;
+
+	--cefr-a1-ink: #0b5b3f; --cefr-a1-bg: #e1f6eb; --cefr-a1-bd: #9dd8c0;
+	--cefr-a2-ink: #3a6820; --cefr-a2-bg: #e9f6e1; --cefr-a2-bd: #b4d89e;
+	--cefr-b1-ink: #134f7e; --cefr-b1-bg: #e1eefb; --cefr-b1-bd: #a2c8ea;
+	--cefr-b2-ink: #2a3e7f; --cefr-b2-bg: #e6eafb; --cefr-b2-bd: #aeb9df;
+	--cefr-c1-ink: #552f8e; --cefr-c1-bg: #efe7fb; --cefr-c1-bd: #c7aee6;
+	--cefr-c2-ink: #8b2e60; --cefr-c2-bg: #fbe7f1; --cefr-c2-bd: #edb0cf;
+	--cefr-none-bg: #eef1f8;
+
+	--shadow-1: 0 1px 2px rgba(16, 24, 42, 0.08);
+	--shadow-2: 0 10px 30px rgba(16, 24, 42, 0.14);
+	--scrim: rgba(16, 24, 42, 0.45);
+
+	color-scheme: light;
+}
