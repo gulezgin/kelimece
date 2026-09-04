@@ -211,7 +211,7 @@ textarea {
 select:focus,
 textarea:focus {
 	border-color: var(--border3);
-	box-shadow: 0 0 0 3px #35539922;
+	box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 button {
@@ -3528,7 +3528,7 @@ button.exOption--bad { border-color: var(--bad); }
 }
 
 .themePrev--light { background: #f4f6fb; }
-.themePrev--light::after { background: #ffffff; box-shadow: inset 0 0 0 1px #d2dae8, -0 0 0 0; }
+.themePrev--light::after { background: #ffffff; box-shadow: inset 0 0 0 1px #d2dae8; }
 
 .themePrev--dark { background: #0f1320; }
 .themePrev--dark::after { background: #171c2c; box-shadow: inset 0 0 0 1px #2a3350; }
