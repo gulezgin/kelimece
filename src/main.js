@@ -11,6 +11,9 @@ import { levelsUpTo } from './core/placement.js';
 import { buildDailyPlan, DAILY_MINUTES, GOALS } from './core/plan.js';
 import { isDialogueUnlocked } from './core/dialogues.js';
 import { topicSummaries } from './core/topics.js';
+import { findLesson, loadLessons } from './core/grammar.js';
+import { renderGrammarList, renderLesson, renderQuiz } from './ui/grammar.js';
+import { renderLearn } from './ui/learn.js';
 import { isStruggling } from './core/stats.js';
 import { setRate, speak } from './core/speech.js';
 import { renderTopicChip, renderTopics } from './ui/topics.js';
@@ -215,6 +218,22 @@ function render() {
 		return;
 	}
 
+	if (activeSection === 'learn') {
+		renderLearn(learnModules(), learnHandlers);
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
+
+	if (activeSection === 'grammar') {
+		const acik = openLessonId ? findLesson(lessons, openLessonId) : null;
+		if (acik && quizOpen) renderQuiz(acik, grammarHandlers);
+		else if (acik) renderLesson(acik, grammarHandlers);
+		else renderGrammarList(lessons, store.state.profile.premium,
+			store.state.profile.lessonsDone || [], grammarHandlers);
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
+
 	if (activeSection === 'topics') {
 		renderTopics(store.state.words, store.state.profile.premium, topicHandlers);
 		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
@@ -265,6 +284,43 @@ function render() {
 	else renderTiles(list);
 }
 
+
+
+// ===================== Ogren / Dilbilgisi =====================
+
+const GRAMMAR_URL = import.meta.env.BASE_URL + 'content/grammar.json';
+
+/** Yuklenen dersler ve acik olanin durumu. */
+let lessons = [];
+let openLessonId = null;
+let quizOpen = false;
+
+/** Ogren ekranindaki moduller. */
+function learnModules() {
+	return [
+		{ id: 'topics', icon: '🗂️', title: 'Konular', note: 'Alan alan kelime', ready: true },
+		{ id: 'grammar', icon: '📐', title: 'Dilbilgisi', note: lessons.length + ' ders', ready: lessons.length > 0 },
+		{ id: 'reading', icon: '📖', title: 'Okuma', note: '', ready: false },
+		{ id: 'writing', icon: '✍️', title: 'Yazma', note: '', ready: false }
+	];
+}
+
+const learnHandlers = {
+	onOpen: (id) => {
+		if (id === 'topics') { showSection('topics'); return; }
+		if (id === 'grammar') { openLessonId = null; quizOpen = false; showSection('grammar'); }
+	}
+};
+
+const grammarHandlers = {
+	onBack: () => showSection('learn'),
+	onBackToList: () => { openLessonId = null; quizOpen = false; window.scrollTo(0, 0); render(); },
+	onBackToLesson: (id) => { openLessonId = id; quizOpen = false; window.scrollTo(0, 0); render(); },
+	onOpen: (id) => { openLessonId = id; quizOpen = false; window.scrollTo(0, 0); render(); },
+	onStartQuiz: (id) => { openLessonId = id; quizOpen = true; window.scrollTo(0, 0); render(); },
+	onLocked: () => openPaywall(),
+	onPassed: (id) => store.markLessonDone(id)
+};
 
 // ===================== Gunluk plan =====================
 
@@ -899,7 +955,7 @@ function wireEvents() {
 	});
 
 	$('navHome').addEventListener('click', () => showSection('home'));
-	$('navTopics').addEventListener('click', () => showSection('topics'));
+	$('navLearn').addEventListener('click', () => showSection('learn'));
 	$('navDialogues').addEventListener('click', () => showSection('dialogues'));
 	$('navPool').addEventListener('click', () => showSection('pool'));
 	$('navSettings').addEventListener('click', () => showSection('settings'));
@@ -973,7 +1029,9 @@ function showSection(section) {
 	// oldugunu kaybediyor.
 	const sections = [
 		['home', 'homeView', 'navHome'],
-		['topics', 'topicsView', 'navTopics'],
+		['learn', 'learnView', 'navLearn'],
+		['grammar', 'grammarView', 'navLearn'],
+		['topics', 'topicsView', 'navLearn'],
 		['dialogues', 'dialoguesView', 'navDialogues'],
 		['pool', 'poolView', 'navPool'],
 		['settings', 'settingsView', 'navSettings'],
@@ -1105,6 +1163,11 @@ async function boot() {
 
 	// Bulut da acilisi bekletmesin; yapilandirma yoksa hicbir sey yapmaz.
 	initCloud();
+
+	loadLessons(GRAMMAR_URL).then((list) => {
+		lessons = list;
+		if (activeSection === 'learn' || activeSection === 'grammar') render();
+	});
 
 	// Diyaloglar acilisi bekletmesin: arka planda yuklenip geldiginde
 	// ekran tazeleniyor. Yuklenemezse liste bos kalir, uygulama calisir.

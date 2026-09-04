@@ -3011,3 +3011,105 @@ button.micBtn {
 	padding-top: 14px;
 	border-top: 1px solid #2a3a55;
 }
+
+/* ==============================================
+   ÖĞREN VE DİLBİLGİSİ
+   ============================================== */
+.learnGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr));
+	gap: 12px;
+}
+
+button.learnCard {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6px;
+	padding: 18px 14px;
+	text-align: left;
+	border: 1px solid #263049;
+	border-radius: 16px;
+	background: var(--panel);
+	color: var(--text);
+	cursor: pointer;
+	transition: border-color var(--transition), transform var(--transition);
+}
+
+button.learnCard:hover {
+	border-color: var(--acc);
+	transform: translateY(-2px);
+}
+
+/* Hazir olmayan modul gizlenmiyor, soluyor: kullanici neyin gelecegini
+   gormeli ama tiklayip bos ekranla karsilasmamali. */
+button.learnCard--soon {
+	opacity: 0.45;
+	cursor: default;
+}
+
+.learnIcon { font-size: 28px; line-height: 1; }
+.learnTitle { font-weight: 700; font-size: 15px; }
+.learnNote { color: var(--muted); font-size: 12px; }
+
+.grammarExplain {
+	line-height: 1.7;
+	font-size: 14px;
+}
+
+.ruleList {
+	margin: 0;
+	padding-left: 20px;
+	line-height: 1.9;
+	font-size: 14px;
+}
+
+.grammarExample {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 0;
+	border-top: 1px solid #212a44;
+}
+
+.grammarEn { font-size: 15px; overflow-wrap: anywhere; }
+.grammarTr { color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+.quizQuestion {
+	font-size: 17px;
+	font-weight: 600;
+	line-height: 1.5;
+	margin-bottom: 14px;
+	overflow-wrap: anywhere;
+}
+
+.quizFeedback {
+	margin-top: 12px;
+	font-size: 14px;
+	line-height: 1.6;
+	color: var(--good);
+}
+
+.quizFeedback.bad { color: var(--bad); }
+.quizNext { margin-top: 12px; }
+
+button.exOption--ok { border-color: var(--good); }
+button.exOption--bad { border-color: var(--bad); }
+
+.quizReview {
+	margin-top: 16px;
+	padding-top: 14px;
+	border-top: 1px solid #2a3a55;
+	text-align: left;
+}
+
+.quizReviewItem {
+	margin-top: 12px;
+	padding: 10px;
+	border-radius: 10px;
+	background: #0f1529;
+}
+
+.quizReviewQ { font-weight: 600; font-size: 14px; }
+.quizReviewA { color: var(--good); font-size: 14px; margin: 4px 0; }

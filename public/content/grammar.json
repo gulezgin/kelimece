@@ -1,0 +1,734 @@
+{
+  "pack": {
+    "id": "grammar",
+    "version": 1,
+    "name": "Dilbilgisi Dersleri",
+    "language": "en-tr",
+    "count": 12
+  },
+  "lessons": [
+    {
+      "id": "gr:be",
+      "title": "am / is / are",
+      "level": "A1",
+      "topic": "temel",
+      "icon": "🔤",
+      "summary": "İngilizcede \"olmak\" fiili cümlede görünür",
+      "explain": "Türkçede \"Ben öğretmenim\" derken ayrı bir fiil yok, ek yeterli. İngilizcede bu ek yok; onun yerine am/is/are kullanılır ve ASLA atılmaz. Türkçe konuşanların en sık hatası bu fiili unutmaktır.",
+      "rules": [
+        "I → am",
+        "he / she / it → is",
+        "you / we / they → are"
+      ],
+      "examples": [
+        {
+          "en": "I am a teacher.",
+          "tr": "Ben öğretmenim."
+        },
+        {
+          "en": "She is tired.",
+          "tr": "O yorgun."
+        },
+        {
+          "en": "They are at home.",
+          "tr": "Onlar evde."
+        }
+      ],
+      "quiz": [
+        {
+          "q": "___ a student.",
+          "options": [
+            "I",
+            "I am",
+            "I is"
+          ],
+          "answer": 1,
+          "why": "Türkçedeki \"-im\" ekinin karşılığı \"am\". Fiilsiz cümle olmaz."
+        },
+        {
+          "q": "My parents ___ in Ankara.",
+          "options": [
+            "is",
+            "are",
+            "am"
+          ],
+          "answer": 1,
+          "why": "\"Parents\" çoğul, çoğullarda \"are\" kullanılır."
+        },
+        {
+          "q": "The weather ___ cold today.",
+          "options": [
+            "are",
+            "is",
+            "am"
+          ],
+          "answer": 1,
+          "why": "\"Weather\" tekil ve üçüncü tekil kişi, o yüzden \"is\"."
+        }
+      ]
+    },
+    {
+      "id": "gr:present-s",
+      "title": "Üçüncü tekil kişide -s",
+      "level": "A1",
+      "topic": "zamanlar",
+      "icon": "👤",
+      "summary": "he / she / it ile fiile -s eklenir",
+      "explain": "Geniş zamanda he, she, it öznesiyle fiil -s alır. Türkçede böyle bir kural olmadığı için sık atlanır. \"She work\" değil, \"She works\".",
+      "rules": [
+        "I / you / we / they → work",
+        "he / she / it → works",
+        "-o, -ch, -sh, -s, -x ile bitenler → -es (goes, watches)"
+      ],
+      "examples": [
+        {
+          "en": "He works in a bank.",
+          "tr": "O bir bankada çalışıyor."
+        },
+        {
+          "en": "She watches TV every night.",
+          "tr": "O her akşam televizyon izler."
+        },
+        {
+          "en": "It rains a lot here.",
+          "tr": "Burada çok yağmur yağar."
+        }
+      ],
+      "quiz": [
+        {
+          "q": "My sister ___ English very well.",
+          "options": [
+            "speak",
+            "speaks",
+            "speaking"
+          ],
+          "answer": 1,
+          "why": "\"My sister\" = she, üçüncü tekil kişi, fiil -s alır."
+        },
+        {
+          "q": "They ___ to school by bus.",
+          "options": [
+            "goes",
+            "go",
+            "gos"
+          ],
+          "answer": 1,
+          "why": "\"They\" çoğul; -s yalnızca he/she/it ile kullanılır."
+        },
+        {
+          "q": "He ___ his homework after dinner.",
+          "options": [
+            "do",
+            "does",
+            "doing"
+          ],
+          "answer": 1,
+          "why": "\"Do\" fiili üçüncü tekilde \"does\" olur."
+        }
+      ]
+    },
+    {
+      "id": "gr:articles",
+      "title": "a / an / the",
+      "level": "A1",
+      "topic": "belirteçler",
+      "icon": "📌",
+      "summary": "Türkçede olmayan ama İngilizcede zorunlu olan sözcükler",
+      "explain": "Türkçede belirtili/belirtisiz tanımlık yok, bu yüzden en çok atlanan yapı budur. Kural basit: ilk kez bahsedilen tekil sayılabilir isim \"a/an\" alır; karşındaki kişinin hangisini kastettiğini bildiği şey \"the\" alır.",
+      "rules": [
+        "Ünsüz sesiyle başlıyorsa → a (a book)",
+        "Ünlü sesiyle başlıyorsa → an (an apple)",
+        "Belirli, bilinen şey → the",
+        "Çoğul ve sayılamayanlarda \"a/an\" kullanılmaz"
+      ],
+      "examples": [
+        {
+          "en": "I bought a book.",
+          "tr": "Bir kitap aldım."
+        },
+        {
+          "en": "The book was expensive.",
+          "tr": "Kitap pahalıydı."
+        },
+        {
+          "en": "She is an engineer.",
+          "tr": "O bir mühendis."
+        }
+      ],
+      "quiz": [
+        {
+          "q": "I saw ___ cat in the garden.",
+          "options": [
+            "a",
+            "an",
+            "the"
+          ],
+          "answer": 0,
+          "why": "İlk kez bahsediliyor ve \"cat\" ünsüz sesiyle başlıyor."
+        },
+        {
+          "q": "He works at ___ hospital near my house.",
+          "options": [
+            "a",
+            "an",
+            "the"
+          ],
+          "answer": 2,
+          "why": "\"Evimin yanındaki\" diyerek belirli hale getirdik, o yüzden \"the\"."
+        },
+        {
+          "q": "She needs ___ umbrella.",
+          "options": [
+            "a",
+            "an",
+            "the"
+          ],
+          "answer": 1,
+          "why": "\"Umbrella\" ünlü sesiyle başlar, \"an\" alır."
+        }
+      ]
+    },
+    {
+      "id": "gr:do-does",
+      "title": "Soru ve olumsuzda do / does",
+      "level": "A1",
+      "topic": "zamanlar",
+      "icon": "❓",
+      "summary": "Geniş zamanda soru ve olumsuz nasıl kurulur",
+      "explain": "Türkçede soru \"-mı\" ekiyle, olumsuz \"-me\" ekiyle kurulur. İngilizcede bunların yerine yardımcı fiil gelir: do / does. Önemli kural — yardımcı fiil varken asıl fiil YALIN kalır.",
+      "rules": [
+        "I / you / we / they → do",
+        "he / she / it → does",
+        "Yardımcı fiil varsa asıl fiil -s almaz: Does he work? (works değil)"
+      ],
+      "examples": [
+        {
+          "en": "Do you speak English?",
+          "tr": "İngilizce konuşuyor musun?"
+        },
+        {
+          "en": "She does not eat meat.",
+          "tr": "O et yemez."
+        },
+        {
+          "en": "Does he live here?",
+          "tr": "O burada mı yaşıyor?"
+        }
+      ],
+      "quiz": [
+        {
+          "q": "___ she like coffee?",
+          "options": [
+            "Do",
+            "Does",
+            "Is"
+          ],
+          "answer": 1,
+          "why": "\"She\" üçüncü tekil kişi, soruda \"does\" kullanılır."
+        },
+        {
+          "q": "They ___ not work on Sundays.",
+          "options": [
+            "does",
+            "do",
+            "is"
+          ],
+          "answer": 1,
+          "why": "\"They\" çoğul, \"do\" alır."
+        },
+        {
+          "q": "Does he ___ in Istanbul?",
+          "options": [
+            "lives",
+            "live",
+            "living"
+          ],
+          "answer": 1,
+          "why": "\"Does\" varken asıl fiil yalın kalır; -s iki kez kullanılmaz."
+        }
+      ]
+    },
+    {
+      "id": "gr:present-cont",
+      "title": "Şu an olan: -ing",
+      "level": "A1",
+      "topic": "zamanlar",
+      "icon": "⏳",
+      "summary": "Şu anda süren eylemi anlatmak",
+      "explain": "Türkçede \"-yor\" eki ne şu anı ne de alışkanlığı ayırır: \"çalışıyorum\" ikisi de olabilir. İngilizce bunları ayırır: şu an oluyorsa am/is/are + fiil-ing, alışkanlıksa geniş zaman.",
+      "rules": [
+        "am / is / are + fiil-ing",
+        "Şu an: I am working now.",
+        "Alışkanlık: I work every day."
+      ],
+      "examples": [
+        {
+          "en": "I am reading a book right now.",
+          "tr": "Şu anda kitap okuyorum."
+        },
+        {
+          "en": "She is cooking dinner.",
+          "tr": "O akşam yemeği pişiriyor."
+        },
+        {
+          "en": "They are waiting outside.",
+          "tr": "Onlar dışarıda bekliyorlar."
+        }
+      ],
+      "quiz": [
+        {
+          "q": "Look! The baby ___ .",
+          "options": [
+            "sleeps",
+            "is sleeping",
+            "sleep"
+          ],
+          "answer": 1,
+          "why": "\"Look!\" şu anı gösteriyor; süren eylem için -ing kullanılır."
+        },
+        {
+          "q": "I ___ coffee every morning.",
+          "options": [
+            "am drinking",
+            "drink",
+            "drinking"
+          ],
+          "answer": 1,
+          "why": "\"Every morning\" alışkanlık; alışkanlıkta geniş zaman kullanılır."
+        },
+        {
+          "q": "We ___ for the bus at the moment.",
+          "options": [
+            "wait",
+            "are waiting",
+            "waits"
+          ],
+          "answer": 1,
+          "why": "\"At the moment\" şu anı gösterir."
+        }
+      ]
+    },
+    {
+      "id": "gr:past-simple",
+      "title": "Geçmiş zaman",
+      "level": "A2",
+      "topic": "zamanlar",
+      "icon": "⏮️",
+      "summary": "Bitmiş eylemleri anlatmak",
+      "explain": "Düzenli fiiller -ed alır. Düzensiz fiillerin kendi biçimi vardır ve ezberlenir. Önemli tuzak: olumsuz ve soruda \"did\" varken asıl fiil YALIN kalır — \"Did you went?\" değil, \"Did you go?\"",
+      "rules": [
+        "Düzenli: work → worked",
+        "Düzensiz: go → went, see → saw",
+        "Soru/olumsuz: did + yalın fiil"
+      ],
+      "examples": [
+        {
+          "en": "I worked late yesterday.",
+          "tr": "Dün geç saate kadar çalıştım."
+        },
+        {
+          "en": "She went to Ankara last week.",
+          "tr": "O geçen hafta Ankara'ya gitti."
+        },
+        {
+          "en": "Did you see the film?",
+          "tr": "Filmi gördün mü?"
+        }
+      ],
+      "quiz": [
+        {
+          "q": "He ___ to London last year.",
+          "options": [
+            "go",
+            "went",
+            "goes"
+          ],
+          "answer": 1,
+          "why": "\"Last year\" geçmiş; \"go\" düzensiz fiil, geçmişi \"went\"."
+        },
+        {
+          "q": "Did you ___ my message?",
+          "options": [
+            "got",
+            "get",
+            "gets"
+          ],
+          "answer": 1,
+          "why": "\"Did\" varken asıl fiil yalın kalır."
+        },
+        {
+          "q": "They ___ not come to the party.",
+          "options": [
+            "do",
+            "did",
+            "does"
+          ],
+          "answer": 1,
+          "why": "Geçmiş zamanın olumsuzunda \"did not\" kullanılır."
+        }
+      ]
+    },
+    {
+      "id": "gr:prepositions",
+      "title": "in / on / at",
+      "level": "A2",
+      "topic": "edatlar",
+      "icon": "📍",
+      "summary": "Zaman ve yer edatları",
+      "explain": "Türkçede tek bir \"-de\" eki üç ayrı İngilizce edata karşılık gelir. Bu yüzden edat seçimi Türkçe konuşanlarda en sık yapılan hatalardan biridir. Kural: büyükten küçüğe daralır.",
+      "rules": [
+        "in → ay, yıl, şehir, ülke (in May, in Turkey)",
+        "on → gün, tarih, yüzey (on Monday, on the table)",
+        "at → saat, tam nokta (at 5 o'clock, at the door)"
+      ],
+      "examples": [
+        {
+          "en": "I was born in 1995.",
+          "tr": "1995'te doğdum."
+        },
+        {
+          "en": "See you on Friday.",
+          "tr": "Cuma günü görüşürüz."
+        },
+        {
+          "en": "The meeting starts at nine.",
+          "tr": "Toplantı dokuzda başlıyor."
+        }
+      ],
+      "quiz": [
+        {
+          "q": "The class begins ___ 8:30.",
+          "options": [
+            "in",
+            "on",
+            "at"
+          ],
+          "answer": 2,
+          "why": "Saatlerde \"at\" kullanılır."
+        },
+        {
+          "q": "My birthday is ___ July.",
+          "options": [
+            "in",
+            "on",
+            "at"
+          ],
+          "answer": 0,
+          "why": "Aylarda \"in\" kullanılır."
+        },
+        {
+          "q": "I left the keys ___ the table.",
+          "options": [
+            "in",
+            "on",
+            "at"
+          ],
+          "answer": 1,
+          "why": "Yüzey üstünde olmak \"on\" ile anlatılır."
+        }
+      ]
+    },
+    {
+      "id": "gr:there-is",
+      "title": "There is / There are",
+      "level": "A2",
+      "topic": "temel",
+      "icon": "📦",
+      "summary": "Bir şeyin var olduğunu söylemek",
+      "explain": "Türkçede \"var\" tek kelimeyle olur: \"Masada bir kitap var.\" İngilizcede bu \"There is/are\" kalıbıyla kurulur ve \"there\" atlanamaz. Ayrıca \"have\" ile karıştırılmamalı — \"have\" sahiplik, \"there is\" varlık bildirir.",
+      "rules": [
+        "Tekil → There is a book.",
+        "Çoğul → There are two books.",
+        "Olumsuz → There isn't / There aren't"
+      ],
+      "examples": [
+        {
+          "en": "There is a problem.",
+          "tr": "Bir sorun var."
+        },
+        {
+          "en": "There are many people here.",
+          "tr": "Burada çok insan var."
+        },
+        {
+          "en": "There isn't any milk.",
+          "tr": "Hiç süt yok."
+        }
+      ],
+      "quiz": [
+        {
+          "q": "___ three rooms in the house.",
+          "options": [
+            "There is",
+            "There are",
+            "It is"
+          ],
+          "answer": 1,
+          "why": "\"Three rooms\" çoğul, \"there are\" gerekir."
+        },
+        {
+          "q": "___ a bank near here?",
+          "options": [
+            "Is there",
+            "There is",
+            "Have"
+          ],
+          "answer": 0,
+          "why": "Soruda \"is\" başa gelir: Is there...?"
+        },
+        {
+          "q": "___ any sugar left.",
+          "options": [
+            "There isn't",
+            "It isn't",
+            "There aren't"
+          ],
+          "answer": 0,
+          "why": "\"Sugar\" sayılamayan, tekil gibi davranır."
+        }
+      ]
+    },
+    {
+      "id": "gr:word-order",
+      "title": "Cümle sırası: Özne + Fiil + Nesne",
+      "level": "A2",
+      "topic": "cümle yapısı",
+      "icon": "🔀",
+      "summary": "İngilizce cümlede sıra sabittir",
+      "explain": "Türkçede fiil sona gelir ve sıra esnektir: \"Ben dün kitabı okudum\" da olur, \"Kitabı dün ben okudum\" da. İngilizcede sıra sabittir: Özne + Fiil + Nesne. Zaman ifadeleri genelde en sona ya da en başa gider, ortaya değil.",
+      "rules": [
+        "Özne + Fiil + Nesne + Yer + Zaman",
+        "Doğru: I read the book yesterday.",
+        "Yanlış: I yesterday read the book."
+      ],
+      "examples": [
+        {
+          "en": "She bought a car last month.",
+          "tr": "O geçen ay bir araba aldı."
+        },
+        {
+          "en": "We watched a film at home.",
+          "tr": "Evde bir film izledik."
+        },
+        {
+          "en": "He sent me an email this morning.",
+          "tr": "Bu sabah bana bir e-posta gönderdi."
+        }
+      ],
+      "quiz": [
+        {
+          "q": "Hangisi doğru?",
+          "options": [
+            "I drink every morning coffee.",
+            "I drink coffee every morning.",
+            "Every morning I coffee drink."
+          ],
+          "answer": 1,
+          "why": "Nesne fiilden hemen sonra gelir; zaman ifadesi sona gider."
+        },
+        {
+          "q": "Hangisi doğru?",
+          "options": [
+            "She speaks well English.",
+            "She well speaks English.",
+            "She speaks English well."
+          ],
+          "answer": 2,
+          "why": "Zarf nesneden sonra gelir, fiille nesnenin arasına girmez."
+        },
+        {
+          "q": "Hangisi doğru?",
+          "options": [
+            "We saw yesterday a good film.",
+            "We saw a good film yesterday.",
+            "Yesterday we a good film saw."
+          ],
+          "answer": 1,
+          "why": "Zaman ifadesi fiille nesnenin arasına giremez."
+        }
+      ]
+    },
+    {
+      "id": "gr:comparative",
+      "title": "Karşılaştırma: -er / more",
+      "level": "A2",
+      "topic": "sıfatlar",
+      "icon": "⚖️",
+      "summary": "Daha büyük, en büyük",
+      "explain": "Kısa sıfatlar -er/-est alır, uzun sıfatlar more/most ile kurulur. Türkçede hepsi \"daha\" ile olduğu için ikisi karıştırılır. \"More bigger\" gibi çift karşılaştırma yapılmaz.",
+      "rules": [
+        "Tek heceli: big → bigger → the biggest",
+        "İki+ heceli: careful → more careful → the most careful",
+        "Düzensiz: good → better → the best"
+      ],
+      "examples": [
+        {
+          "en": "This book is cheaper than that one.",
+          "tr": "Bu kitap şundan daha ucuz."
+        },
+        {
+          "en": "She is more careful than me.",
+          "tr": "O benden daha dikkatli."
+        },
+        {
+          "en": "It was the best day of my life.",
+          "tr": "Hayatımın en güzel günüydü."
+        }
+      ],
+      "quiz": [
+        {
+          "q": "Today is ___ than yesterday.",
+          "options": [
+            "more hot",
+            "hotter",
+            "hottest"
+          ],
+          "answer": 1,
+          "why": "\"Hot\" tek heceli, -er alır; \"more\" ile birlikte kullanılmaz."
+        },
+        {
+          "q": "This is ___ film I have ever seen.",
+          "options": [
+            "the most interesting",
+            "most interesting",
+            "more interesting"
+          ],
+          "answer": 0,
+          "why": "En üstünlük derecesinde \"the most\" kullanılır."
+        },
+        {
+          "q": "Her English is ___ than mine.",
+          "options": [
+            "gooder",
+            "better",
+            "more good"
+          ],
+          "answer": 1,
+          "why": "\"Good\" düzensizdir: good → better → best."
+        }
+      ]
+    },
+    {
+      "id": "gr:present-perfect",
+      "title": "Present Perfect: have / has + V3",
+      "level": "B1",
+      "topic": "zamanlar",
+      "icon": "🔗",
+      "summary": "Geçmişte olan ama şimdiyle bağı olan eylemler",
+      "explain": "Türkçede tam karşılığı olmadığı için en zor yapılardan biri. Geçmişte NE ZAMAN olduğu önemli değilse ya da etkisi hâlâ sürüyorsa kullanılır. Kesin bir geçmiş zaman ifadesi varsa (yesterday, last week) present perfect KULLANILMAZ.",
+      "rules": [
+        "have / has + fiilin 3. hali",
+        "Belirsiz geçmiş: I have seen that film.",
+        "Kesin zaman varsa past simple: I saw it yesterday.",
+        "ever, never, just, already, yet ile sık kullanılır"
+      ],
+      "examples": [
+        {
+          "en": "I have lived here for ten years.",
+          "tr": "On yıldır burada yaşıyorum."
+        },
+        {
+          "en": "She has just finished her work.",
+          "tr": "O işini yeni bitirdi."
+        },
+        {
+          "en": "Have you ever been to Paris?",
+          "tr": "Hiç Paris'e gittin mi?"
+        }
+      ],
+      "quiz": [
+        {
+          "q": "I ___ my keys. I can't find them.",
+          "options": [
+            "lost",
+            "have lost",
+            "was losing"
+          ],
+          "answer": 1,
+          "why": "Etkisi şu an sürüyor (hâlâ bulamıyor), o yüzden present perfect."
+        },
+        {
+          "q": "She ___ to Italy last summer.",
+          "options": [
+            "has gone",
+            "went",
+            "has been"
+          ],
+          "answer": 1,
+          "why": "\"Last summer\" kesin geçmiş zaman; present perfect kullanılmaz."
+        },
+        {
+          "q": "We ___ known each other since 2010.",
+          "options": [
+            "have",
+            "has",
+            "are"
+          ],
+          "answer": 0,
+          "why": "\"We\" ile \"have\" kullanılır; \"since\" present perfect işaretidir."
+        }
+      ]
+    },
+    {
+      "id": "gr:modals",
+      "title": "can / must / should",
+      "level": "B1",
+      "topic": "kipler",
+      "icon": "🔑",
+      "summary": "Yetenek, zorunluluk ve tavsiye",
+      "explain": "Kip fiillerinden sonra fiil HER ZAMAN yalın kalır: \"can to go\" ya da \"must goes\" olmaz. Türkçede bu anlamlar ek ile verildiği için (\"-ebilir\", \"-meli\") ayrı bir sözcük olduğu unutulur.",
+      "rules": [
+        "can → yapabilmek",
+        "must / have to → zorunluluk",
+        "should → tavsiye",
+        "Kipten sonra yalın fiil: She can swim."
+      ],
+      "examples": [
+        {
+          "en": "I can drive a car.",
+          "tr": "Araba kullanabilirim."
+        },
+        {
+          "en": "You should see a doctor.",
+          "tr": "Bir doktora görünmelisin."
+        },
+        {
+          "en": "We must leave now.",
+          "tr": "Şimdi gitmeliyiz."
+        }
+      ],
+      "quiz": [
+        {
+          "q": "You ___ smoke here. It's forbidden.",
+          "options": [
+            "mustn't",
+            "don't must",
+            "not must"
+          ],
+          "answer": 0,
+          "why": "Kip fiilleri olumsuzu doğrudan \"not\" ile yapar, \"do\" kullanmaz."
+        },
+        {
+          "q": "She can ___ three languages.",
+          "options": [
+            "speaks",
+            "speak",
+            "to speak"
+          ],
+          "answer": 1,
+          "why": "Kip fiilinden sonra fiil yalın kalır."
+        },
+        {
+          "q": "You look tired. You ___ rest.",
+          "options": [
+            "should",
+            "must to",
+            "can to"
+          ],
+          "answer": 0,
+          "why": "Tavsiye için \"should\" kullanılır; kipten sonra \"to\" gelmez."
+        }
+      ]
+    }
+  ]
+}

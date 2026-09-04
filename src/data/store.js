@@ -76,7 +76,9 @@ export const DEFAULT_PROFILE = {
 	/** Hedef soruldu mu? Sorulmadıysa ana ekran soruyor. */
 	goalAskedAt: null,
 	/** Bugün tamamlanan görevler: { date, ids[] } */
-	dailyDone: { date: null, ids: [] }
+	dailyDone: { date: null, ids: [] },
+	/** Quizi geçilmiş dilbilgisi dersleri. */
+	lessonsDone: []
 };
 
 /** @type {{words: object[], settings: object, profile: object, ready: boolean, packs: object}} */
@@ -214,7 +216,8 @@ export async function init({ packUrl } = {}) {
 			reminder: { ...DEFAULT_PROFILE.reminder, ...(savedProfile.reminder || {}) },
 			premium: { ...NO_PREMIUM, ...(savedProfile.premium || {}) },
 			account: { ...NO_ACCOUNT, ...(savedProfile.account || {}) },
-			dailyDone: { date: null, ids: [], ...(savedProfile.dailyDone || {}) }
+			dailyDone: { date: null, ids: [], ...(savedProfile.dailyDone || {}) },
+			lessonsDone: savedProfile.lessonsDone || []
 		};
 		refreshStreak();
 		state.settings = { ...DEFAULT_SETTINGS, ...((await getMeta('settings')) || {}) };
@@ -684,6 +687,19 @@ export async function markTaskDone(taskId) {
 	const ids = d.date === bugun ? d.ids.slice() : [];
 	if (!ids.includes(taskId)) ids.push(taskId);
 	state.profile.dailyDone = { date: bugun, ids };
+	emit();
+	await persistProfile();
+}
+
+/**
+ * Dilbilgisi dersini tamamlanmış işaretler.
+ * Bir kez geçilen ders geçilmiş kalır; tekrar denemek işareti
+ * kaldırmaz, çünkü öğrenilen şey geri alınmıyor.
+ */
+export async function markLessonDone(lessonId) {
+	const liste = state.profile.lessonsDone || [];
+	if (liste.includes(lessonId)) return;
+	state.profile.lessonsDone = [...liste, lessonId];
 	emit();
 	await persistProfile();
 }
