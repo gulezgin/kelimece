@@ -11,6 +11,7 @@
  */
 import { NO_ACCOUNT } from '../core/account.js';
 import { DEFAULT_PLAN_PREFS } from '../core/plan.js';
+import { isStruggling } from '../core/stats.js';
 import { isWorthSyncing } from '../core/sync.js';
 import { accessibleWords, grantPremium, isPremiumActive, NO_PREMIUM } from '../core/entitlements.js';
 import { applyRating } from '../core/scheduler.js';
@@ -39,7 +40,9 @@ import { analyzeProgress, repairProgress, runMigration } from './migrate.js';
 
 export const DEFAULT_SETTINGS = {
 	dailyGoal: 10,
-	today: null
+	today: null,
+	/** Seslendirme hızı: 0.75 yavaş, 1.0 normal, 1.25 hızlı. */
+	speechRate: 0.9
 };
 
 /**
@@ -726,6 +729,13 @@ export async function clearPremium() {
 	await persistProfile();
 }
 
+/** Seslendirme hızını kaydeder. */
+export async function setSpeechRate(rate) {
+	state.settings.speechRate = Number(rate);
+	emit();
+	await persistSettings();
+}
+
 /** Günlük hatırlatma ayarını kaydeder. */
 export async function setReminder(reminder) {
 	state.profile.reminder = { ...state.profile.reminder, ...reminder };
@@ -812,11 +822,13 @@ export function getStats(isDue, scope) {
 	const total = words.length;
 	let due = 0;
 	let learned = 0;
+	let hard = 0;
 
 	for (const w of words) {
 		if (w.level >= MAX_LEVEL) learned++;
 		else if (isDue(w.nextReviewAt)) due++;
+		if (isStruggling(w)) hard++;
 	}
 
-	return { total, due, learned, unlearned: total - learned };
+	return { total, due, learned, hard, unlearned: total - learned };
 }

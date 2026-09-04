@@ -28,7 +28,7 @@ function svg(tag, attrs = {}) {
  * @param {object[]} words Kapsamdaki kelimeler
  * @param {object} profile store.state.profile
  */
-export function renderStatsView(words, profile) {
+export function renderStatsView(words, profile, handlers = {}) {
 	const host = $('statsView');
 	if (!host) return;
 	host.textContent = '';
@@ -46,7 +46,7 @@ export function renderStatsView(words, profile) {
 	host.appendChild(upcomingSection(words));
 
 	const hard = hardestWords(words, { limit: 8 });
-	if (hard.length) host.appendChild(hardestSection(hard));
+	if (hard.length) host.appendChild(hardestSection(hard, handlers));
 }
 
 /** Üst özet: hatırlama oranı, tahmini hazine, çalışılan gün. */
@@ -190,7 +190,7 @@ function loadRow(label, count, max, overdue) {
 }
 
 /** En çok zorlanılan kelimeler. */
-function hardestSection(hard) {
+function hardestSection(hard, handlers) {
 	const list = el('div', { class: 'hardList' });
 	for (const h of hard) {
 		list.appendChild(el('div', { class: 'hardItem' }, [
@@ -200,9 +200,15 @@ function hardestSection(hard) {
 		]));
 	}
 
+	// Liste uzun sure yalnizca BAKILAN bir sey olarak durdu; veri
+	// toplaniyordu ama calisilamiyordu. Dugme onu ise cevriyor.
+	const calis = el('button', { class: 'primary hardStudy', text: '🎯 Bunları çalış' });
+	calis.onclick = () => handlers.onStudyHard && handlers.onStudyHard();
+
 	return el('section', { class: 'panel' }, [
 		el('h2', { text: '🔥 En çok zorlandıkların' }),
 		el('div', { class: 'small', text: 'Bunlara ekstra zaman ayırmak işe yarar.' }),
-		list
+		list,
+		calis
 	]);
 }

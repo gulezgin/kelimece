@@ -115,6 +115,18 @@ export function maturityBreakdown(words) {
  * @param {object[]} words
  * @param {{limit?: number}} [options]
  */
+/**
+ * Kelime "zorlanılan" sayılır mı?
+ *
+ * Ölçüt unutma sayısı: bir kez bilinip sonra unutulmuş kelime, hiç
+ * çalışılmamış kelimeden farklı bir sorun. Hiç denenmemiş kelime zor
+ * sayılmaz — zorluk ancak denedikten sonra ölçülebilir.
+ */
+export function isStruggling(word) {
+	const { lapses } = readSchedule(word);
+	return lapses > 0 && (word.history || []).length > 0;
+}
+
 export function hardestWords(words, { limit = 10 } = {}) {
 	return words
 		.map((w) => {

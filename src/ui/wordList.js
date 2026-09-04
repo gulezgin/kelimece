@@ -7,6 +7,7 @@
 import { hasEnglishVoice, speak } from '../core/speech.js';
 import { isDue } from '../core/time.js';
 import { MAX_LEVEL } from '../core/srs.js';
+import { isStruggling } from '../core/stats.js';
 import { $, el } from './dom.js';
 
 /**
@@ -29,6 +30,7 @@ export function filterWords(words, { query = '', mode = 'all', cefr = 'all', top
 
 	if (mode === 'due') list = list.filter((w) => w.level < MAX_LEVEL && isDue(w.nextReviewAt));
 	else if (mode === 'learned') list = list.filter((w) => w.level >= MAX_LEVEL);
+	else if (mode === 'hard') list = list.filter(isStruggling);
 
 	const q = foldTr(query.trim());
 	if (q) {
@@ -80,6 +82,7 @@ export function renderStats(stats, visibleCount, dailyGoal) {
 	$('poolCountAll').textContent = String(stats.total);
 	$('poolCountDue').textContent = String(stats.due);
 	$('poolCountLearned').textContent = String(stats.learned);
+	$('poolCountHard').textContent = String(stats.hard);
 }
 
 /**

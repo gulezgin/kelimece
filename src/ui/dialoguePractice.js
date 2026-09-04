@@ -46,7 +46,13 @@ export function startPractice(dialogue, allDialogues, handlers, options = {}) {
 		// Oturumda kullanilmis yanilticilar. Ayni cumlenin iki kez
 		// cikmasi fark ediliyor ve soruyu ucuz gosteriyor.
 		usedDistractors: new Set(),
-		allowSpeak: !!options.allowSpeak
+		allowSpeak: !!options.allowSpeak,
+		/**
+		 * Konusma adimlarinda tutturulamayan kelimeler.
+		 * Tek bir puan "neyi duzeltmeliyim" sorusunu cevaplamiyor;
+		 * bitiste toplu gormek yon veriyor.
+		 */
+		missedWords: []
 	};
 	draw();
 }
@@ -129,6 +135,26 @@ function finishBox() {
 	const bitir = el('button', { class: 'ghost', text: 'Diyaloglara dön' });
 	bitir.onclick = () => state.handlers.onExit();
 
+	// Konusma raporu: en cok tutturulamayan kelimeler.
+	const sayim = new Map();
+	for (const w of state.missedWords) {
+		const k = w.toLowerCase().replace(/[^a-z']/g, '');
+		if (k) sayim.set(k, (sayim.get(k) || 0) + 1);
+	}
+	const enCok = [...sayim.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+
+	const rapor = enCok.length
+		? el('div', { class: 'speakReport' }, [
+			el('div', { class: 'small', text: 'Bu kelimelerde takildın:' }),
+			el('div', { class: 'speakWords' }, enCok.map(([w, n]) =>
+				el('span', {
+					class: 'speakWord speakWord--miss',
+					text: n > 1 ? `${w} ×${n}` : w
+				})
+			))
+		])
+		: null;
+
 	return el('div', { class: 'dlgFinish' }, [
 		el('div', { class: 'dlgFinishIcon', text: oran >= 80 ? '🎉' : '💪' }),
 		el('div', { class: 'dlgFinishTitle', text: 'Diyalog tamamlandı' }),
@@ -137,6 +163,7 @@ function finishBox() {
 			text: `${toplam} replikten ${state.correct} tanesini ilk denemede bildin (%${oran}).` +
 				(state.revealed ? `  ${state.revealed} tanesinde cevap gösterildi.` : '')
 		}),
+		rapor,
 		el('div', { class: 'dlgFinishActions' }, [tekrar, bitir])
 	]);
 }
@@ -287,6 +314,11 @@ function speakUi(ex) {
 				class: 'speakHeard',
 				text: 'Duyulan: ' + sonuc.heard
 			}));
+		}
+
+		// Tutturulamayan kelimeleri biriktir: bitiste rapor olacak.
+		for (const w of sonuc.words) {
+			if (!w.ok) state.missedWords.push(w.word);
 		}
 
 		if (isPass(sonuc)) judge(true, ex);

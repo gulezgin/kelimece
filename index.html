@@ -106,6 +106,15 @@
 				<button id="wipeBtn" class="bad">Sil</button>
 			</div>
 			<div class="row" style="margin-top:8px">
+				<label class="kpill" for="rateSelect">🔊 Okuma hızı
+					<select id="rateSelect" style="width:auto;margin-left:8px">
+						<option value="0.7">Yavaş</option>
+						<option value="0.9">Normal</option>
+						<option value="1.15">Hızlı</option>
+					</select>
+				</label>
+			</div>
+			<div class="row" style="margin-top:8px">
 				<button id="auditBtn" class="ghost">🩺 İlerleme denetimi</button>
 			</div>
 
@@ -146,6 +155,7 @@
 					<option value="all">Hepsi</option>
 					<option value="due">Bugün tekrar</option>
 					<option value="learned">Öğrenilmiş</option>
+					<option value="hard">Zorlandıkların</option>
 				</select>
 			</div>
 
@@ -169,6 +179,7 @@
 				<button id="poolAllBtn" class="ghost">Tümü <span class="badge" id="poolCountAll">0</span></button>
 				<button id="poolDueBtn" class="ghost">Tekrar <span class="badge warn" id="poolCountDue">0</span></button>
 				<button id="poolLearnedBtn" class="ghost">Öğrenilmiş <span class="badge ok" id="poolCountLearned">0</span></button>
+				<button id="poolHardBtn" class="ghost">Zorlandıkların <span class="badge bad" id="poolCountHard">0</span></button>
 			</div>
 			<div class="toolbar" style="margin-bottom:8px">
 				<label class="kpill" style="gap:6px">

@@ -53,6 +53,13 @@ export const GOALS = {
 	}
 };
 
+/**
+ * Zorlanılan kelime görevinin alt sınırı.
+ * Bunun altında ayrı bir görev satırı planı şişirir ve bir oturumu
+ * doldurmaz.
+ */
+export const HARD_TASK_MIN = 5;
+
 /** Günlük süre seçenekleri (dakika). */
 export const DAILY_MINUTES = [5, 10, 15, 30, 60];
 
@@ -103,6 +110,7 @@ function preferByTopic(items, tercihEdilen) {
  * @param {string} options.goal
  * @param {number} options.dailyMinutes
  * @param {number} options.dueCount Tekrar bekleyen kelime sayısı
+ * @param {number} [options.hardCount] Zorlanılan kelime sayısı
  * @param {object[]} options.dialogues Açık (kilitsiz) diyaloglar
  * @param {object[]} options.topics Konu özetleri
  * @param {string[]} [options.doneIds] Bugün tamamlanan görev kimlikleri
@@ -112,6 +120,7 @@ export function buildDailyPlan({
 	goal = 'general',
 	dailyMinutes = 10,
 	dueCount = 0,
+	hardCount = 0,
 	dialogues = [],
 	topics = [],
 	doneIds = []
@@ -129,6 +138,28 @@ export function buildDailyPlan({
 			title: i === 0 ? 'Kelime çalış' : 'Bir tur daha kelime',
 			note: dueCount > 0 ? `${dueCount} kelime tekrar bekliyor` : 'Yeni kelimelerle',
 			minutes: 5
+		});
+	}
+
+	/*
+	 * Zorlanilan kelimeler yeterince birikince ayri gorev oluyor.
+	 *
+	 * Esik neden var: iki kelime icin ayri bir gorev satiri gostermek
+	 * plani sisirir ve o gorev bir oturumu doldurmaz. Bes kelime,
+	 * kisa ama anlamli bir tur icin alt sinir.
+	 *
+	 * Kelime gorevinden SONRA geliyor: once gunun normal akisi, sonra
+	 * telafi. Basa koymak, gunun ilk isini "basarisizliklarinla
+	 * yuzles" yapardi.
+	 */
+	if (hardCount >= HARD_TASK_MIN && butce.words > 0) {
+		tasks.push({
+			id: 'hard',
+			kind: 'hard',
+			icon: '🔥',
+			title: 'Zorlandıkların',
+			note: `${hardCount} kelimede takılıyorsun`,
+			minutes: 4
 		});
 	}
 

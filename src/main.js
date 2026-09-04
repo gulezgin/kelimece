@@ -11,6 +11,8 @@ import { levelsUpTo } from './core/placement.js';
 import { buildDailyPlan, DAILY_MINUTES, GOALS } from './core/plan.js';
 import { isDialogueUnlocked } from './core/dialogues.js';
 import { topicSummaries } from './core/topics.js';
+import { isStruggling } from './core/stats.js';
+import { setRate, speak } from './core/speech.js';
 import { renderTopicChip, renderTopics } from './ui/topics.js';
 import { findDialogue, loadDialogues } from './core/dialogues.js';
 import { renderDialogue, renderDialogueList } from './ui/dialogues.js';
@@ -188,7 +190,9 @@ function render() {
 		const scope = store.state.profile.level
 			? filterWords(store.state.words, {}).filter((w) => levelsUpTo(store.state.profile.level).includes(w.cefr))
 			: store.state.words;
-		renderStatsView(scope, store.state.profile);
+		renderStatsView(scope, store.state.profile, {
+			onStudyHard: () => startReviewSession({ hard: true })
+		});
 		// Istatistigin kendi sekmesi yok; geri donus yolu gorunur olmali.
 		const host = $('statsView');
 		const back = el('button', { class: 'ghost backBtn', text: '← Ana sayfa' });
@@ -273,6 +277,7 @@ function currentPlan() {
 		goal: prof.goal,
 		dailyMinutes: prof.dailyMinutes,
 		dueCount: store.getStats(isDue).due,
+		hardCount: store.getStats(isDue).hard,
 		dialogues: acik,
 		topics,
 		doneIds: store.todayDoneIds()
@@ -325,6 +330,10 @@ async function runTask(task) {
 	if (task.kind === 'topic') {
 		activeTopic = task.target;
 		startReviewSession({ topic: task.target });
+		return;
+	}
+	if (task.kind === 'hard') {
+		startReviewSession({ hard: true });
 	}
 }
 
@@ -531,14 +540,21 @@ function handleStartReview() {
  * @param {{free?: boolean, levels?: string[]|null}} options
  *   levels verilirse yalnızca o CEFR seviyeleri; yoksa havuzdaki seçim.
  */
-async function startReviewSession({ free = false, levels = null, topic = null } = {}) {
-	// Konu secimi seviye kapsamini gecersiz kilar: kullanici "mutfak"
-	// dedigi anda istedigi sey o konunun tamami.
-	let pool = topic
-		? store.state.words.filter((w) => w.topic === topic)
-		: levels
-			? store.state.words.filter((w) => levels.includes(w.cefr))
-			: wordsAtLevel();
+async function startReviewSession({ free = false, levels = null, topic = null, hard = false } = {}) {
+	// Zorlanilanlar ve konu secimi seviye kapsamini gecersiz kilar:
+	// kullanici "zorlandiklarim" dedigi anda istedigi sey onlar.
+	let pool = hard
+		? store.state.words.filter(isStruggling)
+		: topic
+			? store.state.words.filter((w) => w.topic === topic)
+			: levels
+				? store.state.words.filter((w) => levels.includes(w.cefr))
+				: wordsAtLevel();
+
+	// Zorlanilan kelimelerde SERBEST tekrar sart: bunlarin cogunun
+	// tekrar zamani gelmemis olabilir ama zorlanildigi icin
+	// calisilmak isteniyor.
+	if (hard) free = true;
 
 	// Kilitli seviyeler oturuma girmez. Kullanicinin kendi kelimeleri
 	// her zaman kalir - kendi verisi kisitlanamaz.
@@ -556,7 +572,9 @@ async function startReviewSession({ free = false, levels = null, topic = null } 
 	const queue = buildReviewQueue(pool, { free, isDue, newLimit });
 
 	if (!queue.length) {
-		const scopeLabel = topic
+		const scopeLabel = hard
+			? ' (zorlandiklarin arasinda)'
+			: topic
 			? ' (' + topic + ' konusunda)'
 			: levels
 				? ' (' + levels[levels.length - 1] + ' ve altı)'
@@ -868,6 +886,7 @@ function wireEvents() {
 	$('poolAllBtn').addEventListener('click', setFilter('all'));
 	$('poolDueBtn').addEventListener('click', setFilter('due'));
 	$('poolLearnedBtn').addEventListener('click', setFilter('learned'));
+	$('poolHardBtn').addEventListener('click', setFilter('hard'));
 	$('upgradeBtn').addEventListener('click', openPaywall);
 
 	$('startReviewBtn').addEventListener('click', handleStartReview);
@@ -913,6 +932,15 @@ function wireEvents() {
 		await store.setReminder(parsed);
 		await syncReminder();
 	});
+	$('rateSelect').addEventListener('change', async (e) => {
+		const r = Number(e.target.value);
+		setRate(r);
+		await store.setSpeechRate(r);
+		// Degisikligi duyurmak icin ornek bir kelime okunuyor;
+		// kullanici secimini kulagiyla dogrulasin.
+		speak('This is the new speed.');
+	});
+
 	$('auditBtn').addEventListener('click', handleProgressAudit);
 
 	$('wipeBtn').addEventListener('click', async () => {
@@ -1051,6 +1079,9 @@ async function boot() {
 	const result = await store.init({ packUrl: PACK_URL });
 
 	$('goalInput').value = store.state.settings.dailyGoal;
+	// Kayitli hiz konusma motoruna ve secicilere uygulaniyor.
+	setRate(store.state.settings.speechRate);
+	$('rateSelect').value = String(store.state.settings.speechRate);
 	showSection('home');
 	setupReminderUi();
 

@@ -72,7 +72,28 @@ export function hasEnglishVoice() {
  * @param {{rate?: number}} [options] rate: 0.5 (yavaş) - 1 (normal)
  * @returns {boolean} Konuşma başlatılabildi mi
  */
-export function speak(text, { rate = 0.9 } = {}) {
+/**
+ * Kullanıcının seçtiği okuma hızı.
+ *
+ * Modül düzeyinde tutuluyor çünkü `speak()` uygulamanın onlarca
+ * yerinden çağrılıyor; hızı her çağrıya parametre olarak taşımak
+ * her çağrı noktasını ayara bağımlı hale getirirdi.
+ */
+let userRate = 0.9;
+
+/** Okuma hızını ayarlar (0.5–1.5 arası kırpılır). */
+export function setRate(rate) {
+	const r = Number(rate);
+	if (!Number.isFinite(r)) return;
+	userRate = Math.min(1.5, Math.max(0.5, r));
+}
+
+/** Geçerli okuma hızı. */
+export function getRate() {
+	return userRate;
+}
+
+export function speak(text, { rate = null } = {}) {
 	if (!isSupported()) return false;
 	const value = String(text || '').trim();
 	if (!value) return false;
@@ -85,7 +106,7 @@ export function speak(text, { rate = 0.9 } = {}) {
 		const voice = pickVoice();
 		if (voice) utterance.voice = voice;
 		utterance.lang = voice ? voice.lang : 'en-US';
-		utterance.rate = rate;
+		utterance.rate = rate === null ? userRate : rate;
 		utterance.pitch = 1;
 
 		window.speechSynthesis.speak(utterance);

@@ -111,3 +111,26 @@ describe('buildDailyPlan — durum', () => {
 		expect(buildDailyPlan().total).toBeGreaterThan(0);
 	});
 });
+
+describe('zorlanılan kelime görevi', () => {
+	it('eşiğin altında görev çıkmaz', () => {
+		// Iki kelime icin ayri gorev satiri plani sisirir ve bir
+		// oturumu doldurmaz.
+		const p = buildDailyPlan({ dailyMinutes: 15, hardCount: 2, dialogues: [], topics: [] });
+		expect(p.tasks.some((t) => t.kind === 'hard')).toBe(false);
+	});
+
+	it('eşikten sonra görev çıkar', () => {
+		const p = buildDailyPlan({ dailyMinutes: 15, hardCount: 9, dialogues: [], topics: [] });
+		const g = p.tasks.find((t) => t.kind === 'hard');
+		expect(g).toBeTruthy();
+		expect(g.note).toContain('9');
+	});
+
+	it('kelime görevinden sonra gelir', () => {
+		// Gunun ilk isi "basarisizliklarinla yuzles" olmamali.
+		const p = buildDailyPlan({ dailyMinutes: 15, hardCount: 9, dialogues: [], topics: [] });
+		const i = p.tasks.findIndex((t) => t.kind === 'hard');
+		expect(p.tasks[i - 1].kind).toBe('words');
+	});
+});
