@@ -22,7 +22,8 @@
     "build:examples": "python scripts/build-examples.py",
     "infer:pos": "node scripts/infer-pos.mjs",
     "extract:oxford": "python scripts/extract-oxford.py",
-    "android:apk": "npm run android:sync && node scripts/android-gradle.mjs assembleDebug"
+    "android:apk": "npm run android:sync && node scripts/android-gradle.mjs assembleDebug",
+    "check:ids": "node scripts/check-ids.mjs"
   },
   "keywords": [
     "vocabulary",
