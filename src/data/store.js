@@ -80,7 +80,17 @@ export const DEFAULT_PROFILE = {
 	/** Quizi geçilmiş dilbilgisi dersleri. */
 	lessonsDone: [],
 	/** Soruları geçilmiş okuma parçaları. */
-	textsDone: []
+	textsDone: [],
+	/** Tamamlanmış yazma ve e-posta görevleri. */
+	tasksDone: [],
+	/**
+	 * Yazma taslakları: { [gorevId]: metin }.
+	 *
+	 * Profilde duruyor çünkü kullanıcı 150 kelime yazıp sekme
+	 * değiştirdiğinde metnin kaybolması bu ekranın en can sıkıcı
+	 * hatası olurdu.
+	 */
+	drafts: {}
 };
 
 /** @type {{words: object[], settings: object, profile: object, ready: boolean, packs: object}} */
@@ -220,7 +230,9 @@ export async function init({ packUrl } = {}) {
 			account: { ...NO_ACCOUNT, ...(savedProfile.account || {}) },
 			dailyDone: { date: null, ids: [], ...(savedProfile.dailyDone || {}) },
 			lessonsDone: savedProfile.lessonsDone || [],
-			textsDone: savedProfile.textsDone || []
+			textsDone: savedProfile.textsDone || [],
+			tasksDone: savedProfile.tasksDone || [],
+			drafts: { ...(savedProfile.drafts || {}) }
 		};
 		refreshStreak();
 		state.settings = { ...DEFAULT_SETTINGS, ...((await getMeta('settings')) || {}) };
@@ -713,6 +725,34 @@ export async function markTextDone(textId) {
 	if (liste.includes(textId)) return;
 	state.profile.textsDone = [...liste, textId];
 	emit();
+	await persistProfile();
+}
+
+/**
+ * Yazma / e-posta görevini tamamlanmış işaretler.
+ *
+ * `markTaskDone` adı GÜNLÜK PLAN görevlerine ait; bu ayrı bir liste.
+ * İkisini karıştırmak günlük planı yazma görevleriyle doldururdu.
+ */
+export async function markWritingDone(taskId) {
+	const liste = state.profile.tasksDone || [];
+	if (liste.includes(taskId)) return;
+	state.profile.tasksDone = [...liste, taskId];
+	emit();
+	await persistProfile();
+}
+
+/**
+ * Yazma taslağını saklar.
+ *
+ * `emit()` çağrılmıyor: taslak her tuş vuruşunda yazılıyor ve her
+ * seferinde tüm arayüzü yeniden çizmek yazma alanının odağını ve
+ * imleç konumunu kaybettiriyor.
+ */
+export async function saveDraft(taskId, metin) {
+	const d = state.profile.drafts || (state.profile.drafts = {});
+	if (d[taskId] === metin) return;
+	d[taskId] = metin;
 	await persistProfile();
 }
 

@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "tasks": [
+    {
+      "id": "e-friend-invite",
+      "kind": "email",
+      "level": "A2",
+      "icon": "🎉",
+      "title": "Arkadaşını davet et",
+      "summary": "Samimi e-posta: davet ve ayrıntılar",
+      "prompt": "Doğum günü yemeği veriyorsun. Bir arkadaşına e-posta yaz: ne, ne zaman, nerede olduğunu söyle ve cevap iste.",
+      "minWords": 40,
+      "maxWords": 100,
+      "teach": {
+        "title": "Samimi e-postanın dört parçası",
+        "points": [
+          "Selamlama: Hi Ali, / Hello Ayşe,",
+          "Sebep: I'm writing to invite you to ...",
+          "Ayrıntılar: gün, saat, yer — üçü de olmalı",
+          "Kapanış: Let me know if you can come. / See you soon, Deniz"
+        ]
+      },
+      "phrases": [
+        { "en": "I'm writing to invite you to ...", "tr": "Seni ...'e davet etmek için yazıyorum." },
+        { "en": "It starts at eight.", "tr": "Sekizde başlıyor." },
+        { "en": "Let me know if you can come.", "tr": "Gelebilirsen haber ver." },
+        { "en": "Hope to see you there!", "tr": "Orada görüşmek üzere!" }
+      ],
+      "require": [
+        { "label": "Selamlama var", "any": ["hi", "hello", "hey", "dear"] },
+        { "label": "Neden yazdığını söyledin", "any": ["i'm writing", "i am writing", "i want to invite", "i would like to invite", "invite"] },
+        { "label": "Gün ya da saat verdin", "any": ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "at seven", "at eight", "o'clock", "pm", ":"] },
+        { "label": "Cevap istedin", "any": ["let me know", "can you come", "hope you can", "reply", "tell me"] },
+        { "label": "Kapanış var", "any": ["see you", "love", "best", "take care", "cheers", "bye"] }
+      ],
+      "model": "Hi Ayşe,\n\nI'm writing to invite you to my birthday dinner next Saturday. We are meeting at Meze Evi in Kadıköy at eight o'clock. There will be about ten people, mostly friends from university, so it should be a relaxed evening.\n\nLet me know by Thursday if you can come, because I need to book the table.\n\nHope to see you there!\n\nDeniz"
+    },
+    {
+      "id": "e-late-apology",
+      "kind": "email",
+      "level": "A2",
+      "icon": "🙏",
+      "title": "Geç kalma özrü",
+      "summary": "Özür dile ve yeni bir zaman öner",
+      "prompt": "Bir arkadaşınla buluşacaktın ama gidemedin. Özür dileyen bir e-posta yaz: neden gelemedin ve yeni bir zaman öner.",
+      "minWords": 40,
+      "maxWords": 100,
+      "teach": {
+        "title": "Özür e-postasının sırası",
+        "points": [
+          "Önce özür, sonra açıklama — sırayı ters çevirmek bahane gibi durur",
+          "Kısa tut; uzun açıklama samimiyetsiz görünür",
+          "Bir çözüm öner: yeni bir gün, telafi",
+          "Suçu başkasına atma"
+        ]
+      },
+      "phrases": [
+        { "en": "I'm really sorry about yesterday.", "tr": "Dün için gerçekten üzgünüm." },
+        { "en": "Something came up at work.", "tr": "İşte bir şey çıktı." },
+        { "en": "Can we meet on Thursday instead?", "tr": "Bunun yerine perşembe buluşabilir miyiz?" },
+        { "en": "It won't happen again.", "tr": "Bir daha olmayacak." }
+      ],
+      "require": [
+        { "label": "Özür diledin", "any": ["i'm sorry", "i am sorry", "sorry", "apologise", "apologize", "my apologies"] },
+        { "label": "Sebep açıkladın", "any": ["because", "something came up", "i had to", "i was", "my"] },
+        { "label": "Yeni zaman önerdin", "any": ["can we", "how about", "instead", "next week", "another day", "would you be free"] }
+      ],
+      "model": "Hi Mert,\n\nI'm really sorry about yesterday. My daughter got sick in the afternoon and I had to take her to the doctor, so I could not get to the café in time. I should have called you earlier instead of just sending a message.\n\nCan we meet on Thursday evening instead? I am free after six, and coffee is on me this time.\n\nSorry again,\nDeniz"
+    },
+    {
+      "id": "e-info-request",
+      "kind": "email",
+      "level": "B1",
+      "icon": "❓",
+      "title": "Bilgi isteme",
+      "summary": "Resmî e-posta: net sorular, kibar ton",
+      "prompt": "Bir dil okulunun yaz kursu hakkında bilgi istiyorsun. Resmî bir e-posta yaz ve en az üç net soru sor.",
+      "minWords": 60,
+      "maxWords": 130,
+      "teach": {
+        "title": "Resmî e-posta samimi olandan nasıl ayrılır",
+        "points": [
+          "Dear Sir or Madam, / Dear Ms Yılmaz, ile başla — 'Hi' değil",
+          "İlk cümlede kim olduğunu ve neden yazdığını söyle",
+          "Soruları maddeler hâlinde ver; paragrafın içinde kaybolmasın",
+          "Kısaltma kullanma: 'I am' yaz, 'I'm' yazma",
+          "Yours faithfully (isim bilinmiyorsa) / Yours sincerely (biliniyorsa) ile bitir"
+        ]
+      },
+      "phrases": [
+        { "en": "I am writing to enquire about ...", "tr": "... hakkında bilgi almak için yazıyorum." },
+        { "en": "I would be grateful if you could tell me ...", "tr": "... söylerseniz minnettar olurum." },
+        { "en": "Could you also let me know whether ...", "tr": "Ayrıca ... olup olmadığını da bildirir misiniz?" },
+        { "en": "I look forward to hearing from you.", "tr": "Cevabınızı bekliyorum." }
+      ],
+      "require": [
+        { "label": "Resmî selamlama", "any": ["dear sir", "dear madam", "dear mr", "dear ms", "dear mrs", "to whom it may concern"] },
+        { "label": "Yazma sebebini söyledin", "any": ["i am writing to", "i would like to enquire", "i would like to ask", "i am interested in"] },
+        { "label": "Kibar soru kalıbı", "any": ["could you", "would you", "i would be grateful", "please could", "i would appreciate"] },
+        { "label": "Resmî kapanış", "any": ["yours faithfully", "yours sincerely", "kind regards", "best regards", "regards"] }
+      ],
+      "model": "Dear Sir or Madam,\n\nI am writing to enquire about the summer English courses advertised on your website. I am a Turkish student at intermediate level and I am planning to study in Manchester in July.\n\nI would be grateful if you could tell me the following:\n\n- How many hours per week does the intensive course include?\n- What is the average class size, and are students placed by a level test?\n- Do you arrange accommodation with host families, and what is the additional cost?\n\nCould you also let me know whether places are still available for the July intake?\n\nI look forward to hearing from you.\n\nYours faithfully,\nDeniz Kaya"
+    },
+    {
+      "id": "e-job-application",
+      "kind": "email",
+      "level": "B1",
+      "icon": "💼",
+      "title": "İş başvurusu",
+      "summary": "Kendini tanıt, uygunluğunu göster",
+      "prompt": "Bir iş ilanına başvuruyorsun. Hangi pozisyon için yazdığını, deneyimini ve neden uygun olduğunu anlat.",
+      "minWords": 80,
+      "maxWords": 160,
+      "teach": {
+        "title": "Başvuru e-postasında işe yarayan şey",
+        "points": [
+          "İlk cümlede hangi pozisyon olduğunu yaz; işe alan kişi günde otuz e-posta okuyor",
+          "Sıfat değil kanıt ver: 'hard working' değil, 'managed a team of four for two years'",
+          "İlandaki gereksinimlerden ikisini seç ve doğrudan onlara cevap ver",
+          "Ekini belirt: I have attached my CV.",
+          "Bir sayfayı geçme; uzun başvuru okunmuyor"
+        ]
+      },
+      "phrases": [
+        { "en": "I am writing to apply for the position of ...", "tr": "... pozisyonu için başvuruyorum." },
+        { "en": "I have three years of experience in ...", "tr": "... alanında üç yıllık deneyimim var." },
+        { "en": "In my current role, I am responsible for ...", "tr": "Şu anki görevimde ...'den sorumluyum." },
+        { "en": "I have attached my CV for your consideration.", "tr": "CV'mi ekte bilginize sunuyorum." }
+      ],
+      "require": [
+        { "label": "Pozisyonu belirttin", "any": ["apply for", "the position of", "the role of", "the vacancy", "advertised"] },
+        { "label": "Deneyimini yazdın", "any": ["experience", "i have worked", "i worked", "in my current role", "years"] },
+        { "label": "Ek belirttin", "any": ["attached", "attachment", "enclosed", "cv", "resume"] },
+        { "label": "Resmî kapanış", "any": ["yours faithfully", "yours sincerely", "kind regards", "best regards", "regards"] }
+      ],
+      "model": "Dear Ms Bennett,\n\nI am writing to apply for the position of Junior Data Analyst advertised on your careers page on 12 March.\n\nI have three years of experience in reporting and analysis at a logistics company in Istanbul. In my current role, I am responsible for the weekly delivery performance report, which I rebuilt in SQL and Power BI last year; the preparation time dropped from two days to about three hours. Your advertisement mentions stakeholder communication, and a large part of my job is explaining these figures to operations managers who do not work with data.\n\nI have attached my CV for your consideration and would be glad to discuss my application further.\n\nYours sincerely,\nDeniz Kaya"
+    },
+    {
+      "id": "e-complaint",
+      "kind": "email",
+      "level": "B2",
+      "icon": "📦",
+      "title": "Şikâyet e-postası",
+      "summary": "Sinirlenmeden sonuç alan şikâyet",
+      "prompt": "Aldığın bir ürün hasarlı geldi ve müşteri hizmetleri iki haftadır cevap vermiyor. Şikâyet e-postası yaz: ne oldu, ne yaptın, ne istiyorsun.",
+      "minWords": 90,
+      "maxWords": 180,
+      "teach": {
+        "title": "Sonuç alan şikâyetin kuralları",
+        "points": [
+          "Öfke yerine olgu: tarih, sipariş numarası, ne olduğu",
+          "Ne yaptığını sırayla yaz — bu, konuyu ilerletmiş olduğunu gösterir",
+          "Ne istediğini açıkça söyle: iade, değişim, tazminat",
+          "Bir tarih ver: 'within seven working days'",
+          "Tehdit değil, bir sonraki adımı sakin biçimde belirt"
+        ]
+      },
+      "phrases": [
+        { "en": "I am writing to complain about ...", "tr": "... hakkında şikâyette bulunmak için yazıyorum." },
+        { "en": "Despite two reminders, I have received no reply.", "tr": "İki hatırlatmaya rağmen cevap alamadım." },
+        { "en": "I would like a full refund.", "tr": "Tam iade istiyorum." },
+        { "en": "I trust this can be resolved without further escalation.", "tr": "Konunun daha ileri götürülmeden çözüleceğine inanıyorum." }
+      ],
+      "require": [
+        { "label": "Şikâyeti belirttin", "any": ["complain", "complaint", "dissatisfied", "unfortunately", "problem with"] },
+        { "label": "Somut ayrıntı verdin", "any": ["order", "invoice", "reference", "on 1", "on 2", "march", "april", "may", "june", "number"] },
+        { "label": "Ne istediğini söyledin", "any": ["refund", "replacement", "repair", "compensation", "i would like", "i expect", "i request"] },
+        { "label": "Süre verdin", "any": ["within", "by friday", "seven days", "working days", "two weeks", "before"] }
+      ],
+      "model": "Dear Customer Services,\n\nI am writing to complain about order 48231, placed on 3 April. The coffee machine arrived on 9 April with a cracked water tank and a bent power cable, and it has never been used.\n\nI reported the damage through your online form on the same day and attached photographs. I sent a reminder on 16 April and telephoned your helpline on 21 April, where I was told that a case had been opened. Despite this, I have received no reply and no case number.\n\nUnder the consumer regulations the item is not of satisfactory quality, and I would like a full refund of 4,750 lira, including the original delivery charge. I am happy to return the machine in its original packaging if you arrange collection.\n\nI would be grateful for a written response within seven working days. I trust this can be resolved without further escalation.\n\nYours faithfully,\nDeniz Kaya"
+    },
+    {
+      "id": "e-bad-news",
+      "kind": "email",
+      "level": "C1",
+      "icon": "📉",
+      "title": "Kötü haberi iletmek",
+      "summary": "Gecikmeyi duyur, güveni koru",
+      "prompt": "Yönettiğin proje üç hafta gecikecek. Müşteriye e-posta yaz: durumu açıkla, sebebini söyle, yeni planı ver ve hangi önlemi aldığını belirt.",
+      "minWords": 110,
+      "maxWords": 230,
+      "teach": {
+        "title": "Kötü haber e-postası",
+        "points": [
+          "Haberi ilk paragrafta ver; sona saklamak güveni bitirir",
+          "Edilgen çatıya sığınma: 'mistakes were made' değil, 'we underestimated'",
+          "Sebep açıkla ama bahane üretme — ikisinin farkı, sorumluluğu kimin aldığı",
+          "Yeni tarih ver ve o tarihi neyin koruduğunu söyle",
+          "Sonraki temas noktasını belirle: 'I will update you every Friday'"
+        ]
+      },
+      "phrases": [
+        { "en": "I want to let you know as early as possible that ...", "tr": "Mümkün olduğunca erken bildirmek istiyorum ki ..." },
+        { "en": "The delay is on our side.", "tr": "Gecikme bizim tarafımızda." },
+        { "en": "To prevent this from happening again, we have ...", "tr": "Bunun tekrarlanmaması için ... yaptık." },
+        { "en": "I am available for a call at your convenience.", "tr": "Uygun olduğunuz bir zamanda görüşmeye hazırım." }
+      ],
+      "require": [
+        { "label": "Haberi erken verdin", "any": ["i want to let you know", "i am writing to inform", "unfortunately", "i need to tell you", "delay"] },
+        { "label": "Sorumluluk aldın", "any": ["we underestimated", "our side", "we did not", "we should have", "this is our", "i take"] },
+        { "label": "Yeni plan verdin", "any": ["new date", "revised", "we now expect", "by the end of", "the new timeline", "will be delivered"] },
+        { "label": "Önlem belirttin", "any": ["to prevent", "we have added", "going forward", "in future", "we will", "measures"] }
+      ],
+      "model": "Dear Mr Whitfield,\n\nI want to let you know as early as possible that the reporting module will not be ready for the 30 May launch. Our revised date is 20 June.\n\nThe delay is on our side. When we scoped the module in February we assumed your finance data would arrive in a single consistent format. In practice there are four legacy systems with different currency and date conventions, and the reconciliation logic has taken roughly three times the effort we estimated. We should have validated that assumption with a sample extract before committing to the date, and we did not.\n\nThe rest of the platform is unaffected and will go live on 30 May as planned, so your team can begin onboarding on schedule. For the interim period we will provide the existing monthly export, which covers the two reports your finance team uses most.\n\nTo prevent this from happening again, we have added a data discovery phase to the start of every workstream, and I have moved two engineers from the dashboard team onto reconciliation. I will send you a short written update every Friday until the module ships.\n\nI am available for a call at your convenience if you would like to go through the revised plan in detail.\n\nKind regards,\nDeniz Kaya"
+    }
+  ]
+}

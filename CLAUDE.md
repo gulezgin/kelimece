@@ -180,6 +180,15 @@ seviyede en az bir diyalog var mı) denetler.
   soruya döndürürdü. Aynı nedenle puanlama (`onPassed`) çizim sırasında
   değil, son sorudan sonraki tıklamada çağrılır — çizim içinde yazmak
   quizi kendi üstüne yeniden çizdiriyordu.
+- **Yazma kontrolü anlamı ölçmüyor ve bunu saklamıyor.** `core/writing.js`
+  üç kesin şeye bakar: uzunluk, görevin şart koştuğu ögeler, kalıplaşmış
+  hatalar. Üslup ya da içerik puanı vermek bir dil modeli ister; uydurma
+  bir puan öğrenciye metninin iyi olduğunu düşündürür. Arayüz sınırı
+  açıkça yazıyor ve karşılaştırmayı örnek cevapla kullanıcıya bırakıyor.
+  `MISTAKES` listesine kalıp eklerken ölçü **yanlış alarm üretmemek**:
+  doğru yazılmış bir cümleye "yanlış" demek, öğrencinin doğruyu
+  bozmasına yol açar. `test/writing.test.js` her kalıp için hem
+  yakalaması hem yakalamaması gereken bir örnek tutuyor.
 - **Giriş ekranı `index.html` gövdesinin en başında, satır içi.** JS paketi
   yüklenmeden boyanabilsin ve yerel açılış ekranıyla arasında geçiş
   görünmesin diye. `main.js` veri hazır olunca kaldırır.

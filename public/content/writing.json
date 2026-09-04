@@ -1,0 +1,573 @@
+{
+  "version": 1,
+  "tasks": [
+    {
+      "id": "w-self-intro",
+      "kind": "task",
+      "level": "A1",
+      "icon": "👋",
+      "title": "Kendini tanıt",
+      "summary": "Adın, nereden geldiğin, ne yaptığın",
+      "prompt": "Yeni bir sınıfa girdin. Kendini tanıt: adın, nereli olduğun, ne iş yaptığın ya da ne okuduğun ve bir hobin.",
+      "minWords": 25,
+      "maxWords": 70,
+      "teach": {
+        "title": "Kendini tanıtmanın sırası",
+        "points": [
+          "Adla başla: My name is ... / I'm ...",
+          "Nereli olduğunu söyle: I'm from ... / I live in ...",
+          "Ne yaptığını ekle: I work as ... / I study ...",
+          "Bir kişisel ayrıntıyla bitir: In my free time, I ..."
+        ]
+      },
+      "phrases": [
+        {
+          "en": "My name is ...",
+          "tr": "Adım ..."
+        },
+        {
+          "en": "I'm from Turkey.",
+          "tr": "Türkiye'denim."
+        },
+        {
+          "en": "I work as a teacher.",
+          "tr": "Öğretmen olarak çalışıyorum."
+        },
+        {
+          "en": "In my free time, I ...",
+          "tr": "Boş zamanımda ..."
+        },
+        {
+          "en": "Nice to meet you.",
+          "tr": "Tanıştığımıza memnun oldum."
+        }
+      ],
+      "require": [
+        {
+          "label": "Adını söyledin",
+          "any": [
+            "my name is",
+            "i am",
+            "i'm"
+          ]
+        },
+        {
+          "label": "Nereli olduğunu söyledin",
+          "any": [
+            "i'm from",
+            "i am from",
+            "i live in"
+          ]
+        },
+        {
+          "label": "Ne yaptığını söyledin",
+          "any": [
+            "i work",
+            "i study",
+            "i am a",
+            "i'm a"
+          ]
+        }
+      ],
+      "model": "Hello, everyone. My name is Deniz and I'm from Izmir, Turkey. I live in Istanbul now. I work as a software developer at a small company. In my free time, I like running and cooking. I also read a lot of books about history. Nice to meet you all."
+    },
+    {
+      "id": "w-my-day",
+      "kind": "task",
+      "level": "A1",
+      "icon": "🌅",
+      "title": "Bir günün nasıl geçiyor",
+      "summary": "Sıralama bağlaçlarıyla günlük rutin",
+      "prompt": "Sıradan bir gününü anlat. Sabahtan akşama sırayla yaz.",
+      "minWords": 30,
+      "maxWords": 80,
+      "teach": {
+        "title": "Sıra bildiren kelimeler",
+        "points": [
+          "Sırayı göstermek metni okunur yapar: first, then, after that, finally",
+          "Rutin için geniş zaman kullan: I get up, I have breakfast",
+          "Saat için 'at': at seven o'clock, at 7:30",
+          "Aynı bağlacı tekrarlama; 'and' ile bağlanan uzun zincirler yorucu"
+        ]
+      },
+      "phrases": [
+        {
+          "en": "I usually get up at seven.",
+          "tr": "Genelde yedide kalkarım."
+        },
+        {
+          "en": "After that, I go to work.",
+          "tr": "Ondan sonra işe giderim."
+        },
+        {
+          "en": "In the evening, I ...",
+          "tr": "Akşamları ..."
+        },
+        {
+          "en": "Finally, I go to bed.",
+          "tr": "Sonunda yatarım."
+        }
+      ],
+      "require": [
+        {
+          "label": "Sıra bağlacı kullandın",
+          "any": [
+            "first",
+            "then",
+            "after that",
+            "finally",
+            "later"
+          ]
+        },
+        {
+          "label": "Saat belirttin",
+          "any": [
+            "o'clock",
+            "at seven",
+            "at eight",
+            "at six",
+            "at nine",
+            "at ten",
+            "am",
+            "pm",
+            ":"
+          ]
+        }
+      ],
+      "model": "I usually get up at seven o'clock. First, I drink a glass of water and take a shower. Then I have breakfast with my family. After that, I go to work by bus. I work until six in the evening. When I get home, I cook dinner and watch a series. Finally, I read for half an hour and go to bed at eleven."
+    },
+    {
+      "id": "w-postcard",
+      "kind": "task",
+      "level": "A2",
+      "icon": "📮",
+      "title": "Tatilden kartpostal",
+      "summary": "Geçmiş zamanla kısa bir anlatı",
+      "prompt": "Bir tatildesin. Arkadaşına kartpostal yaz: neredesin, hava nasıl, ne yaptın, ne hissediyorsun.",
+      "minWords": 35,
+      "maxWords": 90,
+      "teach": {
+        "title": "Kartpostal kısa ama tam olur",
+        "points": [
+          "Selamla ve nerede olduğunu söyle: Hi Ali! I'm in Rome.",
+          "Yaptıklarını geçmiş zamanla anlat: Yesterday we visited ...",
+          "Bir duygu cümlesi ekle: It was amazing.",
+          "Kapanış at: See you soon! / Love, Deniz"
+        ]
+      },
+      "phrases": [
+        {
+          "en": "The weather is lovely.",
+          "tr": "Hava harika."
+        },
+        {
+          "en": "Yesterday we visited ...",
+          "tr": "Dün ...'i gezdik."
+        },
+        {
+          "en": "I miss you.",
+          "tr": "Seni özledim."
+        },
+        {
+          "en": "See you soon!",
+          "tr": "Yakında görüşürüz!"
+        }
+      ],
+      "require": [
+        {
+          "label": "Selamlama var",
+          "any": [
+            "hi",
+            "hello",
+            "dear",
+            "hey"
+          ]
+        },
+        {
+          "label": "Geçmiş zaman kullandın",
+          "any": [
+            "was",
+            "were",
+            "went",
+            "visited",
+            "saw",
+            "had",
+            "ate",
+            "stayed",
+            "walked"
+          ]
+        },
+        {
+          "label": "Kapanış var",
+          "any": [
+            "see you",
+            "love",
+            "best wishes",
+            "take care",
+            "bye"
+          ]
+        }
+      ],
+      "model": "Hi Elif! I'm writing to you from Barcelona. The weather is lovely here, about 25 degrees every day. Yesterday we visited the old town and walked along the beach in the evening. The food was amazing, especially the seafood. Today we are going to a museum. I miss you a lot. See you soon!\n\nLove,\nDeniz"
+    },
+    {
+      "id": "w-opinion-city",
+      "kind": "task",
+      "level": "B1",
+      "icon": "🏙️",
+      "title": "Şehir mi kasaba mı",
+      "summary": "Görüş bildirme ve gerekçelendirme",
+      "prompt": "Şehirde mi yoksa küçük bir kasabada mı yaşamak daha iyi? Görüşünü yaz ve en az iki gerekçe ver.",
+      "minWords": 60,
+      "maxWords": 150,
+      "teach": {
+        "title": "Görüş paragrafının iskeleti",
+        "points": [
+          "Görüşünü ilk cümlede söyle; sonuna saklama",
+          "Her gerekçeyi ayrı cümlede ver ve bir örnekle destekle",
+          "Karşı görüşe bir cümle ayır: Some people say ..., but ...",
+          "Kapanışta görüşünü tekrarla, yeni bir fikir açma"
+        ]
+      },
+      "phrases": [
+        {
+          "en": "In my opinion, ...",
+          "tr": "Bence ..."
+        },
+        {
+          "en": "The main reason is that ...",
+          "tr": "Başlıca sebep şu ki ..."
+        },
+        {
+          "en": "For example, ...",
+          "tr": "Örneğin, ..."
+        },
+        {
+          "en": "On the other hand, ...",
+          "tr": "Öte yandan, ..."
+        },
+        {
+          "en": "For these reasons, I believe ...",
+          "tr": "Bu sebeplerle, ... diye düşünüyorum."
+        }
+      ],
+      "require": [
+        {
+          "label": "Görüş bildirdin",
+          "any": [
+            "in my opinion",
+            "i think",
+            "i believe",
+            "i prefer"
+          ]
+        },
+        {
+          "label": "Gerekçe verdin",
+          "any": [
+            "because",
+            "the main reason",
+            "since",
+            "as a result"
+          ]
+        },
+        {
+          "label": "Örnek verdin",
+          "any": [
+            "for example",
+            "for instance",
+            "such as"
+          ]
+        }
+      ],
+      "model": "In my opinion, living in a small town is better than living in a big city. The main reason is the cost. For example, rent in a city like Istanbul takes almost half of an average salary, while in a small town the same money is enough for a whole family. The second reason is time. People in cities spend two hours a day in traffic, and that time is simply lost. Some people say cities offer better jobs and culture, and that is true. On the other hand, remote work has made this argument weaker every year. For these reasons, I believe a small town gives a better daily life."
+    },
+    {
+      "id": "w-bad-day",
+      "kind": "task",
+      "level": "B1",
+      "icon": "😤",
+      "title": "Ters giden bir gün",
+      "summary": "Olay anlatımı ve zaman bağlaçları",
+      "prompt": "Her şeyin ters gittiği bir günü anlat. Ne oldu, neden oldu, sonunda ne yaptın?",
+      "minWords": 60,
+      "maxWords": 150,
+      "teach": {
+        "title": "Anlatıyı okunur yapan şey",
+        "points": [
+          "Sahneyi kur: Last Monday I had an important meeting.",
+          "Olayları sırayla ver ve zaman bağlacı kullan: while, as soon as, by the time",
+          "Sürerken kesilen bir eylem için past continuous: I was walking when ...",
+          "Bir sonuç cümlesiyle bitir: In the end, ..."
+        ]
+      },
+      "phrases": [
+        {
+          "en": "As soon as I woke up, ...",
+          "tr": "Uyanır uyanmaz ..."
+        },
+        {
+          "en": "While I was waiting, ...",
+          "tr": "Beklerken ..."
+        },
+        {
+          "en": "By the time I arrived, ...",
+          "tr": "Vardığımda ..."
+        },
+        {
+          "en": "In the end, ...",
+          "tr": "Sonunda ..."
+        }
+      ],
+      "require": [
+        {
+          "label": "Zaman bağlacı kullandın",
+          "any": [
+            "as soon as",
+            "while",
+            "by the time",
+            "when",
+            "after",
+            "before"
+          ]
+        },
+        {
+          "label": "Sonuç cümlesi var",
+          "any": [
+            "in the end",
+            "finally",
+            "at last",
+            "eventually"
+          ]
+        }
+      ],
+      "model": "Last Monday everything went wrong. As soon as I woke up, I saw that my phone had not charged, so my alarm never rang. I was already an hour late. While I was running to the bus stop, it started to rain and I had no umbrella. By the time I arrived at the office, my clothes were completely wet and the meeting had started. My manager was not happy. In the end, I apologised, presented my part of the project, and stayed an extra hour to finish the report. It was a bad day, but nothing was broken that could not be fixed."
+    },
+    {
+      "id": "w-review",
+      "kind": "task",
+      "level": "B2",
+      "icon": "⭐",
+      "title": "Bir yer hakkında yorum",
+      "summary": "Değerlendirme yazısı ve dengeli eleştiri",
+      "prompt": "Gittiğin bir restoran, otel ya da kafe hakkında yorum yaz. Beğendiğin ve beğenmediğin yanları söyle, sonunda tavsiye edip etmediğini belirt.",
+      "minWords": 80,
+      "maxWords": 170,
+      "teach": {
+        "title": "İnandırıcı yorum nasıl yazılır",
+        "points": [
+          "Genel izlenimle başla, sonra ayrıntıya in",
+          "Somut ol: 'the food was good' değil, 'the lamb was tender and well seasoned'",
+          "Olumsuzu da yaz; yalnızca övgü içeren yorum güvenilir görünmez",
+          "Nitelenmiş dil kullan: slightly, rather, a little, fairly",
+          "Net bir tavsiyeyle bitir"
+        ]
+      },
+      "phrases": [
+        {
+          "en": "Overall, the place was ...",
+          "tr": "Genel olarak, burası ...'ydı."
+        },
+        {
+          "en": "What impressed me most was ...",
+          "tr": "Beni en çok etkileyen şey ...'ydı."
+        },
+        {
+          "en": "The only downside was ...",
+          "tr": "Tek olumsuz yan ...'ydı."
+        },
+        {
+          "en": "It was rather expensive for what it offers.",
+          "tr": "Sunduğuna göre biraz pahalıydı."
+        },
+        {
+          "en": "I would definitely recommend it.",
+          "tr": "Kesinlikle tavsiye ederim."
+        }
+      ],
+      "require": [
+        {
+          "label": "Olumlu bir yan yazdın",
+          "any": [
+            "impressed",
+            "excellent",
+            "great",
+            "loved",
+            "the best",
+            "friendly",
+            "delicious"
+          ]
+        },
+        {
+          "label": "Olumsuz bir yan yazdın",
+          "any": [
+            "however",
+            "the only downside",
+            "but",
+            "although",
+            "unfortunately",
+            "too expensive",
+            "slow"
+          ]
+        },
+        {
+          "label": "Tavsiye belirttin",
+          "any": [
+            "recommend",
+            "worth",
+            "give it a try",
+            "avoid",
+            "stay away"
+          ]
+        }
+      ],
+      "model": "Overall, Kasap Deniz is a solid neighbourhood restaurant that does a few things very well. What impressed me most was the grilled sea bass: it arrived at the table still crackling, and the lemon and olive oil dressing was light rather than heavy. The bread is baked in house and the staff are genuinely friendly without hovering over you. However, the place has two clear weaknesses. The dining room is small and rather loud once it fills up, so it is not the place for a quiet conversation. The wine list is also short and slightly overpriced for what it offers. If you go early and you care more about the food than the atmosphere, I would definitely recommend it."
+    },
+    {
+      "id": "w-problem-solution",
+      "kind": "task",
+      "level": "B2",
+      "icon": "🧩",
+      "title": "Sorun ve çözüm",
+      "summary": "Sorunu tanımla, çözüm öner, itirazı karşıla",
+      "prompt": "Yaşadığın şehirde seni rahatsız eden bir sorun seç. Sorunu tanımla, iki çözüm öner ve önerilerinin zayıf yanını da söyle.",
+      "minWords": 90,
+      "maxWords": 200,
+      "teach": {
+        "title": "Sorun-çözüm metninin yapısı",
+        "points": [
+          "Sorunu ölçülebilir biçimde tanımla: kim, ne kadar, ne sıklıkta",
+          "Her çözümü ayrı paragrafta ver",
+          "Çözümün maliyetini ya da zorluğunu da yaz — bunu atlayan metin naif görünür",
+          "Bağlaçlarla akış kur: firstly, moreover, admittedly, nevertheless"
+        ]
+      },
+      "phrases": [
+        {
+          "en": "One of the most pressing problems is ...",
+          "tr": "En acil sorunlardan biri ..."
+        },
+        {
+          "en": "A possible solution would be to ...",
+          "tr": "Olası bir çözüm ... olabilir."
+        },
+        {
+          "en": "Admittedly, this would require ...",
+          "tr": "Kabul etmek gerekir ki bu ... gerektirir."
+        },
+        {
+          "en": "Nevertheless, the benefits outweigh the costs.",
+          "tr": "Yine de faydalar maliyetten ağır basar."
+        }
+      ],
+      "require": [
+        {
+          "label": "Sorunu tanımladın",
+          "any": [
+            "problem",
+            "issue",
+            "difficulty",
+            "challenge"
+          ]
+        },
+        {
+          "label": "Çözüm önerdin",
+          "any": [
+            "solution",
+            "could be",
+            "should",
+            "one way to",
+            "propose",
+            "suggest"
+          ]
+        },
+        {
+          "label": "Zayıf yanı söyledin",
+          "any": [
+            "admittedly",
+            "however",
+            "of course",
+            "the drawback",
+            "this would require",
+            "on the other hand"
+          ]
+        }
+      ],
+      "model": "One of the most pressing problems in my district is parking. There are roughly four thousand flats and fewer than nine hundred legal parking spaces, so cars end up on pavements every evening and pedestrians walk in the road. A possible solution would be to build a multi storey car park on the empty municipal plot near the market. Admittedly, this would require significant investment and at least two years of construction, during which the situation would get worse rather than better. A cheaper measure would be resident permits combined with real enforcement. This costs almost nothing and could start next month, although it does not create a single new space and would simply push the problem into neighbouring streets. Nevertheless, taken together the two measures would make the area walkable again."
+    },
+    {
+      "id": "w-argument",
+      "kind": "task",
+      "level": "C1",
+      "icon": "⚖️",
+      "title": "Tartışmalı bir konuda deneme",
+      "summary": "Tez, karşı tez ve nitelenmiş sonuç",
+      "prompt": "Uzaktan çalışma kalıcı olmalı mı? Bir tez kur, en güçlü karşı argümanı kendin yaz ve onu yanıtla.",
+      "minWords": 120,
+      "maxWords": 260,
+      "teach": {
+        "title": "C1 seviyesinde tartışma",
+        "points": [
+          "En güçlü karşı argümanı sen yaz; zayıfını seçmek metni değersizleştirir",
+          "Mutlak ifade kullanma: 'always', 'never' yerine 'in most cases', 'tends to'",
+          "İddiayı kanıtla değil, mekanizmayla destekle: neden böyle oluyor?",
+          "Sonuç, giriştekinden daha nitelikli olmalı; aynı cümleyi tekrarlama"
+        ]
+      },
+      "phrases": [
+        {
+          "en": "It is often argued that ...",
+          "tr": "Sıkça öne sürülür ki ..."
+        },
+        {
+          "en": "The strongest objection to this view is ...",
+          "tr": "Bu görüşe en güçlü itiraz ..."
+        },
+        {
+          "en": "This objection has real force, but ...",
+          "tr": "Bu itirazın gerçek bir ağırlığı var, ama ..."
+        },
+        {
+          "en": "The evidence points in a more modest direction.",
+          "tr": "Kanıtlar daha ölçülü bir yöne işaret ediyor."
+        }
+      ],
+      "require": [
+        {
+          "label": "Tez kurdun",
+          "any": [
+            "i argue",
+            "i would argue",
+            "my view",
+            "it is often argued",
+            "this essay",
+            "i contend"
+          ]
+        },
+        {
+          "label": "Karşı argüman yazdın",
+          "any": [
+            "objection",
+            "critics",
+            "opponents",
+            "some would say",
+            "it could be argued",
+            "counter"
+          ]
+        },
+        {
+          "label": "Nitelenmiş dil kullandın",
+          "any": [
+            "in most cases",
+            "tends to",
+            "arguably",
+            "to some extent",
+            "largely",
+            "rarely",
+            "generally"
+          ]
+        }
+      ],
+      "model": "It is often argued that remote work should become the default arrangement, and I would broadly defend that position, though with narrower limits than its advocates usually accept. The case rests on a mechanism rather than a preference: concentrated work requires uninterrupted blocks of time, and open plan offices are structurally hostile to them. Where output is measurable and largely individual, distance tends to help. The strongest objection to this view is not about productivity at all but about the formation of new people. Junior staff learn by overhearing, by watching how a difficult conversation is handled, by the accidental corridor question that they would never schedule a call to ask. Remote work removes exactly this layer, and it does so invisibly: the cost appears three years later as a thin management bench. This objection has real force. It does not, however, argue for a return to five days in an office; it argues for deliberate structure. Teams that pair juniors with seniors on shared work, and that meet in person on a predictable rhythm, reproduce most of that learning. The evidence points in a more modest direction than either camp claims: remote work is right for the task and wrong for the apprenticeship, and the sensible arrangement addresses each separately."
+    }
+  ]
+}

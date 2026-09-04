@@ -15,7 +15,9 @@ import { findLesson, loadLessons } from './core/grammar.js';
 import { renderGrammarList, renderLesson, renderQuiz } from './ui/grammar.js';
 import { renderLearn } from './ui/learn.js';
 import { findText, loadTexts } from './core/reading.js';
+import { findTask, loadTasks, taskSummaries } from './core/writing.js';
 import { renderComprehension, renderReadingList, renderText } from './ui/reading.js';
+import { renderCheck, renderTask, renderTaskList } from './ui/writing.js';
 import { isStruggling } from './core/stats.js';
 import { setRate, speak } from './core/speech.js';
 import { renderTopicChip, renderTopics } from './ui/topics.js';
@@ -246,6 +248,12 @@ function render() {
 		return;
 	}
 
+	if (activeSection === 'writing' || activeSection === 'email') {
+		renderWritingSection(activeSection);
+		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
+		return;
+	}
+
 	if (activeSection === 'topics') {
 		renderTopics(store.state.words, store.state.profile.premium, topicHandlers);
 		renderStats(store.getStats(isDue), 0, store.state.settings.dailyGoal);
@@ -317,10 +325,17 @@ let quizOpen = false;
 let quizRun = newQuizRun();
 
 const READING_URL = import.meta.env.BASE_URL + 'content/reading.json';
+const WRITING_URL = import.meta.env.BASE_URL + 'content/writing.json';
+const EMAIL_URL = import.meta.env.BASE_URL + 'content/email.json';
 let texts = [];
 let openTextId = null;
 let comprehensionOpen = false;
 let comprehensionRun = newQuizRun();
+/** Yazma ve e-posta ayni motoru kullaniyor; durum bolume gore ayri. */
+let writingTasks = [];
+let emailTasks = [];
+let openTaskId = null;
+let checkOpen = false;
 
 /** Ogren ekranindaki moduller. */
 function learnModules() {
@@ -328,7 +343,8 @@ function learnModules() {
 		{ id: 'topics', icon: '🗂️', title: 'Konular', note: 'Alan alan kelime', ready: true },
 		{ id: 'grammar', icon: '📐', title: 'Dilbilgisi', note: lessons.length + ' ders', ready: lessons.length > 0 },
 		{ id: 'reading', icon: '📖', title: 'Okuma', note: texts.length + ' parça', ready: texts.length > 0 },
-		{ id: 'writing', icon: '✍️', title: 'Yazma', note: '', ready: false }
+		{ id: 'writing', icon: '✍️', title: 'Yazma', note: writingTasks.length + ' görev', ready: writingTasks.length > 0 },
+		{ id: 'email', icon: '📧', title: 'E-posta', note: emailTasks.length + ' görev', ready: emailTasks.length > 0 }
 	];
 }
 
@@ -336,7 +352,10 @@ const learnHandlers = {
 	onOpen: (id) => {
 		if (id === 'topics') { showSection('topics'); return; }
 		if (id === 'grammar') { openLessonId = null; quizOpen = false; showSection('grammar'); return; }
-		if (id === 'reading') { openTextId = null; comprehensionOpen = false; showSection('reading'); }
+		if (id === 'reading') { openTextId = null; comprehensionOpen = false; showSection('reading'); return; }
+		if (id === 'writing' || id === 'email') {
+			openTaskId = null; checkOpen = false; showSection(id);
+		}
 	}
 };
 
@@ -349,6 +368,60 @@ const readingHandlers = {
 	onLocked: () => openPaywall(),
 	onPassed: (id) => store.markTextDone(id),
 	onWord: (word) => dialogueHandlers.onWord(word)
+};
+
+/**
+ * Yazma ve e-posta bolumu.
+ *
+ * Iki bolum tek fonksiyon: akis ayni, degisen yalnizca icerik listesi
+ * ve baslik. Ayri iki kopya tutmak ikisinin zamanla ayrismasina yol
+ * acardi.
+ */
+function writingSectionConfig(section) {
+	return section === 'email'
+		? {
+			host: 'emailView',
+			tasks: emailTasks,
+			title: '📧 E-posta pratiği',
+			subtitle: 'Davetten şikâyete, samimi ve resmî e-postalar.'
+		}
+		: {
+			host: 'writingView',
+			tasks: writingTasks,
+			title: '✍️ Yazma',
+			subtitle: 'Yönergeyi oku, yaz, kontrol et, örnekle karşılaştır.'
+		};
+}
+
+function renderWritingSection(section) {
+	const cfg = writingSectionConfig(section);
+	const prof = store.state.profile;
+	const acik = openTaskId ? findTask(cfg.tasks, openTaskId) : null;
+
+	if (acik && checkOpen) {
+		renderCheck(cfg.host, acik, (prof.drafts || {})[acik.id] || '', writingHandlers);
+	} else if (acik) {
+		renderTask(cfg.host, acik, (prof.drafts || {})[acik.id] || '', writingHandlers);
+	} else {
+		renderTaskList(cfg.host, cfg.title, cfg.subtitle,
+			taskSummaries(cfg.tasks, prof.premium, prof.tasksDone || []), writingHandlers);
+	}
+}
+
+const writingHandlers = {
+	onBack: () => showSection('learn'),
+	onBackToList: () => { openTaskId = null; checkOpen = false; window.scrollTo(0, 0); render(); },
+	onBackToTask: (id) => { openTaskId = id; checkOpen = false; window.scrollTo(0, 0); render(); },
+	onOpen: (id) => { openTaskId = id; checkOpen = false; window.scrollTo(0, 0); render(); },
+	onCheck: (id, metin) => {
+		store.saveDraft(id, metin);
+		openTaskId = id; checkOpen = true; window.scrollTo(0, 0); render();
+	},
+	// Taslak `emit()` cagirmiyor; her tusta yeniden cizmek yazma
+	// alaninin odagini ve imlec konumunu kaybettiriyor.
+	onDraft: (id, metin) => store.saveDraft(id, metin),
+	onLocked: () => openPaywall(),
+	onDone: (id) => { store.markWritingDone(id); openTaskId = null; checkOpen = false; window.scrollTo(0, 0); render(); }
 };
 
 const grammarHandlers = {
@@ -1071,6 +1144,8 @@ function showSection(section) {
 		['learn', 'learnView', 'navLearn'],
 		['grammar', 'grammarView', 'navLearn'],
 		['reading', 'readingView', 'navLearn'],
+		['writing', 'writingView', 'navLearn'],
+		['email', 'emailView', 'navLearn'],
 		['topics', 'topicsView', 'navLearn'],
 		['dialogues', 'dialoguesView', 'navDialogues'],
 		['pool', 'poolView', 'navPool'],
@@ -1207,6 +1282,16 @@ async function boot() {
 	loadTexts(READING_URL).then((list) => {
 		texts = list;
 		if (activeSection === 'learn' || activeSection === 'reading') render();
+	});
+
+	loadTasks(WRITING_URL).then((list) => {
+		writingTasks = list;
+		if (activeSection === 'learn' || activeSection === 'writing') render();
+	});
+
+	loadTasks(EMAIL_URL).then((list) => {
+		emailTasks = list;
+		if (activeSection === 'learn' || activeSection === 'email') render();
 	});
 
 	loadLessons(GRAMMAR_URL).then((list) => {
