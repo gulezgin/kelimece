@@ -1,318 +1,221 @@
-# Kelimece (My Word Pool)
+# Kelimece
 
-[🇬🇧 English](#english--0) | [🇹🇷 Türkçe](#türkçe)
+**Türkçe konuşanlar için A1–C2 İngilizce öğrenme uygulaması.**
+Çekirdeği aralıklı tekrar (SRS) ile kelime; üstüne dilbilgisi, okuma,
+yazma, rol yapmalı diyalog, konuşma pratiği, IELTS/TOEFL modu ve acil
+İngilizce.
+
+Çerçeve yok — vanilla JS (ES modülleri), Vite ile paketleniyor. PWA
+olarak çalışıyor, Capacitor ile Android'e sarmalanıyor. Veri cihazda
+kalıyor, uygulama çevrimdışı çalışıyor.
+
+[🇹🇷 Türkçe](#türkçe) · [🇬🇧 English](#english)
 
 ---
 
 ## Türkçe
 
-Kelimece, İngilizce öğrenenler için geliştirilmiş, **SRS (Spaced Repetition System)** tabanlı bir kelime öğrenme uygulamasıdır.
+### Ne var
 
-### ✨ Özellikler
+| | |
+|---|---|
+| **Kelime** | 5276 kelime, sıklık sırasına göre tanıtılır. SM-2 aralıklı tekrar: 1, 2, 4, 7, 15, 30, 60 gün. Altı alıştırma tipi (çoktan seçmeli iki yön, dinleme, yazma, boşluk doldurma, klasik kart). |
+| **Dilbilgisi** | 12 ders, 36 quiz sorusu. Her sorunun *neden* açıklaması var; konular Türkçe konuşanların zorlandığı yerlerden seçildi (am/is/are, üçüncü tekil -s, a/an/the, in/on/at). |
+| **Okuma** | 10 parça, A1–C1. Düşük seviyelerde hikâye, yüksek seviyelerde makale. Sorular metin **görünmeden** sorulur. |
+| **Yazma** | 8 yazma + 6 e-posta görevi. Yerel kontrol: uzunluk, istenen ögeler, Türkçe konuşanların kalıp hataları. Örnek cevapla karşılaştırmalı. |
+| **Diyalog** | A1–C2 × 10 rol yapmalı diyalog. Sen B kişisisin; cevabı seçerek, kelimeleri sıralayarak, boşluk doldurarak ya da **söyleyerek** verirsin. |
+| **Konuşma** | Konuşma tanıma ile kelime kelime geri bildirim. Ayrıca ses kaydı — kendini dinlersin. |
+| **Zıt anlamlılar** | 68 çift, çift yönlü sorulur. Çeldiriciler aynı sözcük türünden. |
+| **Sınav modu** | IELTS ve TOEFL: biçim, gerçek görev formatları, süreli konuşma görevleri, sınav kelimeleri. |
+| **Acil İngilizce** | Hastane, polis, eczane, havaalanı, kayboldum, para. Söyleyeceklerin **ve duyacakların**. Her zaman ücretsiz, internet gerekmez. |
+| **İlerleme** | Günlük hedef, seri, XP, 12 rozet, haftalık hedef (kendi geçmişinden hesaplanır), beceri bazlı başarı grafikleri. |
+| **Tema** | Açık ve koyu. Sistem / Açık / Koyu seçimi. |
 
-- **Kelime Ekleme & Yönetimi** - İngilizce kelime, Türkçe anlam, örnek cümle ve etiketlerle kelime ekleyin
-- **Akıllı Tekrar Sistemi** - Spaced Repetition algoritmamı ile öğrenmeyi optimize edin
-  - 7 seviye ilerleme sistemi (1, 2, 4, 7, 15, 30, 60 gün)
-  - 5 doğru cevaptan sonra otomatik "öğrenilmiş" durumuna geç
-- **İki Görünüm Modu**
-  - 📇 **Kartlar**: Detaylı kelime kartları
-  - 📋 **Anlamlar**: Grid görünüm
-- **Esnek Tekrar Modları**
-  - Normal Tekrar: Sadece öğrenilmesi gereken kelimeler
-  - Serbest Tekrar: Tüm kelimeleri rastgele sırayla
-- **Aramacılık & Filtreleme**
-  - Kelime, anlam veya etikete göre arayın
-  - Filtreler: Hepsi, Bugün tekrar, Sadece yeni, Öğrenilmiş
-- **Günlük İstatistikler**
-  - Toplam kelime sayısı
-  - Bugün tekrar edilecek sayı
-  - Bugün eklenen kelimeler
-- **Yedekleme & Geri Yükleme**
-  - JSON olarak dışa aktar
-  - Başka cihazdan JSON içe aktar
-  - Tarayıcı localStorage'da otomatik kayıt
-- **Responsive Tasarım** - Telefon, tablet ve masaüstünde mükemmel çalışır
-- **Koyu Tema** - Göz yormayan, profesyonel tasarım
+### Ne vaat etmiyor
 
-### 🚀 Nasıl Kullanılır
+Uygulamanın **yapamadığı** şeyler arayüzde açıkça yazıyor. Bu bir üslup
+tercihi değil: yapamadığı bir şeyi yapıyormuş gibi gösteren bir öğrenme
+uygulaması, kullanıcının hazırlanmadığı bir sınava girmesine yol açar.
 
-#### Çevrimiçi (En kolay)
-Direkt olarak tarayıcınızda açın:
-```
-https://kelime-havuzum.netlify.app
-```
-*veya local dosyayı açın*
+- **Yazma kontrolü** anlamı ve üslubu değerlendiremez — uzunluğa,
+  istenen ögelere ve kalıplaşmış hatalara bakar.
+- **Sınav modu** bant ya da TOEFL puanı vermez; o eğitimli
+  değerlendiricilerin ölçekli kararıdır.
+- **Konuşma alıştırması** telaffuz puanı vermez; söylediğin kelimeleri
+  hedefle karşılaştırır. Fonem analizi ücretli bir servis ister.
+- **XP** öğrenmeyi ölçmez; onu SM-2 aralıkları ölçer.
 
-#### Local Kurulum
+### Kurulum
 
 Gereksinim: Node.js 20.19+ (veya 22.12+).
 
 ```bash
-git clone https://github.com/gulezgin/WordPool-TR-EN.git
-cd WordPool-TR-EN
+git clone https://github.com/gulezgin/kelimece.git
+cd kelimece
 npm install
 npm run dev
 ```
 
-Tarayıcıda `http://localhost:5173` adresini açın.
+Tarayıcıda `http://localhost:5173`.
 
 | Komut | Ne yapar |
 |---|---|
-| `npm run dev` | Geliştirme sunucusu (anlık yenileme) |
-| `npm run build` | `dist/` altına production build üretir |
-| `npm run preview` | Üretilen build'i yerelde sunar |
-| `npm test` | Birim testlerini çalıştırır |
+| `npm run dev` | Geliştirme sunucusu |
+| `npm run build` | `dist/` altına PWA build |
+| `npm test` | 639 test |
+| `npm run check:ids` | `$('id')` ↔ `index.html` çapraz denetimi |
+| `npm run android:apk` | İmzasız debug APK |
 
-> Not: 1.1.0'dan itibaren uygulama ES modüllerine ayrıldı; `index.html`
-> dosyasını doğrudan çift tıklayarak açmak artık çalışmaz.
+> `index.html`'i çift tıklayarak açmak çalışmaz — uygulama ES
+> modüllerine ayrılmış durumda, bir sunucu gerekiyor.
 
-### 📖 Kullanım Adımları
+### Mimari
 
-1. **Kelime Ekleyin** - Sol panelden:
-   - İngilizce kelimeyi yazın
-   - Türkçe anlamını yazın
-   - (İsteğe bağlı) Örnek cümle ekleyin
-   - (İsteğe bağlı) Etiketler ekleyin (virgülle ayırın)
-   - "Ekle" butonuna tıklayın
-
-2. **Tekrar Başlatın**:
-   - Sol panelden havuz seçin (Hepsi, Tekrar, Yeni, Öğrenilmiş)
-   - İsteğe bağlı: "Serbest tekrar" seçseneğini ayarlayın
-   - "Tekrar Et" butonuna tıklayın
-
-3. **Tekrar Modunda**:
-   - İlk olarak sadece İngilizce kelimeyi görürsünüz
-   - "Anlamı Göster" butonuna tıklayın
-   - "Biliyordum ✓" veya "Unuttum ✗" seçeneğini işaretleyin
-   - Otomatik olarak sonraki kelimeye geçer
-
-4. **Yedekleme**:
-   - "JSON Dışa Aktar" ile yedeğinizi alın
-   - "Dosya Seç" ile önceki yedeğinizi geri yükleyin
-
-### ⚙️ Ayarlar
-
-- **Günlük Hedef** - Günde öğrenmek istediğiniz kelime sayısını ayarlayın
-- **Bugün Sayaç Sıfırla** - Günün ilerlemeyi sıfırla
-- **Tüm Veriyi Sil** - Tüm kelimeleri ve ayarları sil ⚠️
-
-### 💾 Veri Depolaması
-
-- Tüm veriler tarayıcının **localStorage**'da saklanır
-- Veriler hiçbir sunucuya gönderilmez (tamamen özel)
-- Tarayıcı veya uygulamayı değiştirirken JSON olarak yedek alın
-
-### 🎨 Tema
-
-Uygulama modern, koyu temalı bir arayüze sahiptir:
-- Rahat okuma için optimize edilmiş renk şeması
-- Mobil desteğiyle tam responsive
-- Hızlı ve akıcı kullanıcı deneyimi
-
-### 📱 Tarayıcı Uyumluluğu
-
-- ✅ Chrome, Edge, Firefox, Safari (son 2 sürüm)
-- ✅ Mobil tarayıcılar (iOS Safari, Chrome Mobile)
-- ⏳ PWA (çevrimdışı kullanım) — henüz yok, yol haritasında
-
-### 🔧 Teknik Bilgiler
-
-- **Vanilla JavaScript (ES modülleri)** - Çalışma zamanında framework yok
-- **Vite** - Sadece build aracı olarak
-- **Vitest** - Birim testleri (`npm test`)
-- **LocalStorage API** - Veriler tarayıcıda saklanır
-- **Responsive Grid** - Mobil uyumlu tasarım
-
-#### Proje yapısı
+En önemli karar: **tanım ile ilerleme ayrı saklanır.**
 
 ```
-src/
-├── core/     DOM'dan bağımsız, test edilebilir mantık
-│   ├── srs.js       aralıklı tekrar algoritması
-│   ├── word.js      tanım/ilerleme şeması ve doğrulama
-│   └── time.js      tarih yardımcıları
-├── data/
-│   ├── idb.js       IndexedDB sarmalayıcısı
-│   ├── store.js     uygulama durumu ve veri işlemleri
-│   └── migrate.js   1.0'dan göç + ilerleme onarımı
-├── ui/       ekran bileşenleri
-└── main.js   olay bağlantıları
-public/content/   uygulamayla gelen kelime paketleri
-data/             paket üretiminin kaynak verisi (yayınlanmaz)
-scripts/          içerik paketi üreticisi
-test/             birim testleri
+words deposu     →  tanımlar (en, tr, örnek cümle, CEFR, tür, konu)
+progress deposu  →  kullanıcıya ait olan her şey (seviye, tarih, geçmiş)
+bağ              →  kararlı kimlik: core:abandon
 ```
 
-#### Veri modeli
+Bu ayrım sayesinde içerik paketi güncellenince kullanıcının ilerlemesi
+yerinde kalır. Sözleşmeyi bozan bir değişiklik sessizce herkesin
+ilerlemesini siler.
 
-Kelimenin **tanımı** (İngilizce, Türkçe, örnek, CEFR seviyesi) ile
-kullanıcının o kelimedeki **ilerlemesi** (seviye, tekrar tarihi, geçmiş)
-ayrı depolarda tutulur:
+| Klasör | Sorumluluk |
+|---|---|
+| `src/core/` | Saf mantık. DOM'a ve depoya dokunmaz; testlerin çoğu buraya bakar |
+| `src/data/` | IndexedDB sarmalayıcı, göç, uygulama durumu |
+| `src/ui/` | Çizim ve olaylar. Durumu değiştirmez |
+| `src/platform/` | Capacitor ve tarayıcı API'leri |
+| `src/main.js` | Tek bağlayıcı |
 
-| Depo | İçerik | Sahibi |
-|---|---|---|
-| `words` | tanımlar | içerik paketi (sürümlenir) veya kullanıcı |
-| `progress` | öğrenme durumu | her zaman kullanıcı |
-| `meta` | ayarlar, paket sürümleri, göç kaydı | kullanıcı |
+Ayrıntı ve tuzaklar: **[CLAUDE.md](CLAUDE.md)**.
+Arayüz şeması ve tasarım jetonları: **[DESIGN.md](DESIGN.md)**.
 
-Kimlikler kararlıdır (`core:abandon`). Bu sayede yeni bir kelime paketi
-gönderildiğinde tanımlar güncellenir, ilerleme olduğu gibi kalır.
+### Aralıklı tekrar
 
-#### Kelime paketi üretme
+SM-2 türevi. Her doğru cevapta bir sonraki tekrar daha uzağa planlanır;
+unutulan kelime başa döner.
+
+```
+seviye:   0  →  1  →  2  →  3  →  4  →  5  →  6
+gün:      1     2     4     7    15    30    60
+```
+
+Yeni kelimeler alfabetik değil **kullanım sıklığına** göre tanıtılır
+(`freqRank`) ve oturum başına günlük hedef kadarı girer.
+
+### İçerik üretimi
+
+`public/content/core-v1.json` elle düzenlenmez — üretilir. Kaynaklar
+Tatoeba cümle dökümü, bir sıklık listesi ve Oxford seviye listeleri.
 
 ```bash
-npm run build:content
+npm run build:examples   # Tatoeba → örnek cümleler
+npm run infer:pos        # sözcük türü + konu
+npm run build:content    # hepsini birleştir
 ```
 
-`data/` altındaki kaynak veriden `public/content/core-v1.json` üretir;
-yazım düzeltmelerini uygular, mükerrerleri birleştirir ve raporlar.
+Diğer içerik dosyaları (`grammar`, `reading`, `writing`, `email`,
+`antonyms`, `exam`, `emergency`) kelime paketinden **ayrı** indiriliyor;
+böylece biri değişince 5276 kaydın yeniden kurulması gerekmiyor.
 
-### 📊 Spaced Repetition Algoritması
+### Veri
 
-Uygulama **SM-2 tabanlı** basitleştirilmiş bir sistem kullanır:
+Hepsi IndexedDB'de, cihazda. Hesap zorunlu değil, reklam yok, takip yok.
+Firebase yapılandırılırsa isteğe bağlı bulut yedeği açılıyor
+(`src/platform/firebase-config.js` varsayılan olarak boş).
 
-```
-Başarılı cevap → Seviye +1
-Başarısız cevap → Seviye 0 (baştan başla)
-5 başarılı → Öğrenilmiş olarak işaretle
-```
+### Belgeler
 
-**Tekrar Takvimi (gün cinsinden)**:
-- Seviye 0 → 1 gün
-- Seviye 1 → 2 gün
-- Seviye 2 → 4 gün
-- Seviye 3 → 7 gün
-- Seviye 4 → 15 gün
-- Seviye 5 → 30 gün
-- Seviye 6+ → 60 gün
+- [CLAUDE.md](CLAUDE.md) — mimari, değişmezler, tuzaklar
+- [DESIGN.md](DESIGN.md) — ekran haritası, bileşen envanteri, jetonlar
+- [ANDROID.md](ANDROID.md) — Android projesi, imzalama, Play Console
+- [FIREBASE.md](FIREBASE.md) — bulut eşitleme kurulumu
+- [store-listing.md](store-listing.md) — mağaza metinleri
+- [privacy-policy.md](privacy-policy.md) — gizlilik politikası
 
 ---
 
 ## English
 
-My Word Pool is a **SRS (Spaced Repetition System)** based vocabulary learning app designed for English learners.
+**An English learning app for Turkish speakers, A1–C2.** Spaced
+repetition vocabulary at its core, plus grammar, reading, writing,
+role-play dialogues, speaking practice, an IELTS/TOEFL mode and
+emergency English.
 
-### ✨ Features
+No framework — vanilla JS (ES modules), bundled with Vite. Ships as a
+PWA and wraps to Android with Capacitor. Data stays on the device and
+the app works offline.
 
-- **Add & Manage Words** - Add English words with Turkish meanings, example sentences, and tags
-- **Smart Learning System** - Optimize learning with Spaced Repetition scheduling
-  - 7-level progression system (1, 2, 4, 7, 15, 30, 60 days)
-  - Auto-mark as "learned" after 5 correct answers
-- **Two View Modes**
-  - 📇 **Cards**: Detailed word cards
-  - 📋 **Tiles**: Grid view
-- **Flexible Review Modes**
-  - Normal Review: Learn only due words
-  - Free Review: Random order of all unlearned words
-- **Search & Filtering**
-  - Search by word, meaning, or tags
-  - Filters: All, Due today, New only, Learned
-- **Daily Statistics**
-  - Total words
-  - Words due for review
-  - Words added today
-- **Backup & Restore**
-  - Export as JSON
-  - Import from other devices
-  - Auto-save to browser localStorage
-- **Responsive Design** - Works perfectly on mobile, tablet, and desktop
-- **Dark Theme** - Professional, comfortable design
+> The interface and all content are **in Turkish**. This app teaches
+> English *to Turkish speakers*; explanations, error patterns and
+> examples are written for that audience specifically.
 
-### 🚀 Quick Start
+### What's in it
 
-#### Online (Easiest)
-Open directly in your browser:
-```
-https://kelime-havuzum.netlify.app
-```
+5276 words introduced in frequency order with SM-2 spaced repetition ·
+12 grammar lessons · 10 reading texts · 14 writing and email tasks · 60
+role-play dialogues · speech recognition with word-level feedback and
+voice recording · 68 antonym pairs · IELTS/TOEFL format practice ·
+emergency phrasebook · XP, badges and a weekly goal derived from your
+own history · light and dark themes.
 
-#### Local Setup
+### What it does not claim
+
+The limits are stated **in the interface**, not hidden:
+
+- Writing feedback checks length, required elements and common Turkish-speaker
+  error patterns. It cannot judge meaning or style.
+- Exam mode gives no band or TOEFL score — that is a trained rater's
+  scaled judgement.
+- Speaking practice gives no pronunciation score; it compares the words
+  you said against the target. Phoneme-level analysis needs a paid service.
+- XP does not measure learning. The SM-2 intervals do.
+
+### Setup
 
 Requires Node.js 20.19+ (or 22.12+).
 
 ```bash
-git clone https://github.com/gulezgin/WordPool-TR-EN.git
-cd WordPool-TR-EN
+git clone https://github.com/gulezgin/kelimece.git
+cd kelimece
 npm install
 npm run dev
 ```
 
 Then open `http://localhost:5173`.
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Dev server with hot reload |
-| `npm run build` | Production build into `dist/` |
-| `npm run preview` | Serve the production build locally |
-| `npm test` | Run unit tests |
+### Architecture
 
-### 📖 How to Use
+The key decision: **definitions and progress are stored separately.**
 
-1. **Add Words** - From left panel:
-   - Enter English word
-   - Enter Turkish meaning
-   - (Optional) Add example sentence
-   - (Optional) Add tags (comma-separated)
-   - Click "Ekle" (Add)
+```
+words store     →  definitions (en, tr, example, CEFR, pos, topic)
+progress store  →  everything that belongs to the user
+link            →  stable id: core:abandon
+```
 
-2. **Start Review**:
-   - Select pool: All, Due, New, or Learned
-   - Optional: Enable "Serbest tekrar" (Free review)
-   - Click "Tekrar Et" (Review)
-
-3. **In Review Mode**:
-   - See English word first
-   - Click "Anlamı Göster" (Show meaning)
-   - Mark "Biliyordum ✓" (Knew it) or "Unuttum ✗" (Forgot)
-   - Auto-advances to next word
-
-4. **Backup**:
-   - Click "JSON Dışa Aktar" to export
-   - Click file picker to import previous backup
-
-### 💾 Data Storage
-
-- All data stored locally in **browser localStorage**
-- No data sent to any server (completely private)
-- Export JSON backup when switching browsers
-
-### 🔧 Technical Details
-
-- **Vanilla JavaScript** - No framework dependencies
-- **HTML5 + CSS3** - Modern web standards
-- **LocalStorage API** - Client-side data persistence
-- **Responsive Grid** - Mobile-friendly
-
-### 📊 Spaced Repetition Algorithm
-
-Uses a simplified SM-2-based system:
-- Correct answer → Level +1
-- Wrong answer → Level 0 (restart)
-- 5 correct answers → Mark as learned
-
-Review intervals (in days):
-- Level 0 → 1 day
-- Level 1 → 2 days
-- Level 2 → 4 days
-- Level 3 → 7 days
-- Level 4 → 15 days
-- Level 5 → 30 days
-- Level 6+ → 60 days
+This is what lets the content pack be updated without touching anyone's
+progress. See [CLAUDE.md](CLAUDE.md) for the architecture, invariants
+and the traps worth knowing about.
 
 ---
 
-### 📄 License
+## License
 
-MIT License - See [LICENSE](LICENSE) file
+MIT — see [LICENSE](LICENSE).
 
-### 🤝 Contributing
+## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Pull requests welcome. Code comments, UI strings and commit messages are
+in **Turkish**; indentation is **tabs**. Comments explain *why*, not
+*what*. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-### 📧 Questions or Feedback?
+Before opening a PR:
 
-Open an issue on GitHub or reach out directly.
-
----
-
-**Made with ❤️ for English learners**
+```bash
+npm test && npm run check:ids && npm run build
+```
